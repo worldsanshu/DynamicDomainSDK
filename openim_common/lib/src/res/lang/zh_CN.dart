@@ -715,7 +715,7 @@ const Map<String, String> zh_CN = {
   "onlineLast7Days": "7天在线",
 
   // Login and registration screen translations
-  "loginTitle": "欢迎回来",
+  "loginTitle": "欢迎使用CNL",
   "loginSubtitle": "登录以保持连接",
   "noAccountYetQuestion": "还没有账户？",
   "goToRegister": " 去注册吧",

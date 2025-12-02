@@ -81,7 +81,7 @@ class InviteCodeView extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 32.h),
+                    SizedBox(height: 24.h),
 
                     // 输入框
                     Form(
@@ -111,12 +111,6 @@ class InviteCodeView extends StatelessWidget {
                             onPressed: logic.onSubmit,
                           )),
                     ),
-
-                    // 按钮
-                    // CustomButtom(
-                    //   title: StrRes.enter,
-                    //   onPressed: logic.onSubmit,
-                    // ),
                   ],
                 ),
               ),

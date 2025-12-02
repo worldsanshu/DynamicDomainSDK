@@ -72,7 +72,7 @@ const Map<String, String> en_US = {
   "bind": "Bind",
   "agree": 'Agree',
   "warmTips": "Warm Tips",
-  "disagreeAndExit": "Disagree and Exit",
+  "rejectAndExit": "Reject and Exit",
   "plsReadBeforeUse": "Please read carefully before using this product",
   "userAgreement": "User Agreement",
   "privacyPolicy": "Privacy Policy",
@@ -743,7 +743,7 @@ const Map<String, String> en_US = {
   "onlineLast7Days": "7 Days Online",
 
   // Login and registration screen translations
-  "loginTitle": "Welcome Back",
+    "loginTitle": "Welcome to CNL",
   "loginSubtitle": "Log in to stay connected",
   "noAccountYetQuestion": "Don't have an account?",
   "goToRegister": " Go register",

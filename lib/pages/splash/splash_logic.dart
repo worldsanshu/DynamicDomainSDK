@@ -185,29 +185,6 @@ class _ClayProtocolDialog extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xFFFAFBFC),
                   borderRadius: BorderRadius.circular(32.r),
-                  boxShadow: [
-                    // Shadow tối (hiệu ứng lõm)
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      offset: const Offset(8, 8),
-                      blurRadius: 20,
-                      spreadRadius: 0,
-                    ),
-                    // Shadow sáng (hiệu ứng nổi)
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.9),
-                      offset: const Offset(-8, -8),
-                      blurRadius: 20,
-                      spreadRadius: 0,
-                    ),
-                    // Viền glow sáng
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.6),
-                      offset: const Offset(0, 0),
-                      blurRadius: 2,
-                      spreadRadius: 1,
-                    ),
-                  ],
                   border: Border.all(
                     color: Colors.white.withOpacity(0.8),
                     width: 1.5,
@@ -328,6 +305,20 @@ class _ClayProtocolDialog extends StatelessWidget {
                               bottomLeft: Radius.circular(32.r),
                               bottomRight: Radius.circular(32.r),
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.3),
+                                offset: const Offset(2, 7),
+                                blurRadius: 10,
+                                spreadRadius: 5,
+                              ),
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.8),
+                                offset: const Offset(-2, -2),
+                                blurRadius: 4,
+                                spreadRadius: -1,
+                              ),
+                            ],
                           ),
                           child: Row(
                             children: [
@@ -400,21 +391,6 @@ class _ClayProtocolDialog extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.r),
-              boxShadow: [
-                // Inner shadow hiệu ứng lõm cho button
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  offset: const Offset(2, 2),
-                  blurRadius: 4,
-                  spreadRadius: -1,
-                ),
-                BoxShadow(
-                  color: Colors.white.withOpacity(0.8),
-                  offset: const Offset(-2, -2),
-                  blurRadius: 4,
-                  spreadRadius: -1,
-                ),
-              ],
             ),
             child: Text(
               text,

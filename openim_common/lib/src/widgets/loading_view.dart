@@ -45,7 +45,7 @@ class LoadingView {
         color: Colors.transparent,
         child: Center(
           child: SpinKitFadingCircle(
-            color: Styles.c_8E9AB0,
+            color: Styles.c_0089FF,
             size: 50.0,
           ),
         ),
