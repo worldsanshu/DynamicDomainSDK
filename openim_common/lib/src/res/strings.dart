@@ -542,6 +542,8 @@ class StrRes {
 
   static String get noJoinedGroupsYet => 'noJoinedGroupsYet'.tr;
 
+  static String get all => 'all'.tr;
+
   static String get add => 'add'.tr;
 
   static String get scan => 'scan'.tr;

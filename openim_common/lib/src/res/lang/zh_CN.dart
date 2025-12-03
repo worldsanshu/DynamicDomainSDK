@@ -290,6 +290,7 @@ const Map<String, String> zh_CN = {
   "noGroupRequests": "暂无群聊通知",
   "noCreatedGroupsYet": "您尚未创建任何群组",
   "noJoinedGroupsYet": "您尚未加入任何群组",
+  "all": "全部",
   "add": "添加",
   "scan": "扫一扫",
   "scanHint": "扫描二维码名片",

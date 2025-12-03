@@ -301,6 +301,7 @@ const Map<String, String> en_US = {
   "noGroupRequests": "No group notifications",
   "noCreatedGroupsYet": "You haven't created any groups yet",
   "noJoinedGroupsYet": "You haven't joined any groups yet",
+  "all": "All",
   "add": "Add",
   "scan": "Scan",
   "scanHint": "Scan business card QR code",

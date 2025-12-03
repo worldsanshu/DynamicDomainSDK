@@ -1382,7 +1382,7 @@ class GroupSetupLogic extends GetxController {
       groupInfo: groupInfo.value,
       opType: GroupMemberOpType.del,
     );
-    if (list is List<GroupMembersInfo>) {
+    if (list is List<GroupMembersInfo> && list.isNotEmpty) {
       var removeUidList = list.map((e) => e.userID!).toList();
       try {
         await LoadingView.singleton.wrap(

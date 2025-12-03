@@ -26,12 +26,15 @@ class ContactsPage extends StatefulWidget {
   State<ContactsPage> createState() => _ContactsPageState();
 }
 
+enum GroupFilterType { all, myGroup, joinedGroup }
+
 class _ContactsPageState extends State<ContactsPage>
     with TickerProviderStateMixin {
   final logic = Get.find<ContactsLogic>();
   final groupListLogic = Get.find<GroupListLogic>();
   late TabController _tabController;
   final GlobalKey _newButtonKey = GlobalKey();
+  GroupFilterType _selectedGroupFilter = GroupFilterType.all;
 
   @override
   void initState() {
@@ -49,32 +52,48 @@ class _ContactsPageState extends State<ContactsPage>
   Widget build(BuildContext context) {
     return Obx(() => BasePage(
           showAppBar: true,
-          title:
-              '${StrRes.contacts} (${logic.friendListLogic.friendList.length})',
+          customAppBar: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                StrRes.contacts,
+                style: TextStyle(
+                  fontFamily: 'FilsonPro',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20.sp,
+                  color: Colors.black,
+                ),
+              ),
+              Obx(
+                () {
+                  return Text(
+                    ' ${StrRes.friends}: ' +
+                        logic.friendListLogic.friendList.length.toString() +
+                        ", ${StrRes.groups}: " +
+                        (groupListLogic.createdList.length +
+                                groupListLogic.joinedList.length)
+                            .toString(),
+                    style: const TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFFBDBDBD),
+                    ).copyWith(fontSize: 12.sp),
+                  );
+                },
+              ),
+            ],
+          ),
           centerTitle: false,
           showLeading: false,
           actions: [
-            GestureDetector(
+            CustomButtom(
               key: _newButtonKey,
-              onTap: () => _showActionPopup(),
-              child: Container(
-                margin: const EdgeInsets.only(right: 10),
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF212121),
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Text(
-                  '+ New',
-                  style: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16.sp,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+              onPressed: () => _showActionPopup(),
+              icon: Icons.grid_view,
+              colorIcon: Theme.of(context).primaryColor,
+              colorButton: Theme.of(context).primaryColor.withOpacity(0.15),
             ),
+            SizedBox(width: 12.w)
           ],
           body: _buildContentContainer(),
         ));
@@ -316,6 +335,8 @@ class _ContactsPageState extends State<ContactsPage>
           height: 5.h,
           color: const Color(0xFFF3F4F6),
         ),
+        // Filter chips
+        _buildGroupFilterChips(),
         Expanded(
           child: Obx(() {
             // Filter group conversations
@@ -347,85 +368,127 @@ class _ContactsPageState extends State<ContactsPage>
               );
             }
 
+            // Apply filter
+            final showMyGroups = _selectedGroupFilter == GroupFilterType.all ||
+                _selectedGroupFilter == GroupFilterType.myGroup;
+            final showJoinedGroups =
+                _selectedGroupFilter == GroupFilterType.all ||
+                    _selectedGroupFilter == GroupFilterType.joinedGroup;
+
+            // Check if filtered list is empty
+            final filteredMyGroups = showMyGroups ? myGroups : <GroupInfo>[];
+            final filteredJoinedGroups =
+                showJoinedGroups ? joinedGroups : <GroupInfo>[];
+
+            if (filteredMyGroups.isEmpty && filteredJoinedGroups.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      CupertinoIcons.group,
+                      size: 48.w,
+                      color: const Color(0xFF9CA3AF),
+                    ),
+                    12.verticalSpace,
+                    Text(
+                      _selectedGroupFilter == GroupFilterType.myGroup
+                          ? StrRes.noCreatedGroupsYet
+                          : StrRes.noJoinedGroupsYet,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF9CA3AF),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
             return SlidableAutoCloseBehavior(
               child: CustomScrollView(
                 slivers: [
                   // My Groups section
-                  if (myGroups.isNotEmpty) ...[
-                    SliverToBoxAdapter(
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          left: 16.w,
-                          right: 16.w,
-                          top: 15.h,
-                          bottom: 5.h,
-                        ),
-                        color: Colors.white,
-                        child: Text(
-                          StrRes.myGroup,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF212121),
-                            shadows: [
-                              Shadow(
-                                color: Colors.white.withOpacity(0.9),
-                                offset: const Offset(0.5, 0.5),
-                                blurRadius: 0.5,
-                              ),
-                            ],
+                  if (filteredMyGroups.isNotEmpty) ...[
+                    if (_selectedGroupFilter == GroupFilterType.all)
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: EdgeInsets.only(
+                            left: 16.w,
+                            right: 16.w,
+                            top: 15.h,
+                            bottom: 5.h,
+                          ),
+                          color: Colors.white,
+                          child: Text(
+                            StrRes.myGroup,
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF212121),
+                              shadows: [
+                                Shadow(
+                                  color: Colors.white.withOpacity(0.9),
+                                  offset: const Offset(0.5, 0.5),
+                                  blurRadius: 0.5,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
-                          return _buildGroupConversationItem(myGroups[index]);
+                          return _buildGroupConversationItem(
+                              filteredMyGroups[index]);
                         },
-                        childCount: myGroups.length,
+                        childCount: filteredMyGroups.length,
                       ),
                     ),
                   ],
 
                   // Joined Groups section
-                  if (joinedGroups.isNotEmpty) ...[
-                    SliverToBoxAdapter(
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          left: 16.w,
-                          right: 16.w,
-                          top: 15.h,
-                          bottom: 5.h,
-                        ),
-                        color: Colors.white,
-                        child: Text(
-                          StrRes.joinedGroup,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF212121),
-                            shadows: [
-                              Shadow(
-                                color: Colors.white.withOpacity(0.9),
-                                offset: const Offset(0.5, 0.5),
-                                blurRadius: 0.5,
-                              ),
-                            ],
+                  if (filteredJoinedGroups.isNotEmpty) ...[
+                    if (_selectedGroupFilter == GroupFilterType.all)
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: EdgeInsets.only(
+                            left: 16.w,
+                            right: 16.w,
+                            top: 15.h,
+                            bottom: 5.h,
+                          ),
+                          color: Colors.white,
+                          child: Text(
+                            StrRes.joinedGroup,
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF212121),
+                              shadows: [
+                                Shadow(
+                                  color: Colors.white.withOpacity(0.9),
+                                  offset: const Offset(0.5, 0.5),
+                                  blurRadius: 0.5,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           return _buildGroupConversationItem(
-                            joinedGroups[index],
+                            filteredJoinedGroups[index],
                           );
                         },
-                        childCount: joinedGroups.length,
+                        childCount: filteredJoinedGroups.length,
                       ),
                     ),
                   ],
@@ -435,6 +498,72 @@ class _ContactsPageState extends State<ContactsPage>
           }),
         ),
       ],
+    );
+  }
+
+  Widget _buildGroupFilterChips() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      color: Colors.white,
+      child: Row(
+        children: [
+          _buildFilterChip(
+            label: StrRes.all,
+            isSelected: _selectedGroupFilter == GroupFilterType.all,
+            onTap: () =>
+                setState(() => _selectedGroupFilter = GroupFilterType.all),
+          ),
+          8.horizontalSpace,
+          _buildFilterChip(
+            label: StrRes.myGroup,
+            isSelected: _selectedGroupFilter == GroupFilterType.myGroup,
+            onTap: () =>
+                setState(() => _selectedGroupFilter = GroupFilterType.myGroup),
+          ),
+          8.horizontalSpace,
+          _buildFilterChip(
+            label: StrRes.joinedGroup,
+            isSelected: _selectedGroupFilter == GroupFilterType.joinedGroup,
+            onTap: () => setState(
+                () => _selectedGroupFilter = GroupFilterType.joinedGroup),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).primaryColor
+              : const Color(0xFFF3F4F6),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            color: isSelected
+                ? Theme.of(context).primaryColor
+                : const Color(0xFFE5E7EB),
+            width: 1,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'FilsonPro',
+            fontSize: 14.sp,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            color: isSelected ? Colors.white : const Color(0xFF6B7280),
+          ),
+        ),
+      ),
     );
   }
 
@@ -619,7 +748,8 @@ class _ContactsPageState extends State<ContactsPage>
 
   void _showActionPopup() {
     final homeLogic = Get.find<HomeLogic>();
-    final RenderBox button = _newButtonKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox button =
+        _newButtonKey.currentContext!.findRenderObject() as RenderBox;
     final Offset buttonPosition = button.localToGlobal(Offset.zero);
     final menuWidth = 200.w;
     final double left = buttonPosition.dx + button.size.width - menuWidth;

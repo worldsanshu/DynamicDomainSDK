@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:openim/constants/app_color.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:path/path.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -259,34 +261,32 @@ class MyQrcodePage extends StatelessWidget {
               width: 1,
             ),
           ),
-          child: Padding(
-            padding: EdgeInsets.all(24.w),
-            child: Center(
-              child: Container(
-                width: 220.w,
-                height: 220.w,
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      offset: const Offset(1, 1),
-                      blurRadius: 3,
-                    ),
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.9),
-                      offset: const Offset(-0.5, -0.5),
-                      blurRadius: 3,
-                    ),
-                  ],
-                ),
-                child: QrImageView(
-                  data: logic.buildQRContent(),
-                  size: 180.w,
-                  backgroundColor: Colors.white,
-                ),
+          padding: EdgeInsets.all(24.w),
+          child: Center(
+            child: Container(
+              width: 220.w,
+              height: 220.w,
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    offset: const Offset(1, 1),
+                    blurRadius: 3,
+                  ),
+                  BoxShadow(
+                    color: Colors.white.withOpacity(0.9),
+                    offset: const Offset(-0.5, -0.5),
+                    blurRadius: 3,
+                  ),
+                ],
+              ),
+              child: QrImageView(
+                data: logic.buildQRContent(),
+                size: 180.w,
+                backgroundColor: Colors.white,
               ),
             ),
           ),

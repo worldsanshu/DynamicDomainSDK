@@ -83,27 +83,14 @@ class _ConversationPageState extends State<ConversationPage> {
                   ],
                 ),
               ),
-              GestureDetector(
+              CustomButtom(
                 key: _newButtonKey,
-                onTap: () => _showActionPopup(),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF212121),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  margin: EdgeInsets.only(right: 12.w),
-                  child: Text(
-                    '+ New',
-                    style: TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.sp,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                onPressed: () => _showActionPopup(),
+                icon:Icons.grid_view,
+                colorIcon: Theme.of(context).primaryColor,
+                colorButton: Theme.of(context).primaryColor.withOpacity(0.15),
               ),
+              SizedBox(width: 12.w)
             ],
           ),
           actions: [
