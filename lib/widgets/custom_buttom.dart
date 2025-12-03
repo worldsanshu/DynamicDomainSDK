@@ -48,13 +48,13 @@ class _CustomButtomState extends State<CustomButtom> {
                   vertical: 10.h,
                 ),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
+              color: widget.colorButton ?? const Color(0xFFF5F5F5),
               borderRadius: BorderRadius.circular(50.r),
             ),
             child: IntrinsicWidth(
               child: widget.icon != null
                   ? Icon(
-                      color: const Color(0xFF757575),
+                      color: widget.colorIcon ?? const Color(0xFF757575),
                       widget.icon,
                       size: 16.w,
                     )
@@ -62,7 +62,7 @@ class _CustomButtomState extends State<CustomButtom> {
                       widget.title ?? '',
                       style: TextStyle(
                         fontFamily: 'FilsonPro',
-                        color: const Color(0xFF757575),
+                        color: widget.colorIcon ?? const Color(0xFF757575),
                         fontSize: widget.fontSize ?? 16.sp,
                         fontWeight: FontWeight.w600,
                       ),

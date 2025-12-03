@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_bottom_container/panel_container.dart';
 import 'package:chat_bottom_container/typedef.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +43,9 @@ class ChatInputBox extends StatefulWidget {
     this.onClearQuote,
     this.onSend,
     required this.callbackKeyboardHeight,
+    this.onTapAlbum,
+    this.onTapCamera,
+    this.onTapFile,
   });
   final AtTextCallback? atCallback;
   final Map<String, String> allAtMap;
@@ -62,6 +67,9 @@ class ChatInputBox extends StatefulWidget {
   final String? quoteContent;
   final Function()? onClearQuote;
   final ValueChanged<String>? onSend;
+  final Function()? onTapAlbum;
+  final Function()? onTapCamera;
+  final Function()? onTapFile;
 
   final void Function(double) callbackKeyboardHeight;
 
@@ -76,9 +84,14 @@ class _ChatInputBoxState extends State<ChatInputBox>
   bool _leftKeyboardButton = false;
   bool _rightKeyboardButton = false;
   bool _sendButtonVisible = false;
+  bool _actionButtonsExpanded =
+      true; // New state for expanded/collapsed buttons
 
   late AnimationController _expandController;
   late Animation<double> _expandAnimation;
+
+  late AnimationController _buttonsExpandController;
+  late Animation<double> _buttonsExpandAnimation;
 
   bool get _showQuoteView => IMUtils.isNotNullEmptyStr(widget.quoteContent);
 
@@ -98,6 +111,20 @@ class _ChatInputBoxState extends State<ChatInputBox>
     ).animate(CurvedAnimation(
       parent: _expandController,
       curve: Curves.easeOutQuart,
+    ));
+
+    _buttonsExpandController = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+      value: 1.0, // Start expanded
+    );
+
+    _buttonsExpandAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _buttonsExpandController,
+      curve: Curves.easeOutCubic,
     ));
 
     widget.focusNode.addListener(() {
@@ -124,18 +151,36 @@ class _ChatInputBoxState extends State<ChatInputBox>
       forceCloseAllPanels();
     });
 
-    widget.controller?.addListener(() {
-      setState(() {
-        _sendButtonVisible = widget.controller!.text.isNotEmpty;
-      });
-    });
+    widget.controller?.addListener(_onTextChanged);
 
     super.initState();
+  }
+
+  void _onTextChanged() {
+    final hasText = widget.controller!.text.isNotEmpty;
+    setState(() {
+      _sendButtonVisible = hasText;
+    });
+
+    // Auto-collapse buttons when user types, auto-expand when text is cleared
+    if (hasText && _actionButtonsExpanded) {
+      setState(() {
+        _actionButtonsExpanded = false;
+      });
+      _buttonsExpandController.reverse();
+    } else if (!hasText && !_actionButtonsExpanded) {
+      setState(() {
+        _actionButtonsExpanded = true;
+      });
+      _buttonsExpandController.forward();
+    }
   }
 
   @override
   void dispose() {
     _expandController.dispose();
+    _buttonsExpandController.dispose();
+    widget.controller?.removeListener(_onTextChanged);
     super.dispose();
   }
 
@@ -212,6 +257,131 @@ class _ChatInputBoxState extends State<ChatInputBox>
     );
   }
 
+  // Arrow toggle button for expanding/collapsing action buttons
+  Widget _buildArrowToggleButton() {
+    return GestureDetector(
+      onTap: _toggleActionButtons,
+      child: AnimatedBuilder(
+        animation: _buttonsExpandAnimation,
+        builder: (context, child) {
+          return Transform.rotate(
+            angle: _buttonsExpandAnimation.value * 3.14159, // 180 degrees
+            child: Container(
+              width: 30.w,
+              height: 30.h,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(8.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF9CA3AF).withOpacity(0.06),
+                    offset: const Offset(0, 2),
+                    blurRadius: 6,
+                  ),
+                ],
+                border: Border.all(
+                  color: const Color(0xFFF3F4F6),
+                  width: 1,
+                ),
+              ),
+              child: HugeIcon(
+                icon: HugeIcons.strokeRoundedArrowRight01,
+                size: 18.w,
+                color: const Color(0xFF6B7280),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _toggleActionButtons() {
+    setState(() {
+      _actionButtonsExpanded = !_actionButtonsExpanded;
+    });
+    if (_actionButtonsExpanded) {
+      _buttonsExpandController.forward();
+    } else {
+      _buttonsExpandController.reverse();
+    }
+  }
+
+  // Build the expandable action buttons row
+  Widget _buildActionButtons() {
+    return AnimatedBuilder(
+      animation: _buttonsExpandAnimation,
+      builder: (context, child) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Arrow toggle button (visible when collapsed or has text)
+            if (!_actionButtonsExpanded || _sendButtonVisible)
+              _buildArrowToggleButton(),
+            // Animated container for the 4 action buttons
+            ClipRect(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeOutCubic,
+                width: _actionButtonsExpanded ? (30.w * 4 + 8.w * 3) : 0,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: Opacity(
+                    opacity: _buttonsExpandAnimation.value,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Voice button
+                        _buildClaymorphismButton(
+                          icon: _leftKeyboardButton
+                              ? HugeIcons.strokeRoundedKeyboard
+                              : HugeIcons.strokeRoundedMic01,
+                          onTap: _leftKeyboardButton
+                              ? onTapLeftKeyboard
+                              : onTapSpeak,
+                          isActive: _leftKeyboardButton,
+                          backgroundColor: _leftKeyboardButton
+                              ? const Color(0xFF4F42FF).withOpacity(0.1)
+                              : const Color(0xFFF9FAFB),
+                        ),
+                        8.horizontalSpace,
+                        // File button
+                        _buildClaymorphismButton(
+                          icon: HugeIcons.strokeRoundedFile02,
+                          onTap: () => Permissions.storage(widget.onTapFile),
+                        ),
+                        8.horizontalSpace,
+                        // Gallery button
+                        _buildClaymorphismButton(
+                          icon: HugeIcons.strokeRoundedImage02,
+                          onTap: () => Permissions.photos(widget.onTapAlbum),
+                        ),
+                        8.horizontalSpace,
+                        // Camera button
+                        _buildClaymorphismButton(
+                          icon: HugeIcons.strokeRoundedCamera01,
+                          onTap: () => Platform.isIOS
+                              ? Permissions.cameraAndMicrophone(
+                                  widget.onTapCamera)
+                              : Permissions.cameraAndMicrophoneAndPhotos(
+                                  widget.onTapCamera),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (_actionButtonsExpanded && !_leftKeyboardButton)
+              8.horizontalSpace,
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!widget.enabled) widget.controller?.clear();
@@ -242,19 +412,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
                           ),
                           child: Row(
                             children: [
-                              _buildClaymorphismButton(
-                                icon: _leftKeyboardButton
-                                    ? HugeIcons.strokeRoundedKeyboard
-                                    : HugeIcons.strokeRoundedMic01,
-                                onTap: _leftKeyboardButton
-                                    ? onTapLeftKeyboard
-                                    : onTapSpeak,
-                                isActive: _leftKeyboardButton,
-                                backgroundColor: _leftKeyboardButton
-                                    ? const Color(0xFF4F42FF).withOpacity(0.1)
-                                    : const Color(0xFFF9FAFB),
-                              ),
-                              12.horizontalSpace,
+                              _buildActionButtons(),
                               Expanded(
                                 child: Stack(
                                   children: [
@@ -269,23 +427,6 @@ class _ChatInputBoxState extends State<ChatInputBox>
                                   ],
                                 ),
                               ),
-                              12.horizontalSpace,
-                              // _buildClaymorphismButton(
-                              //   icon: _rightKeyboardButton
-                              //       ? HugeIcons.strokeRoundedKeyboard
-                              //       : HugeIcons.strokeRoundedSmile,
-                              //   onTap: _rightKeyboardButton
-                              //       ? onTapRightKeyboard
-                              //       : onTapEmoji,
-                              //   isActive: _rightKeyboardButton || _emojiVisible,
-                              //   backgroundColor:
-                              //       (_rightKeyboardButton || _emojiVisible)
-                              //           ? const Color(0xFFA78BFA).withOpacity(0.1)
-                              //           : const Color(0xFFF9FAFB),
-                              //   iconColor: (_rightKeyboardButton || _emojiVisible)
-                              //       ? const Color(0xFFA78BFA)
-                              //       : const Color(0xFF6B7280),
-                              // ),
                               8.horizontalSpace,
                               _buildSendButton(),
                             ],

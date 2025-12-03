@@ -19,11 +19,12 @@ class CreateGroupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   final theme = Theme.of(context);
     return TouchCloseSoftKeyboard(
       child: BasePage(
         showAppBar: true,
-        centerTitle: false,
         showLeading: true,
+        centerTitle: false,
         customAppBar: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,8 +52,8 @@ class CreateGroupPage extends StatelessWidget {
             margin: const EdgeInsets.only(right: 10),
             onPressed: logic.completeCreation,
             icon: CupertinoIcons.checkmark,
-            colorButton: const Color(0xFF10B981).withOpacity(0.1),
-            colorIcon: const Color(0xFF10B981),
+            colorButton: theme.primaryColor.withOpacity(0.1),
+            colorIcon: theme.primaryColor,
           ),
         ],
         body: _buildContentContainer(),
@@ -272,7 +273,7 @@ class CreateGroupPage extends StatelessWidget {
             ),
             GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: logic.length(),
+              itemCount: logic.allList.length,
               shrinkWrap: true,
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -282,50 +283,46 @@ class CreateGroupPage extends StatelessWidget {
                 childAspectRatio: 68.w / 84.h,
               ),
               itemBuilder: (BuildContext context, int index) {
-                return logic.itemBuilder(
-                  index: index,
-                  builder: (info) => Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF9CA3AF).withOpacity(0.04),
-                              offset: const Offset(0, 2),
-                              blurRadius: 4,
-                            ),
-                          ],
-                        ),
-                        child: AvatarView(
-                          width: 48.w,
-                          height: 48.h,
-                          url: info.faceURL,
-                          text: info.nickname,
-                          textStyle: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 14.sp,
-                            color: Colors.white,
+                final info = logic.allList[index];
+                return Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF9CA3AF).withOpacity(0.04),
+                            offset: const Offset(0, 2),
+                            blurRadius: 4,
                           ),
-                          borderRadius: BorderRadius.circular(12.r),
-                          isGroup: false,
-                        ),
+                        ],
                       ),
-                      2.verticalSpace,
-                      Text(
-                        info.nickname ?? '',
-                        style: TextStyle(
+                      child: AvatarView(
+                        width: 48.w,
+                        height: 48.h,
+                        url: info.faceURL,
+                        text: info.nickname,
+                        textStyle: TextStyle(
                           fontFamily: 'FilsonPro',
-                          fontSize: 12.sp,
-                          color: const Color(0xFF4B5563),
+                          fontSize: 14.sp,
+                          color: Colors.white,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        borderRadius: BorderRadius.circular(12.r),
+                        isGroup: false,
                       ),
-                    ],
-                  ),
-                  addButton: () => const SizedBox.shrink(),
-                  delButton: () => const SizedBox.shrink(),
+                    ),
+                    2.verticalSpace,
+                    Text(
+                      info.nickname ?? '',
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 12.sp,
+                        color: const Color(0xFF4B5563),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 );
               },
             ),

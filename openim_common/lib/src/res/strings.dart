@@ -498,6 +498,8 @@ class StrRes {
 
   static String get unread => 'unread'.tr;
 
+  static String get received => 'received'.tr;
+
   static String get nPersonUnRead => 'nPersonUnRead'.tr;
 
   static String get allRead => 'allRead'.tr;

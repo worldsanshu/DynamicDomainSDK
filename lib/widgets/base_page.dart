@@ -53,6 +53,8 @@ class _BasePageState extends State<BasePage> {
       extendBodyBehindAppBar: true,
       appBar: widget.showAppBar
           ? AppBar(
+              leadingWidth: 48.w,
+              titleSpacing: 0,
               leading: widget.showLeading
                   ? widget.leading ??
                       CustomButtom(
@@ -61,23 +63,26 @@ class _BasePageState extends State<BasePage> {
                             ? widget.leadingAction!()
                             : Get.back(),
                         icon: Icons.arrow_back_ios_new,
-                        colorButton: Colors.white.withOpacity(0.3),
-                        colorIcon: Colors.white,
+                        colorButton: Colors.white,
+                        colorIcon: AppColor.iconColor,
                       )
                   : null,
               backgroundColor: Colors.white,
               elevation: 0,
               scrolledUnderElevation: 0,
-              title: widget.customAppBar ??
-                  Text(
-                    widget.title ?? '',
-                    style: const TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 23,
-                      color: Colors.black,
-                    ).copyWith(fontSize: 23.sp),
-                  ),
+              title: Padding(
+                padding: EdgeInsets.only(left: widget.showLeading ? 0 : 12.w),
+                child: widget.customAppBar ??
+                    Text(
+                      widget.title ?? '',
+                      style: const TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 23,
+                        color: Colors.black,
+                      ).copyWith(fontSize: 23.sp),
+                    ),
+              ),
               centerTitle: widget.centerTitle,
               actions: widget.actions,
               automaticallyImplyLeading: widget.showLeading,

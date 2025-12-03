@@ -92,6 +92,7 @@ class _ConversationPageState extends State<ConversationPage> {
                     color: const Color(0xFF212121),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
+                  margin: EdgeInsets.only(right: 12.w),
                   child: Text(
                     '+ New',
                     style: TextStyle(

@@ -4,12 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/constants/app_color.dart';
-import 'package:openim/pages/contacts/friend_list_logic.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'package:flutter/cupertino.dart';
-import '../../../widgets/custom_buttom.dart';
 
 import '../../../widgets/friend_item_view.dart';
 import 'select_contacts_logic.dart';
@@ -55,191 +53,224 @@ class SelectContactsPage extends StatelessWidget {
             // Content Container
             // Search Box
             Container(
-              margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: logic.selectFromSearch,
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF9FAFB),
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                        offset: const Offset(0, 2),
-                        blurRadius: 6.r,
-                      ),
-                    ],
-                    border: Border.all(
-                      color: const Color(0xFFF3F4F6),
-                      width: 1,
-                    ),
+              margin: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
+              child: Container(
+                padding:
+                    EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9FAFB),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: const Color(0xFFF3F4F6),
+                    width: 1,
                   ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        CupertinoIcons.search,
-                        size: 20.w,
-                        color: const Color(0xFF6B7280),
-                      ),
-                      12.horizontalSpace,
-                      Text(
-                        StrRes.search,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      CupertinoIcons.search,
+                      size: 18.w,
+                      color: const Color(0xFF9CA3AF),
+                    ),
+                    8.horizontalSpace,
+                    Expanded(
+                      child: TextField(
+                        controller: logic.searchCtrl,
+                        onChanged: (value) => logic.performSearch(value),
+                        onTap: () => logic.selectFromSearch(),
+                        decoration: InputDecoration(
+                          hintText: StrRes.search,
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                          hintStyle: TextStyle(
+                            fontFamily: 'FilsonPro',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF9CA3AF),
+                          ),
+                        ),
                         style: TextStyle(
                           fontFamily: 'FilsonPro',
-                          fontSize: 16.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w400,
-                          color: const Color(0xFF6B7280),
+                          color: const Color(0xFF374151),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Obx(() => logic.searchText.value.isNotEmpty
+                        ? GestureDetector(
+                            onTap: () => logic.clearSearch(),
+                            child: Icon(
+                              CupertinoIcons.xmark_circle_fill,
+                              size: 18.w,
+                              color: const Color(0xFF9CA3AF),
+                            ),
+                          )
+                        : const SizedBox.shrink()),
+                  ],
                 ),
               ),
             ),
 
-            16.verticalSpace,
+            // Display filtered list or normal list
+            Expanded(
+              child: Obx(() {
+                final hasSearchText = logic.searchText.value.isNotEmpty;
+                final displayResults = hasSearchText ? logic.searchResults : null;
 
-            if (logic.isShowFriendListOnly)
-              Obx(() {
-                return Flexible(
-                  child: WrapAzListView<ISUserInfo>(
+                // Show friend list only mode
+                if (logic.isShowFriendListOnly) {
+                  if (hasSearchText) {
+                    if (displayResults!.isEmpty) {
+                      return _buildNoDataView();
+                    }
+                    return _buildSearchResultsList(displayResults);
+                  }
+                  // Show all friends
+                  return WrapAzListView<ISUserInfo>(
                     data: logic.friendList,
                     itemCount: logic.friendList.length,
-                    itemBuilder: (_, friend, index) => Obx(() {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: FriendItemView(
-                          info: friend,
-                          showDivider: index != logic.friendList.length - 1,
-                          checked: logic.isChecked(friend),
-                          enabled: !logic.isDefaultChecked(friend),
-                          onTap: () => logic.toggleChecked(friend),
-                          showRadioButton: logic.showRadioButton,
-                        ),
-                      );
-                    }),
-                  ),
-                );
-              }),
-            if (!logic.isShowFriendListOnly)
-              Flexible(
-                child: Obx(
-                  () => CustomScrollView(
-                    slivers: [
-                      // Category Items
-                      SliverToBoxAdapter(
-                        child: Column(
-                          children: [
+                    itemBuilder: (_, friend, index) => Obx(() => FriendItemView(
+                      info: friend,
+                      showDivider: index != logic.friendList.length - 1,
+                      checked: logic.isChecked(friend),
+                      enabled: !logic.isDefaultChecked(friend),
+                      onTap: () => logic.toggleChecked(friend),
+                      showRadioButton: logic.showRadioButton,
+                    )),
+                  );
+                }
+
+                // Normal view with categories and conversations
+                if (hasSearchText) {
+                  if (displayResults!.isEmpty) {
+                    return _buildNoDataView();
+                  }
+                  return _buildSearchResultsList(displayResults);
+                }
+
+                // Show normal list with categories
+                return CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          _buildCategoryItemView(
+                            label: StrRes.chooseFriends,
+                            onTap: logic.selectFromMyFriend,
+                            isFirst: true,
+                            isLast: logic.hiddenGroup,
+                          ),
+                          if (!logic.hiddenGroup)
                             _buildCategoryItemView(
-                              label: StrRes.chooseFriends,
-                              onTap: logic.selectFromMyFriend,
-                              isFirst: true,
-                              isLast: logic.hiddenGroup,
+                              label: StrRes.chooseGroups,
+                              onTap: logic.selectFromMyGroup,
+                              isLast: true,
                             ),
-                            if (!logic.hiddenGroup)
-                              _buildCategoryItemView(
-                                label: StrRes.chooseGroups,
-                                onTap: logic.selectFromMyGroup,
-                                isLast: true,
+                        ],
+                      ),
+                    ),
+                    if (logic.conversationList.isNotEmpty) ...[
+                      SliverToBoxAdapter(
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
+                          child: Row(
+                            children: [
+                              Text(
+                                StrRes.recentConversations,
+                                style: TextStyle(
+                                  fontFamily: 'FilsonPro',
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF64748B),
+                                ),
                               ),
-                          ],
+                              const Spacer(),
+                              Obx(() => logic.checkedList.isNotEmpty
+                                  ? _buildSendButton()
+                                  : const SizedBox.shrink()),
+                            ],
+                          ),
                         ),
                       ),
-
-                      // Recent Conversations Section
-                      if (logic.conversationList.isNotEmpty) ...[
-                        SliverToBoxAdapter(
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 12.h),
-                            child: Row(
-                              children: [
-                                Text(
-                                  StrRes.recentConversations,
-                                  style: TextStyle(
-                                    fontFamily: 'FilsonPro',
-                                    fontSize: 15.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF64748B),
-                                    letterSpacing: 0.3,
-                                  ),
-                                ),
-                                const Spacer(),
-                                if (logic.checkedList.isNotEmpty)
-                                  GestureDetector(
-                                    onTap: logic.sendToSelectedConversations,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 16.w, vertical: 8.h),
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFF3B82F6),
-                                            Color(0xFF1D4ED8)
-                                          ],
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(20.r),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: const Color(0xFF3B82F6)
-                                                .withOpacity(0.25),
-                                            offset: const Offset(0, 2),
-                                            blurRadius: 8,
-                                            spreadRadius: 0,
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            CupertinoIcons.paperplane_fill,
-                                            size: 14.w,
-                                            color: Colors.white,
-                                          ),
-                                          // 6.horizontalSpace,
-                                          // Text(
-                                          //   StrRes.send,
-                                          //   style: TextStyle(
-                                          //     fontFamily: 'FilsonPro',
-                                          //     fontSize: 14.sp,
-                                          //     fontWeight: FontWeight.w600,
-                                          //     color: Colors.white,
-                                          //   ),
-                                          // ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (_, index) => _buildConversationItemView(
+                            logic.conversationList[index],
+                            index == 0,
+                            index == logic.conversationList.length - 1,
                           ),
+                          childCount: logic.conversationList.length,
                         ),
-                        SliverToBoxAdapter(
-                          child: Column(
-                            children: List.generate(
-                              logic.conversationList.length,
-                              (index) => _buildConversationItemView(
-                                logic.conversationList[index],
-                                index == 0,
-                                index == logic.conversationList.length - 1,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ],
-                  ),
-                ),
-              ),
+                  ],
+                );
+              }),
+            ),
             logic.checkedConfirmView,
           ],
         ));
+  }
+
+  Widget _buildNoDataView() {
+    return Center(
+      child: Text(
+        StrRes.noData,
+        style: TextStyle(
+          fontFamily: 'FilsonPro',
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w400,
+          color: const Color(0xFF9CA3AF),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchResultsList(Map<String, dynamic> results) {
+    return ListView.builder(
+      itemCount: results.length,
+      padding: EdgeInsets.zero,
+      itemBuilder: (_, index) {
+        final info = results.values.elementAt(index);
+        if (info is ISUserInfo) {
+          return Obx(() => FriendItemView(
+            info: info,
+            showDivider: index != results.length - 1,
+            checked: logic.isChecked(info),
+            enabled: !logic.isDefaultChecked(info),
+            onTap: () => logic.toggleChecked(info),
+            showRadioButton: logic.showRadioButton,
+          ));
+        } else if (info is ConversationInfo) {
+          return _buildConversationItemView(info, index == 0, index == results.length - 1);
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildSendButton() {
+    return GestureDetector(
+      onTap: logic.sendToSelectedConversations,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Icon(
+          CupertinoIcons.paperplane_fill,
+          size: 12.w,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 
   Widget _buildCategoryItemView({
@@ -313,13 +344,13 @@ class SelectContactsPage extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
             child: Row(
               children: [
                 // Checkbox
                 Obx(() => Container(
-                      width: 24.w,
-                      height: 24.w,
+                      width: 22.w,
+                      height: 22.w,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: logic.isConversationChecked(info)
@@ -329,44 +360,40 @@ class SelectContactsPage extends StatelessWidget {
                           color: logic.isConversationChecked(info)
                               ? const Color(0xFF3B82F6)
                               : const Color(0xFFD1D5DB),
-                          width: 2.w,
+                          width: 1.5.w,
                         ),
                       ),
                       child: logic.isConversationChecked(info)
                           ? Icon(
                               CupertinoIcons.check_mark,
-                              size: 14.w,
+                              size: 12.w,
                               color: Colors.white,
                             )
                           : null,
                     )),
-                16.horizontalSpace,
+                12.horizontalSpace,
                 // Avatar
                 AvatarView(
                   url: info.faceURL,
                   text: info.showName,
                   isGroup: info.isGroupChat,
-                  width: 42.w,
-                  height: 42.h,
+                  width: 40.w,
+                  height: 40.h,
                   isCircle: true,
                 ),
-                16.horizontalSpace,
-
+                12.horizontalSpace,
                 // Conversation Info
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        info.showName ?? '',
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1E293B),
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    info.showName ?? '',
+                    style: TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF1E293B),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -374,9 +401,9 @@ class SelectContactsPage extends StatelessWidget {
           ),
           if (!isLast)
             Padding(
-              padding: EdgeInsets.only(left: 70.w),
+              padding: EdgeInsets.only(left: 50.w),
               child: Container(
-                height: 1,
+                height: 0.5,
                 color: const Color(0xFFF1F5F9),
               ),
             ),

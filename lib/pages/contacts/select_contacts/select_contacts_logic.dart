@@ -57,6 +57,9 @@ class SelectContactsLogic
   final clientConfigLogic = Get.find<ClientConfigController>();
   final friendListLogic = Get.find<FriendListLogic>();
   late RxList<ISUserInfo> friendList;
+  final searchCtrl = TextEditingController();
+  final searchText = ''.obs;
+  final searchResults = <String, dynamic>{}.obs;
 
   @override
   void onInit() {
@@ -96,6 +99,7 @@ class SelectContactsLogic
   @override
   void onClose() {
     inputCtrl.dispose();
+    searchCtrl.dispose();
     // PackageBridge.organizationBridge = null;
     super.onClose();
   }
@@ -390,11 +394,45 @@ class SelectContactsLogic
   //   }
   // }
 
-  void selectFromSearch() async {
-    final result = await AppNavigator.startSelectContactsFromSearch();
-    if (null != result) {
-      Get.back(result: result);
+  void selectFromSearch() {
+    // Just focus on the search field, don't do anything else
+  }
+
+  void performSearch(String query) {
+    searchText.value = query;
+    searchResults.clear();
+    if (query.isEmpty) {
+      return;
     }
+
+    final lowerQuery = query.toLowerCase();
+
+    // Search in friend list
+    for (var friend in friendList) {
+      if (friend.nickname?.toLowerCase().contains(lowerQuery) ?? false) {
+        searchResults.putIfAbsent(friend.userID ?? '', () => friend);
+      }
+    }
+
+    // Search in recent conversations
+    for (var con in conversationList) {
+      if (con.showName?.toLowerCase().contains(lowerQuery) ?? false) {
+        final key = con.isSingleChat ? con.userID : con.groupID;
+        searchResults.putIfAbsent(key ?? '', () => con);
+      }
+    }
+  }
+
+  void closeSearch() {
+    searchCtrl.clear();
+    searchText.value = '';
+    searchResults.clear();
+  }
+
+  void clearSearch() {
+    searchCtrl.clear();
+    searchText.value = '';
+    searchResults.clear();
   }
 
   selectTagGroup() async {}

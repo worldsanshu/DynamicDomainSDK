@@ -5,11 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim/constants/app_color.dart';
 import 'package:openim/widgets/base_page.dart';
 import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 import '../../widgets/file_download_progress.dart';
@@ -282,17 +280,6 @@ class ChatPage extends StatelessWidget {
         )
       : const SizedBox();
 
-  Widget? get _syncView => logic.syncStatusStr == null
-      ? null
-      : Column(
-          children: [
-            10.verticalSpace,
-            SyncStatusView(
-              isFailed: logic.isSyncFailed,
-              statusStr: logic.syncStatusStr!,
-            ),
-          ],
-        );
 
   // Content Container with Cute Minimalist Style
   Widget _buildCuteMinimalistContent({required Widget child}) {
@@ -319,6 +306,7 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme=Theme.of(context);
     return WillPopScope(
       onWillPop: logic.willPop(),
       child: ChatVoiceRecordLayout(
@@ -329,53 +317,29 @@ class ChatPage extends StatelessWidget {
             centerTitle: false,
             showLeading: true,
             customAppBar: _userInfo(),
-            leading: logic.multiSelMode.value
-                ? CustomButtom(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
-                    margin: EdgeInsets.only(top: 5.h, left: 5),
-                    onPressed: () => logic.closeMultiSelMode(),
-                    title: StrRes.cancel,
-                    colorButton: Colors.white.withOpacity(0.3),
-                    colorIcon: Colors.white,
-                    fontSize: 12.sp,
-                  )
-                : CustomButtom(
-                    margin: const EdgeInsets.only(left: 5, top: 5),
-                    onPressed: () => Get.back(),
-                    icon: Icons.arrow_back_ios_new,
-                    colorButton: Colors.white.withOpacity(0.3),
-                    colorIcon: Colors.white,
-                  ),
+            leadingAction: logic.multiSelMode.value
+                ? logic.closeMultiSelMode:Get.back,
             actions: [
-              // if (!logic.multiSelMode.value)
-              //   CustomButtom(
-              //     margin: const EdgeInsets.only(right: 5),
-              //     onPressed: logic.chatSetup,
-              //     icon: Icons.more_horiz,
-              //     colorButton: Colors.white.withOpacity(0.3),
-              //     colorIcon: AppColor.appBarEnd,
-              //   ),
               if (logic.showAudioAndVideoCall) ...[
                 CustomButtom(
                   margin: const EdgeInsets.only(right: 5),
                   onPressed: logic.onTapAudioCall,
                   icon: Icons.call,
-                  colorButton: Colors.white.withOpacity(0.3),
-                  colorIcon: AppColor.appBarEnd,
+                  colorButton:  theme.primaryColor.withOpacity(0.15),
+                  colorIcon:  theme.primaryColor,
                 ),
                 CustomButtom(
                   margin: const EdgeInsets.only(right: 5),
                   onPressed: logic.onTapVideoCall,
                   icon: Icons.videocam_outlined,
-                  colorButton: Colors.white.withOpacity(0.3),
-                  colorIcon: AppColor.appBarEnd,
+                  colorButton: theme.primaryColor.withOpacity(0.15),
+                  colorIcon: theme.primaryColor,
                 ),
               ],
               CustomButtom(
                 onPressed: logic.chatSetup,
                 icon: Icons.more_horiz,
-                colorButton: Colors.transparent,
+                colorButton: Colors.black.withOpacity(0.1),
                 colorIcon: const Color(0xFF6B7280),
                 margin: EdgeInsets.only(right: 10.w),
               ),
@@ -407,6 +371,9 @@ class ChatPage extends StatelessWidget {
                             quoteContent: logic.quoteContent.value,
                             onClearQuote: () => logic.setQuoteMsg(null),
                             onSend: (v) => logic.sendTextMsg(),
+                            onTapAlbum: logic.onTapAlbum,
+                            onTapCamera: logic.onTapCamera,
+                            onTapFile: logic.onTapFile,
                             toolbox: ChatToolBox(
                               onTapAlbum: logic.onTapAlbum,
                               onTapCamera: logic.onTapCamera,
