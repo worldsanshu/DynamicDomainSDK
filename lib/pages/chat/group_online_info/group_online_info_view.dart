@@ -459,7 +459,7 @@ class GroupOnlineInfoPage extends StatelessWidget {
           ),
         ],
         border: Border.all(
-          color: selected ? const Color(0xFF60A5FA) : Colors.white,
+          color: selected ? const Color(0xFF4F42FF) : Colors.white,
           width: 1.5,
         ),
         gradient: selected
@@ -467,7 +467,7 @@ class GroupOnlineInfoPage extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF60A5FA),
+                  Color(0xFF4F42FF),
                   Color(0xFF3B82F6),
                 ],
               )

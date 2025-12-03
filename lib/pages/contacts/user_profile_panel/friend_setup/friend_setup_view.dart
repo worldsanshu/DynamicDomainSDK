@@ -127,7 +127,7 @@ class FriendSetupPage extends StatelessWidget {
         _buildMenuItem(
           label: StrRes.setupRemark,
           icon: HugeIcons.strokeRoundedEdit02,
-          iconColor: const Color(0xFF60A5FA),
+          iconColor: const Color(0xFF4F42FF),
           showRightArrow: true,
           onTap: logic.setFriendRemark,
         ),
@@ -250,7 +250,7 @@ class FriendSetupPage extends StatelessWidget {
                 CupertinoSwitch(
                   value: switchOn,
                   onChanged: onChanged,
-                  activeColor: const Color(0xFF60A5FA),
+                  activeColor: const Color(0xFF4F42FF),
                   trackColor: const Color(0xFFE5E7EB),
                 ),
             ],

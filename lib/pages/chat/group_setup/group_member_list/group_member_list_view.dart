@@ -630,7 +630,7 @@ class SelectedMemberListView extends StatelessWidget {
                         padding: EdgeInsets.symmetric(
                             horizontal: 16.w, vertical: 8.h),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF60A5FA).withOpacity(0.1),
+                          color: const Color(0xFF4F42FF).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(16.r),
                         ),
                         child: Text(
@@ -639,7 +639,7 @@ class SelectedMemberListView extends StatelessWidget {
                             fontFamily: 'FilsonPro',
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF60A5FA),
+                            color: const Color(0xFF4F42FF),
                           ),
                         ),
                       ),

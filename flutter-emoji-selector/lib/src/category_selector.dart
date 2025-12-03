@@ -27,7 +27,7 @@ class _CategorySelectorState extends State<CategorySelector>
   late Animation<double> _scaleAnimation;
 
   // Updated colors according to Cute Minimalist guide
-  Color get primaryColor => widget.primaryColor ?? const Color(0xFF60A5FA);
+  Color get primaryColor => widget.primaryColor ?? const Color(0xFF4F42FF);
   Color get secondaryColor => const Color(0xFF6B7280);
   Color get surfaceColor => const Color(0xFFF9FAFB);
 

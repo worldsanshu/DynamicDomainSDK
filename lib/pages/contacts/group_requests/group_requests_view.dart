@@ -241,7 +241,7 @@ class GroupRequestsPage extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: 'FilsonPro',
                 color: Color(
-                  0xFF60A5FA,
+                  0xFF4F42FF,
                 ),
                 fontWeight: FontWeight.w600,
               ),
@@ -284,7 +284,7 @@ class GroupRequestsPage extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: 'FilsonPro',
                 color: Color(
-                  0xFF60A5FA,
+                  0xFF4F42FF,
                 ),
                 fontWeight: FontWeight.w600,
               ),
@@ -325,13 +325,13 @@ class GroupRequestsPage extends StatelessWidget {
               width: 42.w,
               height: 42.h,
               decoration: BoxDecoration(
-                color: const Color(0xFF60A5FA).withOpacity(0.1),
+                color: const Color(0xFF4F42FF).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 Ionicons.people_outline,
                 size: 20.w,
-                color: const Color(0xFF60A5FA),
+                color: const Color(0xFF4F42FF),
               ),
             ),
             8.horizontalSpace,

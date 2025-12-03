@@ -291,52 +291,6 @@ class SearchChatHistoryLogic extends GetxController {
     return text != null && text.toLowerCase().contains(lowerQuery);
   }
 
-  /// Filter out quote hits that only match the quoted/original content.
-  SearchResult _filterSearchResultByOwnText(SearchResult result, String query) {
-    final lowerQuery = query.toLowerCase();
-    final items = result.searchResultItems ?? [];
-    final filteredItems = <SearchResultItems>[];
-    var total = 0;
-
-    for (final item in items) {
-      final messages = (item.messageList ?? [])
-          .where((msg) => _messageMatchesOwnText(msg, lowerQuery))
-          .toList();
-
-      if (messages.isEmpty) continue;
-
-      final newItem = SearchResultItems(
-        conversationID: item.conversationID,
-        messageCount: messages.length,
-        messageList: messages,
-      );
-      newItem.conversationType = item.conversationType;
-      newItem.showName = item.showName;
-      newItem.faceURL = item.faceURL;
-
-      filteredItems.add(newItem);
-      total += messages.length;
-    }
-
-    return SearchResult(
-      totalCount: total,
-      searchResultItems: filteredItems,
-    );
-  }
-
-  bool _messageMatchesOwnText(Message message, String lowerQuery) {
-    String? ownText;
-    if (message.contentType == MessageType.quote) {
-      ownText = message.quoteElem?.text;
-    } else if (message.contentType == MessageType.atText) {
-      ownText = message.atTextElem?.text;
-    } else {
-      ownText = message.textElem?.content;
-    }
-
-    return ownText != null && ownText.toLowerCase().contains(lowerQuery);
-  }
-
   String calContent(Message message) {
     String content = IMUtils.parseMsg(message, replaceIdToNickname: true);
     // 左右间距+头像跟名称的间距+头像dax

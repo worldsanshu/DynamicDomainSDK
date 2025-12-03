@@ -65,13 +65,13 @@ class ClaymorphismBottomSheet extends StatelessWidget {
                         width: 42.w,
                         height: 42.w,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF60A5FA).withOpacity(0.1),
+                          color: const Color(0xFF4F42FF).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Icon(
                           icon!,
                           size: 20.w,
-                          color: const Color(0xFF60A5FA),
+                          color: const Color(0xFF4F42FF),
                         ),
                       ),
                       16.horizontalSpace,

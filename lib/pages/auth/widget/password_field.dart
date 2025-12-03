@@ -50,7 +50,7 @@ class _PasswordFieldState extends State<PasswordField> {
             decoration: BoxDecoration(
               color: isObscureText
                   ? Colors.transparent
-                  : const Color(0xFF60A5FA).withOpacity(0.1),
+                  : const Color(0xFF4F42FF).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -59,7 +59,7 @@ class _PasswordFieldState extends State<PasswordField> {
                   : Icons.visibility_outlined,
               color: isObscureText
                   ? const Color(0xFF9CA3AF)
-                  : const Color(0xFF60A5FA),
+                  : const Color(0xFF4F42FF),
               size: 20,
             ),
           ),

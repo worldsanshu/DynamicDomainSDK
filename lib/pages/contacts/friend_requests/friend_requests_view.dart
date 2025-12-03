@@ -212,13 +212,13 @@ class FriendRequestsPage extends StatelessWidget {
               width: 42.w,
               height: 42.h,
               decoration: BoxDecoration(
-                color: const Color(0xFF60A5FA).withOpacity(0.1),
+                color: const Color(0xFF4F42FF).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 Ionicons.paper_plane_outline,
                 size: 20.w,
-                color: const Color(0xFF60A5FA),
+                color: const Color(0xFF4F42FF),
               ),
             ),
             8.horizontalSpace,
@@ -242,11 +242,11 @@ class FriendRequestsPage extends StatelessWidget {
             height: 36.h,
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             decoration: BoxDecoration(
-              color: const Color(0xFF60A5FA),
+              color: const Color(0xFF4F42FF),
               borderRadius: BorderRadius.circular(18.r),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF60A5FA).withOpacity(0.2),
+                  color: const Color(0xFF4F42FF).withOpacity(0.2),
                   offset: const Offset(0, 2),
                   blurRadius: 6,
                 ),

@@ -341,7 +341,7 @@ class RealNameAuthView extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: const BorderSide(
-                color: Color(0xFF60A5FA),
+                color: Color(0xFF4F42FF),
                 width: 2,
               ),
             ),

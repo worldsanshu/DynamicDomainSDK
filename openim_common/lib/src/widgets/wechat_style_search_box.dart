@@ -104,7 +104,7 @@ class _WechatStyleSearchBoxState extends State<WechatStyleSearchBox> {
                 Icon(
                   CupertinoIcons.search,
                   size: widget.searchIconWidth ?? 20.w,
-                  color: widget.searchIconColor ?? const Color(0xFF60A5FA),
+                  color: widget.searchIconColor ?? const Color(0xFF4F42FF),
                 ),
                 12.horizontalSpace,
                 widget.enabled

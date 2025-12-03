@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:ui';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ import 'package:sprintf/sprintf.dart';
 
 import 'contacts_logic.dart';
 import '../conversation/conversation_logic.dart';
+import '../home/home_logic.dart';
 import 'group_list_logic.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -29,6 +31,7 @@ class _ContactsPageState extends State<ContactsPage>
   final logic = Get.find<ContactsLogic>();
   final groupListLogic = Get.find<GroupListLogic>();
   late TabController _tabController;
+  final GlobalKey _newButtonKey = GlobalKey();
 
   @override
   void initState() {
@@ -51,12 +54,26 @@ class _ContactsPageState extends State<ContactsPage>
           centerTitle: false,
           showLeading: false,
           actions: [
-            CustomButtom(
-              margin: const EdgeInsets.only(right: 10),
-              onPressed: logic.addContacts,
-              icon: CupertinoIcons.person_add,
-              colorButton: const Color(0xFF34D399).withOpacity(0.1),
-              colorIcon: const Color(0xFF34D399),
+            GestureDetector(
+              key: _newButtonKey,
+              onTap: () => _showActionPopup(),
+              child: Container(
+                margin: const EdgeInsets.only(right: 10),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF212121),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  '+ New',
+                  style: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.sp,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ],
           body: _buildContentContainer(),
@@ -596,6 +613,160 @@ class _ContactsPageState extends State<ContactsPage>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showActionPopup() {
+    final homeLogic = Get.find<HomeLogic>();
+    final RenderBox button = _newButtonKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset buttonPosition = button.localToGlobal(Offset.zero);
+    final menuWidth = 200.w;
+    final double left = buttonPosition.dx + button.size.width - menuWidth;
+    final double top = buttonPosition.dy + button.size.height + 4;
+
+    showGeneralDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      barrierDismissible: true,
+      barrierLabel: 'Dismiss',
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+          child: Stack(
+            children: [
+              Positioned(
+                left: left,
+                top: top,
+                width: menuWidth,
+                child: Material(
+                  color: Colors.transparent,
+                  child: ScaleTransition(
+                    scale: animation,
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildMenuItemPopup(
+                            icon: HugeIcons.strokeRoundedAiScan,
+                            title: StrRes.scan,
+                            onTap: () {
+                              Navigator.pop(context);
+                              homeLogic.scan();
+                            },
+                            isFirst: true,
+                          ),
+                          _buildMenuDividerPopup(),
+                          _buildMenuItemPopup(
+                            icon: HugeIcons.strokeRoundedUserAdd01,
+                            title: StrRes.addFriend,
+                            onTap: () {
+                              Navigator.pop(context);
+                              homeLogic.addFriend();
+                            },
+                          ),
+                          _buildMenuDividerPopup(),
+                          _buildMenuItemPopup(
+                            icon: HugeIcons.strokeRoundedUserGroup,
+                            title: StrRes.addGroup,
+                            onTap: () {
+                              Navigator.pop(context);
+                              homeLogic.addGroup();
+                            },
+                          ),
+                          _buildMenuDividerPopup(),
+                          _buildMenuItemPopup(
+                            icon: HugeIcons.strokeRoundedUserGroup02,
+                            title: StrRes.createGroup,
+                            onTap: () {
+                              Navigator.pop(context);
+                              homeLogic.createGroup();
+                            },
+                            isLast: true,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMenuItemPopup({
+    required List<List<dynamic>> icon,
+    required String title,
+    VoidCallback? onTap,
+    bool isFirst = false,
+    bool isLast = false,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            borderRadius: isFirst
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(12.r),
+                    topRight: Radius.circular(12.r),
+                  )
+                : isLast
+                    ? BorderRadius.only(
+                        bottomLeft: Radius.circular(12.r),
+                        bottomRight: Radius.circular(12.r),
+                      )
+                    : null,
+          ),
+          child: Row(
+            children: [
+              HugeIcon(
+                icon: icon,
+                size: 20.w,
+                color: const Color(0xFF424242),
+              ),
+              12.horizontalSpace,
+              Text(
+                title,
+                style: TextStyle(
+                  fontFamily: 'FilsonPro',
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF374151),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuDividerPopup() {
+    return Padding(
+      padding: EdgeInsets.only(left: 16.w, right: 16.w),
+      child: const Divider(
+        height: 1,
+        thickness: 1,
+        color: Color(0xFFF3F4F6),
       ),
     );
   }

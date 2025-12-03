@@ -144,7 +144,7 @@ class AuthView extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             const Color(0xFF3B82F6).withOpacity(0.05),
-            const Color(0xFF60A5FA).withOpacity(0.02),
+            const Color(0xFF4F42FF).withOpacity(0.02),
           ],
         ),
       ),
@@ -471,7 +471,7 @@ class AuthView extends StatelessWidget {
                     fillColor: WidgetStateProperty.resolveWith<Color>(
                       (Set<WidgetState> states) {
                         if (states.contains(WidgetState.selected)) {
-                          return const Color(0xFF60A5FA);
+                          return const Color(0xFF4F42FF);
                         }
                         return Colors.transparent;
                       },
@@ -591,7 +591,7 @@ class AuthView extends StatelessWidget {
                   fillColor: WidgetStateProperty.resolveWith<Color>(
                     (Set<WidgetState> states) {
                       if (states.contains(WidgetState.selected)) {
-                        return const Color(0xFF60A5FA);
+                        return const Color(0xFF4F42FF);
                       }
                       return Colors.transparent;
                     },

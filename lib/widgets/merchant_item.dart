@@ -110,7 +110,7 @@ class MerchantItemCupertino extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: const Color(0xFF60A5FA).withOpacity(0.1),
+        color: const Color(0xFF4F42FF).withOpacity(0.1),
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
@@ -119,7 +119,7 @@ class MerchantItemCupertino extends StatelessWidget {
           Icon(
             CupertinoIcons.star_fill,
             size: 12.w,
-            color: const Color(0xFF60A5FA),
+            color: const Color(0xFF4F42FF),
           ),
           4.horizontalSpace,
           Text(
@@ -128,7 +128,7 @@ class MerchantItemCupertino extends StatelessWidget {
       fontFamily: 'FilsonPro',
       fontSize: 12.sp,
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF60A5FA
+              color: const Color(0xFF4F42FF
     ),
             ),
           ),
@@ -144,7 +144,7 @@ class MerchantItemCupertino extends StatelessWidget {
         height: 36.h,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         decoration: BoxDecoration(
-          color: const Color(0xFF60A5FA),
+          color: const Color(0xFF4F42FF),
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Center(

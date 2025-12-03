@@ -218,7 +218,7 @@ class BottomSheetView extends StatelessWidget {
                     width: 42.w,
                     height: 42.w,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF60A5FA).withOpacity(0.1),
+                      color: const Color(0xFF4F42FF).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Center(
@@ -226,7 +226,7 @@ class BottomSheetView extends StatelessWidget {
                         icon,
                         width: 20.w,
                         height: 20.h,
-                        color: const Color(0xFF60A5FA),
+                        color: const Color(0xFF4F42FF),
                       ),
                     ),
                   ),

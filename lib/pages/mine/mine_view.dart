@@ -57,16 +57,16 @@ class MinePage extends StatelessWidget {
           margin: const EdgeInsets.only(right: 12),
           onPressed: logic.accountSetup,
           icon: CupertinoIcons.settings,
-          colorButton: const Color(0xFF60A5FA).withOpacity(0.1),
-          colorIcon: const Color(0xFF60A5FA),
+          colorButton: const Color(0xFF4F42FF).withOpacity(0.1),
+          colorIcon: const Color(0xFF4F42FF),
         ),
         if (logic.showMyCompanyEntry) ...[
           CustomButtom(
             margin: const EdgeInsets.only(right: 10),
             onPressed: logic.startMerchantList,
             icon: CupertinoIcons.building_2_fill,
-            colorButton: const Color(0xFF60A5FA).withOpacity(0.1),
-            colorIcon: const Color(0xFF60A5FA),
+            colorButton: const Color(0xFF4F42FF).withOpacity(0.1),
+            colorIcon: const Color(0xFF4F42FF),
           )
         ],
       ],

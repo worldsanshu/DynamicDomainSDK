@@ -50,7 +50,7 @@ class ChangePwdPage extends StatelessWidget {
             margin: const EdgeInsets.only(right: 5),
             onPressed: logic.confirm,
             title: StrRes.determine,
-            colorButton: const Color(0xFF60A5FA).withOpacity(0.1),
+            colorButton: const Color(0xFF4F42FF).withOpacity(0.1),
           ),
         ],
         body: _buildContentContainer(),

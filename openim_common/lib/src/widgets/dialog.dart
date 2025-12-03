@@ -188,7 +188,7 @@ class CustomDialog extends StatelessWidget {
                                 Expanded(
                                   child: _actionButton(
                                     text: rightText ?? StrRes.determine,
-                                    textColor: const Color(0xFF60A5FA),
+                                    textColor: const Color(0xFF4F42FF),
                                     isLeft: false,
                                     onTap: onTapRight ??
                                         () => Get.back(result: true),
@@ -496,7 +496,7 @@ class ForwardHintDialog extends StatelessWidget {
                               SizedBox(width: 16.w),
                               _actionButton(
                                 text: StrRes.determine,
-                                textColor: const Color(0xFF60A5FA),
+                                textColor: const Color(0xFF4F42FF),
                                 onTap: () => Get.back(result: true),
                                 isCancel: false,
                               ),

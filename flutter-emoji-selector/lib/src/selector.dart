@@ -67,7 +67,7 @@ class _EmojiSelectorState extends State<EmojiSelector>
   late Animation<double> _searchAnimation;
 
   // Updated color scheme according to Cute Minimalist guide
-  Color get primaryColor => widget.primaryColor ?? const Color(0xFF60A5FA);
+  Color get primaryColor => widget.primaryColor ?? const Color(0xFF4F42FF);
   Color get backgroundColor =>
       widget.backgroundColor ?? const Color(0xFFF9FAFB);
   Color get surfaceColor => const Color(0xFFFFFFFF);

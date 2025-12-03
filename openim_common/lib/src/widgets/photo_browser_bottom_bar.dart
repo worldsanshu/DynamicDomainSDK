@@ -127,7 +127,7 @@ class PhotoBrowserBottomBar extends StatelessWidget {
                             child: _buildItem(
                               icon: Icons.forward_outlined,
                               title: StrRes.menuForward,
-                              iconColor: const Color(0xFF60A5FA),
+                              iconColor: const Color(0xFF4F42FF),
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 onPressedButton?.call(OperateType.forward);

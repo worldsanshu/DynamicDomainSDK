@@ -958,7 +958,7 @@ class _PlaybackSpeedDialog extends StatelessWidget {
                                         width: 24.w,
                                         height: 24.w,
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFF60A5FA)
+                                          color: const Color(0xFF4F42FF)
                                               .withOpacity(0.1),
                                           borderRadius:
                                               BorderRadius.circular(12.r),
@@ -966,7 +966,7 @@ class _PlaybackSpeedDialog extends StatelessWidget {
                                         child: Icon(
                                           CupertinoIcons.checkmark_alt,
                                           size: 14.w,
-                                          color: const Color(0xFF60A5FA),
+                                          color: const Color(0xFF4F42FF),
                                         ),
                                       ),
                                       16.horizontalSpace,
@@ -980,7 +980,7 @@ class _PlaybackSpeedDialog extends StatelessWidget {
                                             ? FontWeight.w600
                                             : FontWeight.w500,
                                         color: isSelected
-                                            ? const Color(0xFF60A5FA
+                                            ? const Color(0xFF4F42FF
     )
                                             : const Color(0xFF374151),
                                       ),

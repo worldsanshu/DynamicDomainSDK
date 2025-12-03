@@ -185,7 +185,7 @@ class UnlockSetupPage extends StatelessWidget {
                 CupertinoSwitch(
                   value: switchOn,
                   onChanged: onChanged,
-                  activeColor: const Color(0xFF60A5FA),
+                  activeColor: const Color(0xFF4F42FF),
                 ),
               ],
             ),

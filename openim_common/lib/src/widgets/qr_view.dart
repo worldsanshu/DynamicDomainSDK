@@ -304,7 +304,7 @@ class _QrcodeViewState extends State<QrcodeView>
                 child: CustomPaint(
                   size: Size(scanArea, scanArea),
                   painter: QrScanBoxPainter(
-                    boxLineColor: const Color(0xFF60A5FA),
+                    boxLineColor: const Color(0xFF4F42FF),
                     animationValue: _animationController?.value ?? 0,
                     isForward:
                         _animationController?.status == AnimationStatus.forward,

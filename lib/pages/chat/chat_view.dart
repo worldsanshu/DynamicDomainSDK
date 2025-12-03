@@ -476,7 +476,7 @@ class ChatPage extends StatelessWidget {
                                   padding: EdgeInsets.symmetric(
                                       vertical: 12.h, horizontal: 16.w),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF60A5FA)
+                                    color: const Color(0xFF4F42FF)
                                         .withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(16.r),
                                     boxShadow: [
@@ -499,7 +499,7 @@ class ChatPage extends StatelessWidget {
                                     children: [
                                       Icon(
                                         Icons.keyboard_arrow_down,
-                                        color: const Color(0xFF60A5FA),
+                                        color: const Color(0xFF4F42FF),
                                         size: 18.w,
                                       ),
                                       6.horizontalSpace,
@@ -511,7 +511,7 @@ class ChatPage extends StatelessWidget {
                                           fontFamily: 'FilsonPro',
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w600,
-                                          color: const Color(0xFF60A5FA),
+                                          color: const Color(0xFF4F42FF),
                                         ),
                                       ),
                                     ],

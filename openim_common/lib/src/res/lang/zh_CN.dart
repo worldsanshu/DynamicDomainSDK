@@ -273,7 +273,7 @@ const Map<String, String> zh_CN = {
   "messageRecipientList": "消息接收人列表",
   "hasReadCount": "已读(%s)",
   "unreadCount": "未读(%s)",
-  "newFriend": "新的好友",
+  "newFriend": "好友请求",
   "newGroup": "新的群聊",
   "newGroupRequest": "群通知",
   "groupJoinRequests": "入群请求",

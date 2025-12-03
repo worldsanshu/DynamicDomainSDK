@@ -454,8 +454,9 @@ class IMUtils {
     final yesterday = now.subtract(const Duration(days: 1));
 
     if (isSameDay(dateTime, yesterday)) {
-      final timeStr = formatter.format(dateTime);
-      return isChinese ? '昨天 $timeStr' : 'Yesterday $timeStr';
+    //   final timeStr = formatter.format(dateTime);
+      // return isChinese ? '昨天 $timeStr' : 'Yesterday $timeStr';
+      return isChinese ? '昨天' : 'Yesterday';
     }
 
     if (isSameWeek(dateTime, now)) {

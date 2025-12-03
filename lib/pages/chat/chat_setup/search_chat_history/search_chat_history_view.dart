@@ -67,7 +67,7 @@ class SearchChatHistoryPage extends StatelessWidget {
                       width: 30.w,
                       height: 30.h,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF60A5FA).withOpacity(0.1),
+                        color: const Color(0xFF4F42FF).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: HugeIcon(
@@ -229,7 +229,7 @@ class SearchChatHistoryPage extends StatelessWidget {
                                 fontFamily: 'FilsonPro',
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
-                                color: const Color(0xFF60A5FA),
+                                color: const Color(0xFF4F42FF),
                               ),
                               maxLines: 2,
                             ),
@@ -530,7 +530,7 @@ class SearchChatHistoryPage extends StatelessWidget {
                   child: Theme(
                     data: Theme.of(context).copyWith(
                       colorScheme: const ColorScheme.light(
-                        primary: Color(0xFF60A5FA),
+                        primary: Color(0xFF4F42FF),
                         onPrimary: Colors.white,
                         surface: Colors.white,
                         onSurface: Colors.black,

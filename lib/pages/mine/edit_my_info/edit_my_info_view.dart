@@ -229,7 +229,7 @@ class EditMyInfoPage extends StatelessWidget {
         onPressed: logic.save,
         title: StrRes.save,
         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
-        colorButton: const Color(0xFF60A5FA),
+        colorButton: const Color(0xFF4F42FF),
         colorIcon: Colors.white,
       ),
     );

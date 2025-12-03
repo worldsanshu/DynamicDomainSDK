@@ -84,14 +84,14 @@ class MerchantListView extends StatelessWidget {
                                   width: 72.w,
                                   height: 72.h,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF60A5FA)
+                                    color: const Color(0xFF4F42FF)
                                         .withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(16.r),
                                   ),
                                   child: Icon(
                                     CupertinoIcons.building_2_fill,
                                     size: 32.w,
-                                    color: const Color(0xFF60A5FA),
+                                    color: const Color(0xFF4F42FF),
                                   ),
                                 ),
                                 20.verticalSpace,
@@ -199,7 +199,7 @@ class MerchantListView extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: const Color(0xFF60A5FA),
+          color: const Color(0xFF4F42FF),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Text(

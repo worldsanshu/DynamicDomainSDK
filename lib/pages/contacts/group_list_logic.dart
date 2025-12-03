@@ -38,13 +38,18 @@ class GroupListLogic extends GetxController {
   }
 
   Future<int> _load(int offset) async {
-    final list = await OpenIM.iMManager.groupManager.getJoinedGroupListPage(
-      offset: offset,
-      count: count,
-    );
+    try {
+      final list = await OpenIM.iMManager.groupManager.getJoinedGroupListPage(
+        offset: offset,
+        count: count,
+      );
 
-    allGroups.addAll(list);
-    return list.length;
+      allGroups.addAll(list);
+      return list.length;
+    } catch (e) {
+      print('Error loading groups: $e');
+      return 0;
+    }
   }
 
   List<GroupInfo> get joinedList =>

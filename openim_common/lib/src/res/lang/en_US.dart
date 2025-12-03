@@ -284,7 +284,7 @@ const Map<String, String> en_US = {
   "messageRecipientList": "Message Recipient List",
   "hasReadCount": "Read (%s)",
   "unreadCount": "Unread (%s)",
-  "newFriend": "New Friend",
+  "newFriend": "Friend Requests",
   "newGroup": "New Group",
   "newGroupRequest": "Group notification",
   "groupJoinRequests": "Join Requests",

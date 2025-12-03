@@ -8,7 +8,7 @@ class CategoryIcon {
   const CategoryIcon({
     required this.icon,
     this.color = const Color(0xFF6B7280),
-    this.selectedColor = const Color(0xFF60A5FA),
+    this.selectedColor = const Color(0xFF4F42FF),
   });
 }
 

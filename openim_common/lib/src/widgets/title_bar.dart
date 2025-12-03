@@ -179,14 +179,14 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
             width: 42.w,
             height: 42.h,
             decoration: BoxDecoration(
-              color: const Color(0xFF60A5FA).withOpacity(0.1),
+              color: const Color(0xFF4F42FF).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Center(
               child: Icon(
                 CupertinoIcons.back,
                 size: 20.w,
-                color: const Color(0xFF60A5FA),
+                color: const Color(0xFF4F42FF),
               ),
             ),
           ),
@@ -282,14 +282,14 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
             width: 42.w,
             height: 42.h,
             decoration: BoxDecoration(
-              color: const Color(0xFF60A5FA).withOpacity(0.1),
+              color: const Color(0xFF4F42FF).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Center(
               child: Icon(
                 CupertinoIcons.back,
                 size: 20.w,
-                color: const Color(0xFF60A5FA),
+                color: const Color(0xFF4F42FF),
               ),
             ),
           ),

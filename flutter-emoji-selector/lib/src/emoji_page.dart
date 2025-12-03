@@ -19,7 +19,7 @@ class EmojiPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color effectivePrimaryColor = primaryColor ?? const Color(0xFF60A5FA);
+    final Color effectivePrimaryColor = primaryColor ?? const Color(0xFF4F42FF);
 
     return Container(
       padding: const EdgeInsets.all(6),

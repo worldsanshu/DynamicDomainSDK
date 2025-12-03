@@ -252,7 +252,7 @@ class GroupSetupPage extends StatelessWidget {
               width: 30.w,
               height: 30.h,
               decoration: BoxDecoration(
-                color: const Color(0xFF60A5FA).withOpacity(0.1),
+                color: const Color(0xFF4F42FF).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: const HugeIcon(
@@ -617,7 +617,7 @@ class GroupSetupPage extends StatelessWidget {
                 _buildContentSearchItem(
                   hugeIcon: HugeIcons.strokeRoundedSearch01,
                   text: StrRes.search,
-                  color: const Color(0xFF60A5FA),
+                  color: const Color(0xFF4F42FF),
                   onTap: logic.searchChatHistory,
                 ),
                 _buildContentSearchItem(
@@ -735,7 +735,7 @@ class GroupSetupPage extends StatelessWidget {
           hugeIcon: HugeIcons.strokeRoundedEdit02,
           text: StrRes.groupName,
           value: logic.groupInfo.value.groupName,
-          color: const Color(0xFF60A5FA),
+          color: const Color(0xFF4F42FF),
           hideArrow: true,
         ),
         _buildMenuItem(
@@ -986,7 +986,7 @@ class GroupSetupPage extends StatelessWidget {
                     8.horizontalSpace,
                     CupertinoSwitch(
                       value: switchOn,
-                      activeColor: const Color(0xFF60A5FA),
+                      activeColor: const Color(0xFF4F42FF),
                       onChanged: onChanged,
                     ),
                   ],

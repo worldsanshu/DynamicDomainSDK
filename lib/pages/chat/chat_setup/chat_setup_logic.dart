@@ -375,22 +375,22 @@ class ChatSetupLogic extends GetxController {
                             width: 36.w,
                             height: 36.h,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF60A5FA).withOpacity(0.1),
+                              color: const Color(0xFF4F42FF).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                             child: HugeIcon(
                               icon: HugeIcons.strokeRoundedTextFont,
                               size: 18.w,
-                              color: const Color(0xFF60A5FA),
+                              color: const Color(0xFF4F42FF),
                             ),
                           ),
                           Expanded(
                             child: SliderTheme(
                               data: SliderThemeData(
                                 trackHeight: 6.h,
-                                activeTrackColor: const Color(0xFF60A5FA),
+                                activeTrackColor: const Color(0xFF4F42FF),
                                 inactiveTrackColor: const Color(0xFFF3F4F6),
-                                thumbColor: const Color(0xFF60A5FA),
+                                thumbColor: const Color(0xFF4F42FF),
                                 thumbShape: RoundSliderThumbShape(
                                     enabledThumbRadius: 8.r),
                                 overlayShape: RoundSliderOverlayShape(
@@ -410,13 +410,13 @@ class ChatSetupLogic extends GetxController {
                             width: 36.w,
                             height: 36.h,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF60A5FA).withOpacity(0.1),
+                              color: const Color(0xFF4F42FF).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                             child: HugeIcon(
                               icon: HugeIcons.strokeRoundedTextFont,
                               size: 18.w,
-                              color: const Color(0xFF60A5FA),
+                              color: const Color(0xFF4F42FF),
                             ),
                           ),
                         ],
@@ -634,7 +634,7 @@ class ChatSetupLogic extends GetxController {
                       _buildBackgroundActionItem(
                         icon: HugeIcons.strokeRoundedCamera01,
                         title: StrRes.selectAssetsFromCamera,
-                        iconColor: const Color(0xFF60A5FA),
+                        iconColor: const Color(0xFF4F42FF),
                         onTap: () {
                           Get.back();
                           _onTapCamera();

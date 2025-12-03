@@ -399,7 +399,7 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
                                   fontFamily: 'FilsonPro',
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: const Color(0xFF60A5FA),
+                                  color: const Color(0xFF4F42FF),
                                 ),
                               ),
                             ),

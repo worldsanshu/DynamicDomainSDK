@@ -31,8 +31,8 @@ class ConversationPage extends StatefulWidget {
 
 class _ConversationPageState extends State<ConversationPage> {
   final logic = Get.find<ConversationLogic>();
-
   final im = Get.find<IMController>();
+  final GlobalKey _newButtonKey = GlobalKey();
 
   @override
   void initState() {
@@ -51,29 +51,57 @@ class _ConversationPageState extends State<ConversationPage> {
           showAppBar: true,
           centerTitle: false,
           showLeading: false,
-          customAppBar: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          customAppBar: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                '${logic.titleText} (${logic.conversationCount.value})',
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20.sp,
-                  color: Colors.black,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${logic.titleText} (${logic.conversationCount.value})',
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20.sp,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Obx(
+                      () {
+                        return Text(
+                          logic.getUnreadText,
+                          style: const TextStyle(
+                            fontFamily: 'FilsonPro',
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xFFBDBDBD),
+                          ).copyWith(fontSize: 12.sp),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-              Obx(
-                () {
-                  return Text(
-                    logic.getUnreadText,
-                    style: const TextStyle(
+              GestureDetector(
+                key: _newButtonKey,
+                onTap: () => _showActionPopup(),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF212121),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Text(
+                    '+ New',
+                    style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFFBDBDBD),
-                    ).copyWith(fontSize: 12.sp),
-                  );
-                },
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16.sp,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -284,150 +312,108 @@ class _ConversationPageState extends State<ConversationPage> {
                 child: CustomButtom(
                     onPressed: logic.exitAIChatMode, icon: CupertinoIcons.back),
               ),
-
-            // Floating Action Button for New actions
-            if (!logic.isAIChatMode.value)
-              Positioned(
-                bottom: 20.h,
-                right: 20.w,
-                child: GestureDetector(
-                  onTap: () {
-                    _showActionPopup(context);
-                  },
-                  child: Container(
-                    width: 56.w,
-                    height: 56.h,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF212121),
-                      borderRadius: BorderRadius.circular(28.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF212121).withOpacity(0.3),
-                          offset: const Offset(0, 4),
-                          blurRadius: 12,
-                          spreadRadius: 0,
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 28.w,
-                    ),
-                  ),
-                ),
-              ),
           ],
         );
       }),
     );
   }
 
-  void _showActionPopup(BuildContext context) {
+  void _showActionPopup() {
     final homeLogic = Get.find<HomeLogic>();
-    
+    final RenderBox button = _newButtonKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset buttonPosition = button.localToGlobal(Offset.zero);
+    final menuWidth = 200.w;
+    final double left = buttonPosition.dx + button.size.width - menuWidth;
+    final double top = buttonPosition.dy + button.size.height + 4;
+
     showGeneralDialog(
       context: context,
+      barrierColor: Colors.transparent,
       barrierDismissible: true,
-      barrierColor: Colors.black.withOpacity(0.1),
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierLabel: 'Dismiss',
       transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (BuildContext buildContext, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-        return Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: 20.h, right: 20.w),
-            child: ScaleTransition(
-              scale: Tween<double>(begin: 0.3, end: 1.0).animate(
-                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-              ),
-              alignment: Alignment.bottomRight,
-              child: Material(
-                color: Colors.transparent,
-                child: Container(
-                  width: 220.w,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.15),
-                        offset: const Offset(0, 4),
-                        blurRadius: 12,
-                        spreadRadius: 0,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+          child: Stack(
+            children: [
+              Positioned(
+                left: left,
+                top: top,
+                width: menuWidth,
+                child: Material(
+                  color: Colors.transparent,
+                  child: ScaleTransition(
+                    scale: animation,
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                    border: Border.all(
-                      color: const Color(0xFFF3F4F6),
-                      width: 1,
-                    ),
-                  ),
-                  child: AnimationLimiter(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildActionItem(
-                          icon: HugeIcons.strokeRoundedAiScan,
-                          title: StrRes.scan,
-                          onTap: () {
-                            Navigator.pop(buildContext);
-                            homeLogic.scan();
-                          },
-                          index: 0,
-                        ),
-                        _buildActionDivider(),
-                        _buildActionItem(
-                          icon: HugeIcons.strokeRoundedUserAdd01,
-                          title: StrRes.addFriend,
-                          onTap: () {
-                            Navigator.pop(buildContext);
-                            homeLogic.addFriend();
-                          },
-                          index: 1,
-                        ),
-                        _buildActionDivider(),
-                        _buildActionItem(
-                          icon: HugeIcons.strokeRoundedUserGroup,
-                          title: StrRes.addGroup,
-                          onTap: () {
-                            Navigator.pop(buildContext);
-                            homeLogic.addGroup();
-                          },
-                          index: 2,
-                        ),
-                        _buildActionDivider(),
-                        _buildActionItem(
-                          icon: HugeIcons.strokeRoundedUserGroup02,
-                          title: StrRes.createGroup,
-                          onTap: () {
-                            Navigator.pop(buildContext);
-                            homeLogic.createGroup();
-                          },
-                          index: 3,
-                          isLast: true,
-                        ),
-                      ],
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildMenuItemPopup(
+                            icon: HugeIcons.strokeRoundedAiScan,
+                            title: StrRes.scan,
+                            onTap: () {
+                              Navigator.pop(context);
+                              homeLogic.scan();
+                            },
+                            isFirst: true,
+                          ),
+                          _buildMenuDividerPopup(),
+                          _buildMenuItemPopup(
+                            icon: HugeIcons.strokeRoundedUserAdd01,
+                            title: StrRes.addFriend,
+                            onTap: () {
+                              Navigator.pop(context);
+                              homeLogic.addFriend();
+                            },
+                          ),
+                          _buildMenuDividerPopup(),
+                          _buildMenuItemPopup(
+                            icon: HugeIcons.strokeRoundedUserGroup,
+                            title: StrRes.addGroup,
+                            onTap: () {
+                              Navigator.pop(context);
+                              homeLogic.addGroup();
+                            },
+                          ),
+                          _buildMenuDividerPopup(),
+                          _buildMenuItemPopup(
+                            icon: HugeIcons.strokeRoundedUserGroup02,
+                            title: StrRes.createGroup,
+                            onTap: () {
+                              Navigator.pop(context);
+                              homeLogic.createGroup();
+                            },
+                            isLast: true,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
         );
       },
     );
   }
 
-  Widget _buildActionDivider() {
+  Widget _buildMenuDividerPopup() {
     return Padding(
-      padding: EdgeInsets.only(left: 70.w),
+      padding: EdgeInsets.only(left: 16.w, right: 16.w),
       child: const Divider(
         height: 1,
         thickness: 1,
@@ -436,57 +422,47 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
-  Widget _buildActionItem({
+  Widget _buildMenuItemPopup({
     required List<List<dynamic>> icon,
     required String title,
     required VoidCallback onTap,
-    required int index,
+    bool isFirst = false,
     bool isLast = false,
   }) {
-    return AnimationConfiguration.staggeredList(
-      position: index,
-      duration: const Duration(milliseconds: 400),
-      child: SlideAnimation(
-        verticalOffset: 40.0,
-        curve: Curves.easeOutCubic,
-        child: FadeInAnimation(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                decoration: isLast
-                    ? BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(16.r),
-                          bottomRight: Radius.circular(16.r),
-                        ),
-                      )
-                    : null,
-                child: Row(
-                  children: [
-                    HugeIcon(
-                      icon: icon,
-                      size: 20.w,
-                      color: const Color(0xFF424242),
-                    ),
-                    16.horizontalSpace,
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF374151),
-                        ),
-                      ),
-                    ),
-                  ],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: isFirst ? Radius.circular(12.r) : Radius.zero,
+              topRight: isFirst ? Radius.circular(12.r) : Radius.zero,
+              bottomLeft: isLast ? Radius.circular(12.r) : Radius.zero,
+              bottomRight: isLast ? Radius.circular(12.r) : Radius.zero,
+            ),
+          ),
+          child: Row(
+            children: [
+              HugeIcon(
+                icon: icon,
+                size: 20.w,
+                color: const Color(0xFF424242),
+              ),
+              12.horizontalSpace,
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF374151),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -1272,14 +1248,6 @@ class _ConversationPageState extends State<ConversationPage> {
                         20.horizontalSpace,
                         Row(
                           children: [
-                            if (info.isPinned!) ...[
-                              Icon(
-                                CupertinoIcons.pin_fill,
-                                size: 14.w,
-                                color: const Color(0xFF3B82F6),
-                              ),
-                              8.horizontalSpace,
-                            ],
                             Text(
                               logic.getTime(info),
                               style: TextStyle(
@@ -1289,6 +1257,16 @@ class _ConversationPageState extends State<ConversationPage> {
                                 color: const Color(0xFF9E9E9E),
                               ),
                             ),
+                            if (info.isPinned!) ...[
+                              Padding(
+                                padding: EdgeInsets.only(left: 6.w),
+                                child: Icon(
+                                  CupertinoIcons.pin,
+                                  size: 14.w,
+                                  color: const Color(0xFF6B7280),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ],
@@ -1309,19 +1287,15 @@ class _ConversationPageState extends State<ConversationPage> {
                             ),
                             allAtMap: logic.getAtUserMap(info),
                             prefixSpan: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: _sanitizeText(logic.getPrefixTag(info)??""),
-                                  style: TextStyle(
-                                    fontFamily: 'FilsonPro',
-                                    fontSize: 14.sp,
-                                    fontWeight: logic.getUnreadCount(info) > 0
-                                        ? FontWeight.w600
-                                        : FontWeight.w500,
-                                    color: const Color(0xFF3B82F6),
-                                  ),
-                                ),
-                              ],
+                              text: _sanitizeText(logic.getPrefixTag(info) ?? ""),
+                              style: TextStyle(
+                                fontFamily: 'FilsonPro',
+                                fontSize: 14.sp,
+                                fontWeight: logic.getUnreadCount(info) > 0
+                                    ? FontWeight.w600
+                                    : FontWeight.w500,
+                                color: const Color(0xFF3B82F6),
+                              ),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -1532,541 +1506,7 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
-  Widget _buildPinnedConversationCard(ConversationInfo info) {
-    return GestureDetector(
-      onTap: () => logic.toChat(conversationInfo: info),
-      onLongPress: () => _showPinnedItemMenu(info),
-      child: Container(
-        margin: EdgeInsets.only(right: 12.w),
-        width: 150.w,
-        height: 200.h,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25.r),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF9CA3AF).withOpacity(0.1),
-              offset: const Offset(0, 3),
-              blurRadius: 8.r,
-            ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(25.r),
-                child: IMUtils.isUrlValid(info.faceURL)
-                    ? SoftEdgeBlur(
-                        edges: [
-                          EdgeBlur(
-                            tintColor:
-                                const Color(0xFFBBDEFB).withOpacity(0.85),
-                            type: EdgeType.bottomEdge,
-                            size: 110,
-                            sigma: 12,
-                            controlPoints: [
-                              ControlPoint(
-                                position: 0.3,
-                                type: ControlPointType.visible,
-                              ),
-                              ControlPoint(
-                                position: 0.5,
-                                type: ControlPointType.visible,
-                              ),
-                              ControlPoint(
-                                position: 1,
-                                type: ControlPointType.transparent,
-                              )
-                            ],
-                          )
-                        ],
-                        child: ImageUtil.networkImage(
-                          url: info.faceURL!,
-                          fit: BoxFit.cover,
-                          loadProgress: false,
-                        ),
-                      )
-                    : SoftEdgeBlur(
-                        edges: [
-                          EdgeBlur(
-                            tintColor: const Color(0xFFD4C4FB),
-                            type: EdgeType.bottomEdge,
-                            size: 120,
-                            sigma: 30,
-                            controlPoints: [
-                              ControlPoint(
-                                position: 0.3,
-                                type: ControlPointType.visible,
-                              ),
-                              ControlPoint(
-                                position: 0.5,
-                                type: ControlPointType.visible,
-                              ),
-                              ControlPoint(
-                                position: 1,
-                                type: ControlPointType.transparent,
-                              )
-                            ],
-                          )
-                        ],
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                logic.isGroupChat(info)
-                                    ? const Color(0xFFA78BFA)
-                                    : const Color(0xFF60A5FA),
-                                logic.isGroupChat(info)
-                                    ? const Color(0xFF8B5CF6)
-                                    : const Color(0xFF3B82F6),
-                              ],
-                            ),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              logic.isGroupChat(info)
-                                  ? Icons.group
-                                  : Icons.person,
-                              size: 40.w,
-                              color: Colors.white.withOpacity(0.3),
-                            ),
-                          ),
-                        ),
-                      ),
-              ),
-            ),
-
-            // Content moved to bottom of card
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Padding(
-                padding: EdgeInsets.all(12.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // User/Group name and online indicator
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Online status indicator if applicable
-                        if (logic.isUserOnline(info))
-                          Container(
-                            width: 8.w,
-                            height: 8.w,
-                            margin: EdgeInsets.only(right: 6.w),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF10B981),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 1.w,
-                              ),
-                            ),
-                          ),
-                        // User/Group name
-                        Flexible(
-                          child: Text(
-                            logic.getShowName(info),
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 17.sp,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white,
-                              shadows: const [
-                                Shadow(
-                                  color: Color(0xFF3B82F6),
-                                  offset: Offset(0.5, 0.5),
-                                  blurRadius: 1.0,
-                                ),
-                                Shadow(
-                                  color: Color(0xFF3B82F6),
-                                  offset: Offset(-0.5, 0.5),
-                                  blurRadius: 1.0,
-                                ),
-                                Shadow(
-                                  color: Color(0xFF3B82F6),
-                                  offset: Offset(0.5, -0.5),
-                                  blurRadius: 1.0,
-                                ),
-                                Shadow(
-                                  color: Color(0xFF3B82F6),
-                                  offset: Offset(-0.5, -0.5),
-                                  blurRadius: 1.0,
-                                ),
-                              ],
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                    6.verticalSpace,
-                    // Message content
-                    MatchTextView(
-                      text: logic.getContent(info),
-                      textAlign: TextAlign.center,
-                      textStyle: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                      ),
-                      allAtMap: logic.getAtUserMap(info),
-                      prefixSpan: TextSpan(
-                        children: [
-                          if (logic.isNotDisturb(info) &&
-                              logic.getUnreadCount(info) > 0)
-                            TextSpan(
-                              text: '[${sprintf(StrRes.nPieces, [
-                                    logic.getUnreadCount(info)
-                                  ])}] ',
-                              style: TextStyle(
-                                fontFamily: 'FilsonPro',
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          TextSpan(
-                            text: logic.getPrefixTag(info),
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 12.sp,
-                              fontWeight: logic.getUnreadCount(info) > 0
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      patterns: <MatchPattern>[
-                        MatchPattern(
-                          type: PatternType.at,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 12.sp,
-                            fontWeight: logic.getUnreadCount(info) > 0
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    6.verticalSpace,
-                    // Time and unread indicator in a row at bottom
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Time
-                        Text(
-                          logic.getTime(info),
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white,
-                          ),
-                        ),
-                        8.horizontalSpace,
-                        // Unread count
-                        if (logic.getUnreadCount(info) > 0)
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 6.w, vertical: 2.h),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEF4444),
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: Text(
-                              logic.getUnreadCount(info) > 99
-                                  ? '99+'
-                                  : logic.getUnreadCount(info).toString(),
-                              style: TextStyle(
-                                fontFamily: 'FilsonPro',
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   // Add method to show menu on long press
-  void _showPinnedItemMenu(ConversationInfo info) {
-    showModalBottomSheet(
-      context: Get.context!,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.r),
-            topRight: Radius.circular(20.r),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF9CA3AF).withOpacity(0.08),
-              offset: const Offset(0, -2),
-              blurRadius: 12.r,
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Handle bar
-              Container(
-                margin: EdgeInsets.only(top: 12.h),
-                width: 40.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE5E7EB),
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
-              ),
-              20.verticalSpace,
-
-              // Menu Section
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                      blurRadius: 6.r,
-                    ),
-                  ],
-                  border: Border.all(
-                    color: const Color(0xFFF3F4F6),
-                    width: 1,
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Cancel Top option
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        logic.pinConversation(info);
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 14.h),
-                        child: Row(
-                          children: [
-                            // Icon container
-                            Container(
-                              width: 42.w,
-                              height: 42.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF60A5FA).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              child: Icon(
-                                CupertinoIcons.pin,
-                                color: const Color(0xFF60A5FA),
-                                size: 20.w,
-                              ),
-                            ),
-                            16.horizontalSpace,
-                            // Text
-                            Text(
-                              logic.isPinned(info) ? StrRes.unpin : StrRes.pin,
-                              style: TextStyle(
-                                fontFamily: 'FilsonPro',
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF374151),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // Divider
-                    if (logic.existUnreadMsg(info) || true)
-                      Padding(
-                        padding: EdgeInsets.only(left: 70.w),
-                        child: const Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: Color(0xFFF3F4F6),
-                        ),
-                      ),
-
-                    // Mark as Read option (only if there are unread messages)
-                    if (logic.existUnreadMsg(info))
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          logic.markMessageHasRead(info);
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.w, vertical: 14.h),
-                          child: Row(
-                            children: [
-                              // Icon container
-                              Container(
-                                width: 42.w,
-                                height: 42.h,
-                                decoration: BoxDecoration(
-                                  color:
-                                      const Color(0xFFA78BFA).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
-                                child: Icon(
-                                  CupertinoIcons.checkmark_circle,
-                                  color: const Color(0xFFA78BFA),
-                                  size: 20.w,
-                                ),
-                              ),
-                              16.horizontalSpace,
-                              // Text
-                              Text(
-                                StrRes.markHasRead,
-                                style: TextStyle(
-                                  fontFamily: 'FilsonPro',
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF374151),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                    // Divider before Delete option
-                    if (logic.existUnreadMsg(info))
-                      Padding(
-                        padding: EdgeInsets.only(left: 70.w),
-                        child: const Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: Color(0xFFF3F4F6),
-                        ),
-                      ),
-
-                    // Delete option
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        logic.deleteConversation(info);
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 14.h),
-                        child: Row(
-                          children: [
-                            // Icon container
-                            Container(
-                              width: 42.w,
-                              height: 42.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF87171).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              child: Icon(
-                                CupertinoIcons.delete,
-                                color: const Color(0xFFF87171),
-                                size: 20.w,
-                              ),
-                            ),
-                            16.horizontalSpace,
-                            // Text
-                            Text(
-                              StrRes.delete,
-                              style: TextStyle(
-                                fontFamily: 'FilsonPro',
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFFF87171),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Bottom spacing
-              24.verticalSpace,
-
-              // Cancel Button
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.w),
-                child: InkWell(
-                  onTap: () => Navigator.of(context).pop(),
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                          offset: const Offset(0, 2),
-                          blurRadius: 6.r,
-                        ),
-                      ],
-                      border: Border.all(
-                        color: const Color(0xFFF3F4F6),
-                        width: 1,
-                      ),
-                    ),
-                    child: SizedBox(
-                      height: 56.h,
-                      child: Center(
-                        child: Text(
-                          StrRes.cancel,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF6B7280),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              24.verticalSpace,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 // Animated Dot Widget for thinking indicator

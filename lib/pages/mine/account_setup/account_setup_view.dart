@@ -291,7 +291,7 @@ class AccountSetupPage extends StatelessWidget {
                     CupertinoSwitch(
                       value: switchValue,
                       onChanged: onSwitchChanged,
-                      activeColor: const Color(0xFF60A5FA),
+                      activeColor: const Color(0xFF4F42FF),
                     )
                   else if (value != null)
                     Row(

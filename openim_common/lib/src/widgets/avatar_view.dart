@@ -59,7 +59,7 @@ class AvatarView extends StatelessWidget {
       );
 
   Color get _textAvatarBgColor =>
-      isGroup ? const Color(0xFFA78BFA) : const Color(0xFF60A5FA);
+      isGroup ? const Color(0xFFA78BFA) : const Color(0xFF4F42FF);
 
   String? get _showName {
     if (isGroup) return null;

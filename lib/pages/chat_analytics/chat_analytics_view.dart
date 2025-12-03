@@ -48,8 +48,8 @@ class ChatAnalyticsView extends StatelessWidget {
             margin: const EdgeInsets.only(right: 10),
             onPressed: logic.refreshData,
             icon: CupertinoIcons.refresh,
-            colorButton: const Color(0xFF60A5FA).withOpacity(0.1),
-            colorIcon: const Color(0xFF60A5FA),
+            colorButton: const Color(0xFF4F42FF).withOpacity(0.1),
+            colorIcon: const Color(0xFF4F42FF),
           )
         ],
         body: logic.isLoading.value
@@ -78,7 +78,7 @@ class ChatAnalyticsView extends StatelessWidget {
       ),
       child: RefreshIndicator(
         onRefresh: logic.refreshData,
-        color: const Color(0xFF60A5FA),
+        color: const Color(0xFF4F42FF),
         backgroundColor: Colors.white,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -150,7 +150,7 @@ class ChatAnalyticsView extends StatelessWidget {
             ),
             child: const Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF60A5FA)),
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4F42FF)),
                 strokeWidth: 3,
               ),
             ),
@@ -178,7 +178,7 @@ class ChatAnalyticsView extends StatelessWidget {
             title: StrRes.totalMessages,
             value: logic.totalMessages,
             icon: HugeIcons.strokeRoundedBubbleChat,
-            color: const Color(0xFF60A5FA),
+            color: const Color(0xFF4F42FF),
             subtitle: '${StrRes.sent}: ${logic.totalMessagesSent.value}',
           ),
         ),
@@ -754,7 +754,7 @@ class ChatAnalyticsView extends StatelessWidget {
     switch (type) {
       case 'Text':
         iconData = HugeIcons.strokeRoundedBubbleChat;
-        color = const Color(0xFF60A5FA);
+        color = const Color(0xFF4F42FF);
         break;
       case 'Image':
         iconData = HugeIcons.strokeRoundedImage01;
@@ -807,7 +807,7 @@ class ChatAnalyticsView extends StatelessWidget {
   Color _getMessageTypeColor(String type) {
     switch (type) {
       case 'Text':
-        return const Color(0xFF60A5FA);
+        return const Color(0xFF4F42FF);
       case 'Image':
         return const Color(0xFF34D399);
       case 'Voice':

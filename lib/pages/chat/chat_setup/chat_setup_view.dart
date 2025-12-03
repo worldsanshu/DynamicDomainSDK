@@ -197,7 +197,7 @@ class ChatSetupPage extends StatelessWidget {
             child: HugeIcon(
               icon: HugeIcons.strokeRoundedUserAdd01,
               size: 25.w,
-              color: AppColor.iconColor, //const Color(0xFF60A5FA),
+              color: AppColor.iconColor, //const Color(0xFF4F42FF),
             ),
           ),
         ],
@@ -259,7 +259,7 @@ class ChatSetupPage extends StatelessWidget {
                 _buildContentSearchItem(
                   hugeIcon: HugeIcons.strokeRoundedSearch01,
                   text: StrRes.search,
-                  color: const Color(0xFF60A5FA),
+                  color: const Color(0xFF4F42FF),
                   onTap: logic.searchChatHistory,
                 ),
                 _buildContentSearchItem(
@@ -564,7 +564,7 @@ class ChatSetupPage extends StatelessWidget {
                     8.horizontalSpace,
                     CupertinoSwitch(
                       value: switchOn,
-                      activeColor: const Color(0xFF60A5FA),
+                      activeColor: const Color(0xFF4F42FF),
                       trackColor: const Color(0xFFE5E7EB),
                       thumbColor: Colors.white,
                       onChanged: onChanged,

@@ -47,7 +47,7 @@ class ChatBubble extends StatelessWidget {
     if (backgroundColor != null) return backgroundColor!;
 
     if (isISend) {
-      return const Color(0xFF60A5FA); // Blue for sent messages
+      return const Color(0xFF4F42FF); // Blue for sent messages
     } else {
       return const Color(0xFFF9FAFB); // Light background for received messages
     }

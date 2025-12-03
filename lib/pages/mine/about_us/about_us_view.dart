@@ -149,13 +149,13 @@ class AboutUsPage extends StatelessWidget {
                   width: 20.w,
                   height: 20.h,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF60A5FA).withOpacity(0.1),
+                    color: const Color(0xFF4F42FF).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: const Icon(
                     Icons.contact_support_outlined,
                     size: 14,
-                    color: Color(0xFF60A5FA),
+                    color: Color(0xFF4F42FF),
                   ),
                 ),
                 16.horizontalSpace,
@@ -232,7 +232,7 @@ class AboutUsPage extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF60A5FA).withOpacity(0.1),
+                      color: const Color(0xFF4F42FF).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Text(
@@ -241,7 +241,7 @@ class AboutUsPage extends StatelessWidget {
                         fontFamily: 'FilsonPro',
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
-                        color: const Color(0xFF60A5FA),
+                        color: const Color(0xFF4F42FF),
                       ),
                     ),
                   ),

@@ -156,7 +156,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
         decoration: BoxDecoration(
           color: backgroundColor ??
               (isActive
-                  ? const Color(0xFF60A5FA).withOpacity(0.1)
+                  ? const Color(0xFF4F42FF).withOpacity(0.1)
                   : const Color(0xFFF9FAFB)),
           borderRadius: BorderRadius.circular(8.r),
           boxShadow: [
@@ -175,7 +175,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
           icon: icon,
           size: 20.w,
           color: iconColor ??
-              (isActive ? const Color(0xFF60A5FA) : const Color(0xFF6B7280)),
+              (isActive ? const Color(0xFF4F42FF) : const Color(0xFF6B7280)),
         ),
       ),
     );
@@ -190,7 +190,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
         height: 30.h,
         decoration: BoxDecoration(
           color: _sendButtonVisible
-              ? const Color(0xFF60A5FA)
+              ? const Color(0xFF4F42FF)
               : const Color(0xFFF9FAFB),
           borderRadius: BorderRadius.circular(8.r),
           border: _sendButtonVisible
@@ -251,7 +251,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
                                     : onTapSpeak,
                                 isActive: _leftKeyboardButton,
                                 backgroundColor: _leftKeyboardButton
-                                    ? const Color(0xFF60A5FA).withOpacity(0.1)
+                                    ? const Color(0xFF4F42FF).withOpacity(0.1)
                                     : const Color(0xFFF9FAFB),
                               ),
                               12.horizontalSpace,
@@ -412,7 +412,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
                 fontFamily: 'FilsonPro',
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF60A5FA),
+                color: const Color(0xFF4F42FF),
               ),
           inputFormatters: widget.inputFormatters ??
               [AtTextInputFormatter(widget.openAtList)],
@@ -549,7 +549,7 @@ class _QuoteView extends StatelessWidget {
             width: 4.w,
             height: 24.h,
             decoration: BoxDecoration(
-              color: const Color(0xFF60A5FA),
+              color: const Color(0xFF4F42FF),
               borderRadius: BorderRadius.circular(2.r),
             ),
           ),

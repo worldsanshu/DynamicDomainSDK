@@ -42,7 +42,7 @@ class TermsAndConditionsText extends StatelessWidget {
                       fontFamily: 'FilsonPro',
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF60A5FA),
+                      color: const Color(0xFF4F42FF),
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
@@ -64,7 +64,7 @@ class TermsAndConditionsText extends StatelessWidget {
                       fontFamily: 'FilsonPro',
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF60A5FA),
+                      color: const Color(0xFF4F42FF),
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {

@@ -136,7 +136,7 @@ class AddContactsMethodPage extends StatelessWidget {
         children: [
           _buildMenuItem(
             icon: HugeIcons.strokeRoundedQrCode01,
-            iconColor: const Color(0xFF60A5FA),
+            iconColor: const Color(0xFF4F42FF),
             text: StrRes.scan,
             hintText: StrRes.scanHint,
             onTap: logic.scan,

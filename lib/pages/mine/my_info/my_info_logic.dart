@@ -148,7 +148,7 @@ class MyInfoLogic extends GetxController {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12.r),
                               borderSide: const BorderSide(
-                                color: Color(0xFF60A5FA),
+                                color: Color(0xFF4F42FF),
                                 width: 2,
                               ),
                             ),
@@ -753,7 +753,7 @@ class MyInfoLogic extends GetxController {
                       _buildGenderActionItem(
                         icon: HugeIcons.strokeRoundedUser,
                         title: StrRes.man,
-                        iconColor: const Color(0xFF60A5FA),
+                        iconColor: const Color(0xFF4F42FF),
                         onTap: () {
                           Get.back();
                           _updateGender(1);
