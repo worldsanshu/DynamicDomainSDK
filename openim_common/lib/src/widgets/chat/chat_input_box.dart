@@ -46,6 +46,8 @@ class ChatInputBox extends StatefulWidget {
     this.onTapAlbum,
     this.onTapCamera,
     this.onTapFile,
+    this.onTapCard,
+    this.stateKey,
   });
   final AtTextCallback? atCallback;
   final Map<String, String> allAtMap;
@@ -70,6 +72,8 @@ class ChatInputBox extends StatefulWidget {
   final Function()? onTapAlbum;
   final Function()? onTapCamera;
   final Function()? onTapFile;
+  final Function()? onTapCard;
+  final GlobalKey<_ChatInputBoxState>? stateKey;
 
   final void Function(double) callbackKeyboardHeight;
 
@@ -218,7 +222,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
         ),
         child: HugeIcon(
           icon: icon,
-          size: 20.w,
+          size: 25.w,
           color: iconColor ??
               (isActive ? const Color(0xFF4F42FF) : const Color(0xFF6B7280)),
         ),
@@ -229,7 +233,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
   // Claymorphism send button
   Widget _buildSendButton() {
     return GestureDetector(
-      onTap: _sendButtonVisible ? send : toggleToolbox,
+      onTap: _sendButtonVisible ? send : null,
       child: Container(
         width: 30.w,
         height: 30.h,
@@ -247,9 +251,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
         ),
         alignment: Alignment.center,
         child: HugeIcon(
-          icon: _sendButtonVisible
-              ? HugeIcons.strokeRoundedSent
-              : HugeIcons.strokeRoundedAdd01,
+          icon: HugeIcons.strokeRoundedSent,
           size: 20.w,
           color: _sendButtonVisible ? Colors.white : AppColors.iconColor,
         ),
@@ -319,7 +321,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
             // Arrow toggle button (visible when collapsed or has text)
             if (!_actionButtonsExpanded || _sendButtonVisible)
               _buildArrowToggleButton(),
-            // Animated container for the 4 action buttons
+            // Animated container for the 3 action buttons + options
             ClipRect(
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
@@ -333,32 +335,19 @@ class _ChatInputBoxState extends State<ChatInputBox>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        6.horizontalSpace,
                         // Voice button
                         _buildClaymorphismButton(
-                          icon: _leftKeyboardButton
-                              ? HugeIcons.strokeRoundedKeyboard
-                              : HugeIcons.strokeRoundedMic01,
-                          onTap: _leftKeyboardButton
-                              ? onTapLeftKeyboard
-                              : onTapSpeak,
-                          isActive: _leftKeyboardButton,
-                          backgroundColor: _leftKeyboardButton
-                              ? const Color(0xFF4F42FF).withOpacity(0.1)
-                              : const Color(0xFFF9FAFB),
+                          icon: HugeIcons.strokeRoundedMic01,
+                          onTap: onTapSpeak,
                         ),
-                        8.horizontalSpace,
-                        // File button
-                        _buildClaymorphismButton(
-                          icon: HugeIcons.strokeRoundedFile02,
-                          onTap: () => Permissions.storage(widget.onTapFile),
-                        ),
-                        8.horizontalSpace,
+                        6.horizontalSpace,
                         // Gallery button
                         _buildClaymorphismButton(
                           icon: HugeIcons.strokeRoundedImage02,
                           onTap: () => Permissions.photos(widget.onTapAlbum),
                         ),
-                        8.horizontalSpace,
+                        6.horizontalSpace,
                         // Camera button
                         _buildClaymorphismButton(
                           icon: HugeIcons.strokeRoundedCamera01,
@@ -367,6 +356,12 @@ class _ChatInputBoxState extends State<ChatInputBox>
                                   widget.onTapCamera)
                               : Permissions.cameraAndMicrophoneAndPhotos(
                                   widget.onTapCamera),
+                        ),
+                        6.horizontalSpace,
+                        // Options button (more)
+                        _buildClaymorphismButton(
+                          icon: HugeIcons.strokeRoundedMore,
+                          onTap: _showOptionsMenu,
                         ),
                       ],
                     ),
@@ -476,7 +471,8 @@ class _ChatInputBoxState extends State<ChatInputBox>
           case PanelType.emoji:
             return widget.emojiView;
           case PanelType.tool:
-            return widget.toolbox;
+            // Build toolbox with emoji callback
+            return _buildOptionsToolbox();
           default:
             return const SizedBox.shrink();
         }
@@ -519,8 +515,39 @@ class _ChatInputBoxState extends State<ChatInputBox>
     return height;
   }
 
+  void _showOptionsMenu() {
+    if (!widget.enabled) return;
+
+    // Unfocus text field and show toolbox menu with voice, emoji, etc.
+    if (widget.focusNode.hasFocus) {
+      widget.focusNode.unfocus();
+    }
+
+    setState(() {
+      _toolsVisible = true;
+      _emojiVisible = false;
+      _leftKeyboardButton = false;
+      _rightKeyboardButton = false;
+    });
+
+    panelController.updatePanelType(
+      ChatBottomPanelType.other,
+      data: PanelType.tool,
+    );
+  }
+
+  Widget _buildOptionsToolbox() {
+    // Build a custom toolbox with all options including emoji
+    if (widget.toolbox is ChatToolBox) {
+      // If we have access to the toolbox, use it but we can't easily modify callbacks
+      return widget.toolbox;
+    }
+    // Fallback to the original toolbox
+    return widget.toolbox;
+  }
+
   Widget get _textFiled => Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 0.h),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
@@ -648,6 +675,16 @@ class _ChatInputBoxState extends State<ChatInputBox>
       ChatBottomPanelType.other,
       data: PanelType.emoji,
     );
+  }
+
+  void onTapEmojiFromToolbox() {
+    // This is called from the options toolbox emoji button
+    onTapEmoji();
+  }
+
+  void onTapVoiceFromToolbox() {
+    // This is called from the options toolbox voice button
+    onTapSpeak();
   }
 
   focus() => FocusScope.of(context).requestFocus(widget.focusNode);

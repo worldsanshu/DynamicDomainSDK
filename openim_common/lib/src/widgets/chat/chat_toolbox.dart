@@ -16,6 +16,8 @@ class ChatToolBox extends StatelessWidget {
     this.onTapCamera,
     this.onTapCard,
     this.onTapFile,
+    this.onTapVoice,
+    this.onTapEmoji,
     this.showAudioCall = false,
     this.showVideoCall = false,
     this.height,
@@ -25,6 +27,8 @@ class ChatToolBox extends StatelessWidget {
   final Function()? onTapCall;
   final Function()? onTapFile;
   final Function()? onTapCard;
+  final Function()? onTapVoice;
+  final Function()? onTapEmoji;
   // final Function()? onTapAudioCall;
   // final Function()? onTapVideoCall;
   final bool showAudioCall;
@@ -35,16 +39,16 @@ class ChatToolBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = [
       ToolboxItemInfo(
-        text: StrRes.toolboxAlbum,
-        icon: ImageRes.toolboxAlbum1,
-        hugeIcon: HugeIcons.strokeRoundedImage02,
-        onTap: () => Permissions.photos(onTapAlbum),
+        text: StrRes.toolboxCard,
+        icon: ImageRes.toolboxCard1,
+        hugeIcon: HugeIcons.strokeRoundedUser,
+        onTap: onTapCard,
       ),
       ToolboxItemInfo(
-        text: StrRes.toolboxCamera,
-        icon: ImageRes.toolboxCamera1,
-        hugeIcon: HugeIcons.strokeRoundedCamera01,
-        onTap: () => Platform.isIOS ? Permissions.cameraAndMicrophone(onTapCamera) : Permissions.cameraAndMicrophoneAndPhotos(onTapCamera),
+        text: StrRes.toolboxFile,
+        icon: ImageRes.toolboxFile1,
+        hugeIcon: HugeIcons.strokeRoundedFile02,
+        onTap: () => Permissions.storage(onTapFile),
       ),
       if (onTapCall != null)
         ToolboxItemInfo(
@@ -53,32 +57,6 @@ class ChatToolBox extends StatelessWidget {
           hugeIcon: HugeIcons.strokeRoundedCall,
           onTap: onTapCall,
         ),
-      // if (showAudioCall)
-      //   ToolboxItemInfo(
-      //     text: StrRes.audioCall,
-      //     icon: ImageRes.callVoice,
-      //     hugeIcon: HugeIcons.strokeRoundedCall,
-      //     onTap: onTapAudioCall,
-      //   ),
-      // if (showVideoCall)
-      //   ToolboxItemInfo(
-      //     text: StrRes.videoCall,
-      //     icon: ImageRes.toolboxCamera1,
-      //     hugeIcon: HugeIcons.strokeRoundedVideoReplay,
-      //     onTap: onTapVideoCall,
-      //   ),
-      ToolboxItemInfo(
-        text: StrRes.toolboxFile,
-        icon: ImageRes.toolboxFile1,
-        hugeIcon: HugeIcons.strokeRoundedFile02,
-        onTap: () => Permissions.storage(onTapFile),
-      ),
-      ToolboxItemInfo(
-        text: StrRes.toolboxCard,
-        icon: ImageRes.toolboxCard1,
-        hugeIcon: HugeIcons.strokeRoundedUser,
-        onTap: onTapCard,
-      ),
     ];
 
     return Container(

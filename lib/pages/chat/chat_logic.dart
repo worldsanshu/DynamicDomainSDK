@@ -53,6 +53,7 @@ class ChatLogic extends SuperController {
   final scrollController = ScrollController();
   final refreshController = RefreshController();
   final browserController = PhotoBrowserController();
+  late GlobalKey chatInputBoxStateKey;
   bool playOnce = false; // 点击的当前视频只能播放一次
   // final clickSubject = PublishSubject<Message>();
   final forceCloseToolbox = PublishSubject<bool>();
@@ -231,6 +232,7 @@ class ChatLogic extends SuperController {
   @override
   void onInit() {
     // timeDilation = 10.0;
+    chatInputBoxStateKey = GlobalKey();
     var arguments = Get.arguments;
     conversationInfo = arguments['conversationInfo'];
     searchMessage = arguments['searchMessage'];

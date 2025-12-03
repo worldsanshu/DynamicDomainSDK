@@ -280,7 +280,6 @@ class ChatPage extends StatelessWidget {
         )
       : const SizedBox();
 
-
   // Content Container with Cute Minimalist Style
   Widget _buildCuteMinimalistContent({required Widget child}) {
     return Expanded(
@@ -306,7 +305,7 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme=Theme.of(context);
+    final theme = Theme.of(context);
     return WillPopScope(
       onWillPop: logic.willPop(),
       child: ChatVoiceRecordLayout(
@@ -317,16 +316,16 @@ class ChatPage extends StatelessWidget {
             centerTitle: false,
             showLeading: true,
             customAppBar: _userInfo(),
-            leadingAction: logic.multiSelMode.value
-                ? logic.closeMultiSelMode:Get.back,
+            leadingAction:
+                logic.multiSelMode.value ? logic.closeMultiSelMode : Get.back,
             actions: [
               if (logic.showAudioAndVideoCall) ...[
                 CustomButtom(
                   margin: const EdgeInsets.only(right: 5),
                   onPressed: logic.onTapAudioCall,
                   icon: Icons.call,
-                  colorButton:  theme.primaryColor.withOpacity(0.15),
-                  colorIcon:  theme.primaryColor,
+                  colorButton: theme.primaryColor.withOpacity(0.15),
+                  colorIcon: theme.primaryColor,
                 ),
                 CustomButtom(
                   margin: const EdgeInsets.only(right: 5),
@@ -357,6 +356,7 @@ class ChatPage extends StatelessWidget {
                             text: StrRes.groupBannedMessage,
                           )
                         : ChatInputBox(
+                            key: logic.chatInputBoxStateKey,
                             allAtMap: logic.atUserNameMappingMap,
                             forceCloseToolboxSub: logic.forceCloseToolbox,
                             controller: logic.inputCtrl,
@@ -374,13 +374,12 @@ class ChatPage extends StatelessWidget {
                             onTapAlbum: logic.onTapAlbum,
                             onTapCamera: logic.onTapCamera,
                             onTapFile: logic.onTapFile,
+                            onTapCard: logic.onTapCarte,
                             toolbox: ChatToolBox(
                               onTapAlbum: logic.onTapAlbum,
                               onTapCamera: logic.onTapCamera,
                               onTapCard: logic.onTapCarte,
                               onTapFile: logic.onTapFile,
-                              // onTapAudioCall: logic.onTapAudioCall,
-                              // onTapVideoCall: logic.onTapVideoCall,
                               showAudioCall: logic.showAudioAndVideoCall,
                               showVideoCall: logic.showAudioAndVideoCall,
                               height: logic.keyboardHeight.value,
