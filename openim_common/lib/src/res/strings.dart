@@ -78,7 +78,7 @@ class StrRes {
   static String get plsEnterVerificationCodeImg =>
       'plsEnterVerificationCodeImg'.tr;
 
-  static String get sendVerificationCode => 'sendVerificationCode'.tr;
+  static String get sendCode => 'sendCode'.tr;
 
   static String get resendVerificationCode => 'resendVerificationCode'.tr;
 

@@ -17,6 +17,7 @@ class InviteCodeField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppTextFormField(
+      label: StrRes.invitationCode,
       hint: required == true
           ? StrRes.plsEnterInvitationCode
           : StrRes.plsEnterInvitationCodeOptional,

@@ -11,7 +11,7 @@ const Map<String, String> en_US = {
   "plsEnterAccount": "Please enter your account",
   "registerSuccessfully": "Registration Successful",
   "registerError": "Registration Failed",
-  "forgetPassword": "Forgot Password",
+  "forgetPassword": "Forgot Password?",
   "verificationCodeLogin": "Verification Code Login",
   "login": "Login",
   "register": "Register",
@@ -35,7 +35,7 @@ const Map<String, String> en_US = {
   'lockPwdErrorHint': 'Error %s times',
   "newUserRegister": "New User Registration",
   "verificationCode": "Verification Code",
-  "sendVerificationCode": "Send Verification Code",
+  "sendCode": "Send Code",
   'resendVerificationCode': 'Resend Verification Code',
   'verificationCodeTimingReminder': 'Get Verification Code Again in %s seconds',
   'verificationCodeTimingReminderfy':

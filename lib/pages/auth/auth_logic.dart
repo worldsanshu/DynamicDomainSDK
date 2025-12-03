@@ -11,6 +11,8 @@ import 'package:openim_common/openim_common.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 
+enum AuthFormMode { login, register }
+
 class AuthLogic extends GetxController with GetTickerProviderStateMixin {
   final gatewayConfigController = Get.find<GatewayConfigController>();
   final merchantController = Get.find<MerchantController>();
@@ -46,6 +48,12 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
   final isRegisterAgree = false.obs;
   final isShowGatewayDomain = false.obs;
 
+  // Gradient animation opacity (same as invite_code_view)
+  final gradientOpacity = 0.0.obs;
+
+  // Current form mode (login or register)
+  final currentFormMode = AuthFormMode.login.obs;
+
   // Form validation states
   final isLoginFormValid = false.obs;
   final isRegisterFormValid = false.obs;
@@ -72,6 +80,9 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
       final initialTab = Get.arguments['tab'] as int;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         tabController.animateTo(initialTab);
+        // Also update form mode
+        currentFormMode.value =
+            initialTab == 0 ? AuthFormMode.login : AuthFormMode.register;
       });
     }
   }
@@ -81,6 +92,14 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
     super.onReady();
     loginPhoneFocusNode.requestFocus();
     initPackageInfo();
+    // Start gradient animation
+    _startGradientAnimation();
+  }
+
+  void _startGradientAnimation() {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      gradientOpacity.value = 1.0;
+    });
   }
 
   @override
@@ -413,5 +432,9 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
 
   void switchToLoginTab() {
     tabController.animateTo(0);
+  }
+
+  void switchFormMode(AuthFormMode mode) {
+    currentFormMode.value = mode;
   }
 }

@@ -14,8 +14,8 @@ class TermsAndConditionsText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.symmetric(vertical: 8.h),
-      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 0.w),
+      // margin: EdgeInsets.symmetric(vertical: 5.h),
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 0.w),
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(16),
@@ -31,7 +31,7 @@ class TermsAndConditionsText extends StatelessWidget {
                 text: StrRes.termsAgree,
                 style: TextStyle(
                   fontFamily: 'FilsonPro',
-                  fontSize: 14.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w400,
                   color: const Color(0xFF6B7280),
                 ),
@@ -40,7 +40,7 @@ class TermsAndConditionsText extends StatelessWidget {
                     text: StrRes.userAgreementDoc,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 14.sp,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF60A5FA),
                     ),
@@ -53,7 +53,7 @@ class TermsAndConditionsText extends StatelessWidget {
                     text: StrRes.and,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 14.sp,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w400,
                       color: const Color(0xFF6B7280),
                     ),
@@ -62,7 +62,7 @@ class TermsAndConditionsText extends StatelessWidget {
                     text: StrRes.privacyPolicyDoc,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 14.sp,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF60A5FA),
                     ),

@@ -84,7 +84,7 @@ class _VerifyCodeSendButtonState extends State<VerifyCodeSendButton> {
 
   @override
   Widget build(BuildContext context) => _firstTime && !widget.auto
-      ? (StrRes.sendVerificationCode.toText
+      ? (StrRes.sendCode.toText
         ..style = Styles.ts_0089FF_12sp
         ..onTap = () {
           widget.onTapCallback().then((start) {

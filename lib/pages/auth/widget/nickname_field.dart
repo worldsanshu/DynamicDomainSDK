@@ -49,6 +49,7 @@ class _NicknameFieldState extends State<NicknameField> {
   @override
   Widget build(BuildContext context) {
     return AppTextFormField(
+      label: StrRes.nickname,
       hint: StrRes.nicknameHint,
       focusNode: effectiveFocusNode,
       validator: (value) {

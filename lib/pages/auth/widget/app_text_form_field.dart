@@ -5,6 +5,7 @@ import 'package:openim/pages/auth/theming/colors.dart';
 
 class AppTextFormField extends StatelessWidget {
   final String hint;
+  final String? label;
   final String? helperText;
   final Widget? suffixIcon;
   final FocusNode? focusNode;
@@ -18,6 +19,7 @@ class AppTextFormField extends StatelessWidget {
   const AppTextFormField({
     super.key,
     required this.hint,
+    this.label,
     this.helperText,
     this.suffixIcon,
     this.isObscureText,
@@ -57,10 +59,21 @@ class AppTextFormField extends StatelessWidget {
         onChanged: onChanged,
         controller: controller,
         decoration: InputDecoration(
+          label: label != null
+              ? Text(
+                  label!,
+                  style: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF374151),
+                  ),
+                )
+              : null,
           hintText: hint,
           hintStyle: TextStyle(
             fontFamily: 'FilsonPro',
-            fontSize: 15.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w500,
             color: const Color(0xFF9CA3AF),
           ),

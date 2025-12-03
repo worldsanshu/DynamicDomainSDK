@@ -69,6 +69,7 @@ class _PhoneCodeFieldState extends State<PhoneCodeField> {
       children: [
         Expanded(
           child: AppTextFormField(
+            label: StrRes.verificationCode,
             hint: StrRes.smsVerificationCodeHint,
             keyboardType: TextInputType.number,
             controller: widget.controller,
@@ -111,7 +112,7 @@ class _CodeSendButton extends StatelessWidget {
     if (isSending) {
       label = '...'; // loading state
     } else if (secondsLeft == 0) {
-      label = StrRes.sendVerificationCode;
+      label = StrRes.sendCode;
     } else {
       label = '${secondsLeft}s';
     }

@@ -25,12 +25,14 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final isConfirmPassword = widget.compareController != null;
     return AppTextFormField(
+        label: isConfirmPassword ? StrRes.confirmPassword : StrRes.password,
         focusNode: widget.focusNode,
         controller: widget.controller,
-        hint: widget.compareController == null
-            ? StrRes.passwordHint
-            : StrRes.confirmPasswordHint,
+        hint: isConfirmPassword
+            ? StrRes.confirmPasswordHint
+            : StrRes.passwordHint,
         // helperText: widget.validateFormat ? StrRes.wrongPasswordFormat : null,
         isObscureText: isObscureText,
         onChanged: (value) {

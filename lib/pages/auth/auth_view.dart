@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:openim/pages/auth/auth_logic.dart';
-import 'package:openim/pages/auth/widget/forget_password_text_button.dart';
 import 'package:openim/pages/auth/widget/app_text_button.dart';
 import 'package:openim/pages/auth/widget/password_field.dart';
 import 'package:openim/pages/auth/widget/phone_field.dart';
@@ -26,35 +25,108 @@ class AuthView extends StatelessWidget {
     return TouchCloseSoftKeyboard(
       isGradientBg: false,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xFFFAFAFA),
-          leading: CustomButtom(
-            margin: const EdgeInsets.all(5),
-            onPressed: () => Get.back(),
-            icon: Icons.arrow_back_ios_new,
-            colorButton: Colors.white.withOpacity(0.3),
-            colorIcon: Colors.white,
-          ),
+        body: Stack(
+          children: [
+            // Animated radial gradient background (same as invite_code_view)
+            _buildAnimatedGradientBackground(),
+            // Main content với form nổi lên ở giữa
+            SafeArea(
+              child: Column(
+                children: [
+                  // Floating form với chiều cao giới hạn
+                  Expanded(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: AnimationLimiter(
+                          child: _buildFloatingForm(context),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Gap(20.h),
+                ],
+              ),
+            ),
+          ],
         ),
-        backgroundColor: const Color(0xFFFAFAFA),
-        body: SafeArea(
-          child: AnimationLimiter(
-            child: Column(
-              children: [
-                // Header với logo
-                _buildHeader(),
-                // Padding(
-                //   padding: EdgeInsetsGeometry.symmetric(horizontal: 50.w),
-                //   child: Divider(
-                //     thickness: 0.1,
-                //   ),
-                // ),
+      ),
+    );
+  }
 
-                // Content với TabBar
-                Expanded(
-                  child: _buildContent(),
+  Widget _buildAnimatedGradientBackground() {
+    return Obx(
+      () => TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.0, end: logic.gradientOpacity.value),
+        duration: const Duration(seconds: 2),
+        builder: (context, value, child) {
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(0.0, -1.0),
+                radius: 1.8,
+                colors: [
+                  const Color(0xFF4A90E2).withOpacity(value * 0.9),
+                  const Color(0xFFB3D4F5).withOpacity(value * 0.5),
+                  Colors.white.withOpacity(0.0),
+                ],
+                stops: const [0.0, 0.4, 1.0],
+                tileMode: TileMode.clamp,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildFloatingForm(BuildContext context) {
+    // Tính toán chiều cao cố định cho form (giới hạn trong màn hình)
+    final screenHeight = MediaQuery.of(context).size.height;
+    final formHeight = screenHeight * 0.9; // 90% màn hình - cố định
+
+    return AnimationConfiguration.staggeredList(
+      position: 0,
+      duration: const Duration(milliseconds: 600),
+      child: SlideAnimation(
+        verticalOffset: 50,
+        child: FadeInAnimation(
+          child: Container(
+            width: double.infinity,
+            height: formHeight, // Cố định chiều cao
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24.r),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF3B82F6).withOpacity(0.15),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: const Offset(0, 10),
+                ),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 2),
                 ),
               ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24.r),
+              child: Column(
+                mainAxisSize: MainAxisSize.max, // Chiếm toàn bộ chiều cao cố định
+                children: [
+                  // Header với logo (fixed, không scroll)
+                  _buildFormHeader(),
+                  // Form content với scroll bên trong - căn giữa nếu nội dung ngắn
+                  Flexible(
+                    child: _buildFormContent(),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -62,398 +134,544 @@ class AuthView extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
-    return AnimationConfiguration.staggeredList(
-      position: 0,
-      duration: const Duration(milliseconds: 600),
-      child: SlideAnimation(
-        verticalOffset: 30,
-        child: FadeInAnimation(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onDoubleTap: logic.toggleVersionInfoShow,
-                child: Container(
-                  width: 70.w,
-                  height: 70.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        spreadRadius: 1,
+  Widget _buildFormHeader() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF3B82F6).withOpacity(0.05),
+            const Color(0xFF60A5FA).withOpacity(0.02),
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Logo và Title ở giữa
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onDoubleTap: logic.toggleVersionInfoShow,
+                  child: Container(
+                    width: 80.w,
+                    height: 80.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF3B82F6).withOpacity(0.2),
+                          blurRadius: 15,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          "assets/images/app-icon.png",
+                          width: 56.w,
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.asset(
-                        "assets/images/app-icon.png",
-                        width: 50.w,
+                ),
+                Gap(12.h),
+                GestureDetector(
+                  onTap: logic.requestDomainReveal,
+                  child: Text(
+                    StrRes.loginTitle,
+                    style: TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF1F2937),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Back button ở top left
+          Positioned(
+            left: 0,
+            top: 0,
+            child: GestureDetector(
+              onTap: () => Get.back(),
+              child: Container(
+                width: 40.w,
+                height: 40.h,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.arrow_back_ios_new,
+                    size: 20.sp,
+                    color: const Color(0xFF374151),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFormContent() {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start, // Căn giữa nội dung
+      children: [
+        // Mode Toggle (Login / Register) - Fixed
+        Padding(
+          padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0),
+          child: _buildModeToggle(),
+        ),
+        // Scrollable form fields
+        Flexible(
+          child: Obx(() {
+            if (logic.currentFormMode.value == AuthFormMode.login) {
+              return _buildLoginFields();
+            } else {
+              return _buildRegisterFields();
+            }
+          }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModeToggle() {
+    return Obx(() => Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFFF3F4F6),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          padding: EdgeInsets.all(4.w),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => logic.switchFormMode(AuthFormMode.login),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.fastOutSlowIn,
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    decoration: BoxDecoration(
+                      color: logic.currentFormMode.value == AuthFormMode.login
+                          ? Colors.white
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(10.r),
+                      boxShadow: logic.currentFormMode.value ==
+                              AuthFormMode.login
+                          ? [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: Text(
+                      StrRes.login,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 14.sp,
+                        fontWeight:
+                            logic.currentFormMode.value == AuthFormMode.login
+                                ? FontWeight.w600
+                                : FontWeight.w500,
+                        color:
+                            logic.currentFormMode.value == AuthFormMode.login
+                                ? const Color(0xFF3B82F6)
+                                : const Color(0xFF6B7280),
                       ),
                     ),
                   ),
                 ),
               ),
-              Gap(8.h),
-              GestureDetector(
-                onTap: logic.requestDomainReveal,
-                child: Text(
-                  StrRes.loginTitle,
-                  style: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => logic.switchFormMode(AuthFormMode.register),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.fastOutSlowIn,
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    decoration: BoxDecoration(
+                      color:
+                          logic.currentFormMode.value == AuthFormMode.register
+                              ? Colors.white
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(10.r),
+                      boxShadow: logic.currentFormMode.value ==
+                              AuthFormMode.register
+                          ? [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: Text(
+                      StrRes.register,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 14.sp,
+                        fontWeight:
+                            logic.currentFormMode.value == AuthFormMode.register
+                                ? FontWeight.w600
+                                : FontWeight.w500,
+                        color:
+                            logic.currentFormMode.value == AuthFormMode.register
+                                ? const Color(0xFF3B82F6)
+                                : const Color(0xFF6B7280),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 
-  Widget _buildContent() {
-    return AnimationConfiguration.staggeredList(
-      position: 1,
-      duration: const Duration(milliseconds: 500),
-      child: SlideAnimation(
-        verticalOffset: 40,
-        curve: Curves.easeOutCubic,
-        child: FadeInAnimation(
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(20.r),
+  Widget _buildLoginFields() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
+      child: Form(
+        key: logic.loginFormKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PhoneField(
+              focusNode: logic.loginPhoneFocusNode,
+              controller: logic.loginPhoneController,
             ),
-            child: Column(
-              children: [
-                // TabBar theo style ContactsPage
-                TabBar(
-                  controller: logic.tabController,
-                  indicator: const UnderlineTabIndicator(
-                    borderSide: BorderSide(
-                      color: Color(0xFF9E9E9E),
-                      width: 2.0,
-                    ),
-                    insets: EdgeInsets.symmetric(horizontal: 16.0),
-                  ),
-                  indicatorPadding: EdgeInsets.all(2.w),
-                  dividerColor: Colors.transparent,
-                  splashFactory: NoSplash.splashFactory,
-                  overlayColor: WidgetStateProperty.all(Colors.transparent),
-                  labelColor: const Color(0xFF374151),
-                  unselectedLabelColor: const Color(0xFF9CA3AF),
-                  labelStyle: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  unselectedLabelStyle: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  tabs: [
-                    Tab(text: StrRes.login),
-                    Tab(text: StrRes.register),
-                  ],
-                ),
-
-                // TabBarView
-                Expanded(
-                  child: TabBarView(
-                    controller: logic.tabController,
+            Gap(14.h),
+            PasswordField(
+              focusNode: logic.loginPasswordFocusNode,
+              controller: logic.loginPasswordController,
+            ),
+            Gap(12.h),
+            // Remember Password - Left aligned
+            Obx(
+              () => Align(
+                alignment: Alignment.centerLeft,
+                child: GestureDetector(
+                  onTap: () {
+                    logic.rememberPassword.value = !logic.rememberPassword.value;
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildLoginTab(),
-                      _buildRegisterTab(),
+                      Checkbox(
+                        value: logic.rememberPassword.value,
+                        onChanged: (bool? value) {
+                          logic.rememberPassword.value = value ?? !logic.rememberPassword.value;
+                        },
+                        fillColor: WidgetStateProperty.resolveWith<Color>(
+                          (Set<WidgetState> states) {
+                            if (states.contains(WidgetState.selected)) {
+                              return Colors.blue;
+                            }
+                            return Colors.transparent;
+                          },
+                        ),
+                        checkColor: Colors.white,
+                        side: const BorderSide(
+                          color: Color(0xFFE5E7EB),
+                          width: 1.5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                      Text(
+                        StrRes.rememberPassword,
+                        style: TextStyle(
+                          fontFamily: 'FilsonPro',
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF6B7280),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            Gap(16.h),
+            // Login Button - Centered
+            SizedBox(
+              width: double.infinity,
+              child: Obx(() => AppTextButton(
+                    buttonText: StrRes.login,
+                    backgroundColor: logic.isLoginFormValid.value
+                        ? const Color(0xFF3B82F6)
+                        : const Color(0xFF9CA3AF),
+                    textStyle: TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    onPressed: () async {
+                      logic.loginPasswordFocusNode.unfocus();
+                      if (logic.isLoginFormValid.value &&
+                          logic.loginFormKey.currentState!.validate()) {
+                        logic.onLoginSubmit();
+                      }
+                    },
+                  )),
+            ),
+            Gap(14.h),
+            // Forgot Password - Centered
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  AppNavigator.startResetPassword();
+                },
+                child: Text(
+                  StrRes.forgetPassword,
+                  style: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontSize: 14.sp,
+                    color: const Color(0xFF3B82F6),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            // Gap(10.h),
+            // Agree Terms and Conditions - Left aligned
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TermsAndConditionsText(
+                content: Obx(
+                  () => Checkbox(
+                    value: logic.isLoginAgree.value,
+                    onChanged: (bool? value) {
+                      logic.isLoginAgree.value = !logic.isLoginAgree.value;
+                    },
+                    fillColor: WidgetStateProperty.resolveWith<Color>(
+                      (Set<WidgetState> states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return const Color(0xFF60A5FA);
+                        }
+                        return Colors.transparent;
+                      },
+                    ),
+                    checkColor: Colors.white,
+                    side: const BorderSide(
+                      color: Color(0xFFE5E7EB),
+                      width: 1.5,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Gap(14.h),
+            // Switch to Register
+            Center(
+              child: GestureDetector(
+                onTap: () => logic.switchFormMode(AuthFormMode.register),
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontSize: 13.sp,
+                      color: const Color(0xFF6B7280),
+                    ),
+                    children: [
+                      TextSpan(text: StrRes.noAccountYetQuestion),
+                      TextSpan(
+                        text: ' ${StrRes.registerNow}',
+                        style: const TextStyle(
+                          color: Color(0xFF3B82F6),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Version info
+            _buildVersionInfo(),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildLoginTab() {
+  Widget _buildRegisterFields() {
     return SingleChildScrollView(
-      padding:
-          EdgeInsets.only(top: 20.h, left: 20.w, right: 20.w, bottom: 40.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Login Form Container - MinePage style
-          Form(
-            key: logic.loginFormKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildFieldLabel(StrRes.phoneNumber),
-                Gap(8.h),
-                PhoneField(
-                  focusNode: logic.loginPhoneFocusNode,
-                  controller: logic.loginPhoneController,
-                ),
-                Gap(20.h),
-                _buildFieldLabel(StrRes.passwordLabel),
-                Gap(8.h),
-                PasswordField(
-                  focusNode: logic.loginPasswordFocusNode,
-                  controller: logic.loginPasswordController,
-                ),
-                Obx(
-                  () => ForgetPasswordTextButton(
-                    remember: logic.rememberPassword.value,
-                    onRememberChanged: (bool value) {
-                      logic.rememberPassword.value = value;
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
+      child: Form(
+        key: logic.registerFormKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            NicknameField(
+              controller: logic.registerNameController,
+              focusNode: logic.registerNameFocusNode,
+            ),
+            Gap(14.h),
+            PhoneField(
+              focusNode: logic.registerPhoneFocusNode,
+              controller: logic.registerPhoneController,
+            ),
+            Gap(14.h),
+            PasswordField(
+              focusNode: logic.registerPasswordFocusNode,
+              controller: logic.registerPasswordController,
+              validateFormat: true,
+            ),
+            Gap(14.h),
+            PasswordField(
+              focusNode: logic.registerPasswordConfirmationFocusNode,
+              controller: logic.registerPasswordConfirmationController,
+              compareController: logic.registerPasswordController,
+            ),
+            Gap(14.h),
+            PhoneCodeField(
+              controller: logic.registerVerificationCodeController,
+              onSendCode: logic.onSendVerificationCode,
+            ),
+            // Register Button
+            Gap(16.h), 
+            SizedBox(
+              width: double.infinity,
+              child: Obx(() => AppTextButton(
+                    buttonText: StrRes.createAccount,
+                    backgroundColor: logic.isRegisterFormValid.value
+                        ? const Color(0xFF3B82F6)
+                        : const Color(0xFF9CA3AF),
+                    textStyle: TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    onPressed: () async {
+                      logic.registerPasswordFocusNode.unfocus();
+                      logic.registerPasswordConfirmationFocusNode.unfocus();
+                      if (logic.isRegisterFormValid.value &&
+                          logic.registerFormKey.currentState!.validate()) {
+                        logic.onRegisterSubmit();
+                      }
+                    },
+                  )),
+            ),
+                       TermsAndConditionsText(
+              content: Obx(
+                () => Checkbox(
+                  value: logic.isRegisterAgree.value,
+                  onChanged: (bool? value) {
+                    logic.isRegisterAgree.value = !logic.isRegisterAgree.value;
+                  },
+                  fillColor: WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return const Color(0xFF60A5FA);
+                      }
+                      return Colors.transparent;
                     },
                   ),
-                ), // Terms                 //Gap(18.h),
-                // Terms Container - MinePage style
-                TermsAndConditionsText(
-                  content: Obx(
-                    () => Checkbox(
-                      value: logic.isLoginAgree.value,
-                      onChanged: (bool? value) {
-                        logic.isLoginAgree.value = !logic.isLoginAgree.value;
-                      },
-                      fillColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return const Color(0xFF60A5FA);
-                          }
-                          return Colors.transparent;
-                        },
-                      ),
-                      checkColor: Colors.white,
-                      side: const BorderSide(
-                        color: Color(0xFFE5E7EB),
-                        width: 1.5,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
+                  checkColor: Colors.white,
+                  side: const BorderSide(
+                    color: Color(0xFFE5E7EB),
+                    width: 1.5,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
                   ),
                 ),
-
-                Gap(18.h),
-                Align(
-                  alignment: Alignment.center,
-                  child: Obx(() => AppTextButton(
-                        buttonText: StrRes.login,
-                        buttonWidth: 100.w,
-                        backgroundColor: logic.isLoginFormValid.value
-                            ? const Color(0xFF3B82F6)
-                            : const Color(0xFF9CA3AF),
-                        textStyle: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                        onPressed: () async {
-                          logic.loginPasswordFocusNode.unfocus();
-                          if (logic.isLoginFormValid.value &&
-                              logic.loginFormKey.currentState!.validate()) {
-                            logic.onLoginSubmit();
-                          }
-                        },
-                      )),
-                )
-              ],
+              ),
             ),
-          ),
-
-          // Version info
-          _buildVersionInfo(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRegisterTab() {
-    return SingleChildScrollView(
-      padding:
-          EdgeInsets.only(top: 20.h, left: 20.w, right: 20.w, bottom: 40.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Register Form Container - MinePage style
-          Form(
-            key: logic.registerFormKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildFieldLabel(StrRes.nickname),
-                Gap(8.h),
-                NicknameField(
-                  controller: logic.registerNameController,
-                  focusNode: logic.registerNameFocusNode,
-                ),
-                Gap(20.h),
-                _buildFieldLabel(StrRes.phoneNumber),
-                Gap(8.h),
-                PhoneField(
-                  focusNode: logic.registerPhoneFocusNode,
-                  controller: logic.registerPhoneController,
-                ),
-                Gap(20.h),
-                _buildFieldLabel(StrRes.password),
-                Gap(8.h),
-                PasswordField(
-                  focusNode: logic.registerPasswordFocusNode,
-                  controller: logic.registerPasswordController,
-                  validateFormat: true,
-                ),
-                Gap(20.h),
-                _buildFieldLabel(StrRes.confirmPassword),
-                Gap(8.h),
-                PasswordField(
-                  focusNode: logic.registerPasswordConfirmationFocusNode,
-                  controller: logic.registerPasswordConfirmationController,
-                  compareController: logic.registerPasswordController,
-                ),
-                Gap(20.h),
-                _buildFieldLabel(StrRes.verificationCode),
-                Gap(8.h),
-                PhoneCodeField(
-                  controller: logic.registerVerificationCodeController,
-                  onSendCode: logic.onSendVerificationCode,
-                ),
-                Gap(10.h),
-                TermsAndConditionsText(
-                  content: Obx(
-                    () => Checkbox(
-                      value: logic.isRegisterAgree.value,
-                      onChanged: (bool? value) {
-                        logic.isRegisterAgree.value =
-                            !logic.isRegisterAgree.value;
-                      },
-                      fillColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.selected)) {
-                            return const Color(0xFF60A5FA);
-                          }
-                          return Colors.transparent;
-                        },
-                      ),
-                      checkColor: Colors.white,
-                      side: const BorderSide(
-                        color: Color(0xFFE5E7EB),
-                        width: 1.5,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Obx(() => AppTextButton(
-                        buttonWidth: 200.w,
-                        buttonText: StrRes.createAccount,
-                        backgroundColor: logic.isRegisterFormValid.value
-                            ? const Color(0xFF60A5FA)
-                            : const Color(0xFF9CA3AF),
-                        textStyle: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                        onPressed: () async {
-                          logic.registerPasswordFocusNode.unfocus();
-                          logic.registerPasswordConfirmationFocusNode.unfocus();
-                          if (logic.isRegisterFormValid.value &&
-                              logic.registerFormKey.currentState!.validate()) {
-                            logic.onRegisterSubmit();
-                          }
-                        },
-                      )),
-                )
-              ],
-            ),
-          ),
-
-          Gap(18.h),
-          // Domain info
-          _buildDomainInfo(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFieldLabel(String label, {bool required = true}) {
-    return Row(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'FilsonPro',
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF374151),
-          ),
+            Gap(6.h),
+           
+            // // Switch to Login
+            // Center(
+            //   child: GestureDetector(
+            //     onTap: () => logic.switchFormMode(AuthFormMode.login),
+            //     child: RichText(
+            //       text: TextSpan(
+            //         style: TextStyle(
+            //           fontFamily: 'FilsonPro',
+            //           fontSize: 13.sp,
+            //           color: const Color(0xFF6B7280),
+            //         ),
+            //         children: [
+            //           TextSpan(text: StrRes.accountYet),
+            //           TextSpan(
+            //             text: ' ${StrRes.loginNow}',
+            //             style: const TextStyle(
+            //               color: Color(0xFF3B82F6),
+            //               fontWeight: FontWeight.w600,
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // Version info
+            _buildVersionInfo(),
+          ],
         ),
-        if (required)
-          Text(
-            ' *',
-            style: TextStyle(
-              fontFamily: 'FilsonPro',
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFFEF4444),
-            ),
-          ),
-      ],
+      ),
     );
   }
 
   Widget _buildVersionInfo() {
-    return Column(
-      children: [
-        Gap(24.h),
-        Obx(
-          () => Visibility(
-            visible: logic.versionInfoShow.value,
-            child: Container(
+    return Obx(
+      () => Visibility(
+        visible: logic.versionInfoShow.value,
+        child: Column(
+          children: [
+            Gap(12.h),
+            Container(
+              width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                    offset: const Offset(0, 4),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  ),
-                ],
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(
+                  color: const Color(0xFFE5E7EB),
+                  width: 1,
+                ),
               ),
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(10.w),
               child: Column(
                 children: [
                   Text(
                     logic.versionInfo.value,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 14.sp,
+                      fontSize: 11.sp,
                       color: const Color(0xFF6B7280),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Gap(8.h),
+                  Gap(4.h),
                   GestureDetector(
                     onTap: () {
                       AppNavigator.startGatewaySwitcher();
@@ -462,8 +680,8 @@ class AuthView extends StatelessWidget {
                       logic.currentDomainDisplayText,
                       style: TextStyle(
                         fontFamily: 'FilsonPro',
-                        fontSize: 14.sp,
-                        color: const Color(0xFF60A5FA),
+                        fontSize: 11.sp,
+                        color: const Color(0xFF3B82F6),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -471,51 +689,9 @@ class AuthView extends StatelessWidget {
                 ],
               ),
             ),
-          ),
+          ],
         ),
-      ],
-    );
-  }
-
-  Widget _buildDomainInfo() {
-    return Column(
-      children: [
-        Gap(24.h),
-        Obx(
-          () => Visibility(
-            visible: logic.isShowGatewayDomain.value,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                    offset: const Offset(0, 4),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-              padding: EdgeInsets.all(16.w),
-              child: GestureDetector(
-                onTap: () {
-                  AppNavigator.startGatewaySwitcher();
-                },
-                child: Text(
-                  logic.currentDomainDisplayText,
-                  style: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontSize: 14.sp,
-                    color: const Color(0xFF60A5FA),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
