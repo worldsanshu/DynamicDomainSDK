@@ -429,6 +429,10 @@ class StrRes {
 
   static String get menuTopChat => 'menuTopChat'.tr;
 
+  static String get pin => 'pin'.tr;
+
+  static String get unpin => 'unpin'.tr;
+
   static String get menuAdd => 'menuAdd'.tr;
 
   static String get nMessage => 'nMessage'.tr;

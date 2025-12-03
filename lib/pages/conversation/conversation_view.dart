@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/constants/app_color.dart';
 
 import 'package:openim/core/controller/im_controller.dart';
@@ -17,6 +20,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:soft_edge_blur/soft_edge_blur.dart';
 
 import 'conversation_logic.dart';
+import '../home/home_logic.dart';
 
 class ConversationPage extends StatefulWidget {
   ConversationPage({super.key});
@@ -74,21 +78,6 @@ class _ConversationPageState extends State<ConversationPage> {
             ],
           ),
           actions: [
-            CustomButtom(
-              onPressed: logic.globalSearch,
-              icon: CupertinoIcons.search,
-              colorButton: const Color(0xFF34D399).withOpacity(0.1),
-              colorIcon: const Color(0xFF34D399),
-            ),
-            12.horizontalSpace,
-            CustomButtom(
-              margin: const EdgeInsets.only(right: 10),
-              onPressed: AppNavigator.startContacts,
-              icon: CupertinoIcons.person_2_fill,
-              colorButton: const Color(0xFF60A5FA).withOpacity(0.1),
-              colorIcon: const Color(0xFF60A5FA),
-              badgeCount: logic.homeLogic.unhandledCount.value,
-            ),
           ],
           body: Column(
             children: [
@@ -295,9 +284,212 @@ class _ConversationPageState extends State<ConversationPage> {
                 child: CustomButtom(
                     onPressed: logic.exitAIChatMode, icon: CupertinoIcons.back),
               ),
+
+            // Floating Action Button for New actions
+            if (!logic.isAIChatMode.value)
+              Positioned(
+                bottom: 20.h,
+                right: 20.w,
+                child: GestureDetector(
+                  onTap: () {
+                    _showActionPopup(context);
+                  },
+                  child: Container(
+                    width: 56.w,
+                    height: 56.h,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF212121),
+                      borderRadius: BorderRadius.circular(28.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF212121).withOpacity(0.3),
+                          offset: const Offset(0, 4),
+                          blurRadius: 12,
+                          spreadRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 28.w,
+                    ),
+                  ),
+                ),
+              ),
           ],
         );
       }),
+    );
+  }
+
+  void _showActionPopup(BuildContext context) {
+    final homeLogic = Get.find<HomeLogic>();
+    
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.1),
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (BuildContext buildContext, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
+        return Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 20.h, right: 20.w),
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.3, end: 1.0).animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
+              alignment: Alignment.bottomRight,
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  width: 220.w,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF9CA3AF).withOpacity(0.15),
+                        offset: const Offset(0, 4),
+                        blurRadius: 12,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                    border: Border.all(
+                      color: const Color(0xFFF3F4F6),
+                      width: 1,
+                    ),
+                  ),
+                  child: AnimationLimiter(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildActionItem(
+                          icon: HugeIcons.strokeRoundedAiScan,
+                          title: StrRes.scan,
+                          onTap: () {
+                            Navigator.pop(buildContext);
+                            homeLogic.scan();
+                          },
+                          index: 0,
+                        ),
+                        _buildActionDivider(),
+                        _buildActionItem(
+                          icon: HugeIcons.strokeRoundedUserAdd01,
+                          title: StrRes.addFriend,
+                          onTap: () {
+                            Navigator.pop(buildContext);
+                            homeLogic.addFriend();
+                          },
+                          index: 1,
+                        ),
+                        _buildActionDivider(),
+                        _buildActionItem(
+                          icon: HugeIcons.strokeRoundedUserGroup,
+                          title: StrRes.addGroup,
+                          onTap: () {
+                            Navigator.pop(buildContext);
+                            homeLogic.addGroup();
+                          },
+                          index: 2,
+                        ),
+                        _buildActionDivider(),
+                        _buildActionItem(
+                          icon: HugeIcons.strokeRoundedUserGroup02,
+                          title: StrRes.createGroup,
+                          onTap: () {
+                            Navigator.pop(buildContext);
+                            homeLogic.createGroup();
+                          },
+                          index: 3,
+                          isLast: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+  }
+
+  Widget _buildActionDivider() {
+    return Padding(
+      padding: EdgeInsets.only(left: 70.w),
+      child: const Divider(
+        height: 1,
+        thickness: 1,
+        color: Color(0xFFF3F4F6),
+      ),
+    );
+  }
+
+  Widget _buildActionItem({
+    required List<List<dynamic>> icon,
+    required String title,
+    required VoidCallback onTap,
+    required int index,
+    bool isLast = false,
+  }) {
+    return AnimationConfiguration.staggeredList(
+      position: index,
+      duration: const Duration(milliseconds: 400),
+      child: SlideAnimation(
+        verticalOffset: 40.0,
+        curve: Curves.easeOutCubic,
+        child: FadeInAnimation(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onTap,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                decoration: isLast
+                    ? BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(16.r),
+                          bottomRight: Radius.circular(16.r),
+                        ),
+                      )
+                    : null,
+                child: Row(
+                  children: [
+                    HugeIcon(
+                      icon: icon,
+                      size: 20.w,
+                      color: const Color(0xFF424242),
+                    ),
+                    16.horizontalSpace,
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          fontFamily: 'FilsonPro',
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFF374151),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -955,6 +1147,17 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
+  String _sanitizeText(String text) {
+    if (text.isEmpty) return text;
+    try {
+      // Remove invalid UTF-16 surrogate pairs
+      return text.replaceAll(RegExp(r'[\uD800-\uDBFF](?![\uDC00-\uDFFF])'), '')
+          .replaceAll(RegExp(r'(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]'), '');
+    } catch (e) {
+      return text;
+    }
+  }
+
   Widget _buildConversationItemView(ConversationInfo info) => Slidable(
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
@@ -967,7 +1170,7 @@ class _ConversationPageState extends State<ConversationPage> {
               borderRadius: BorderRadius.circular(16.r),
               padding: EdgeInsets.all(8.w),
               child: Text(
-                logic.isPinned(info) ? StrRes.cancelTop : StrRes.top,
+                logic.isPinned(info) ? StrRes.unpin : StrRes.pin,
                 style: TextStyle(
                   fontFamily: 'FilsonPro',
                   fontSize: 14.sp,
@@ -1030,8 +1233,12 @@ class _ConversationPageState extends State<ConversationPage> {
 
   Widget _buildItemView(ConversationInfo info) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      color: Colors.white,
+      margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE0F2FE).withOpacity(.25),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -1091,7 +1298,7 @@ class _ConversationPageState extends State<ConversationPage> {
                       children: [
                         Expanded(
                           child: MatchTextView(
-                            text: logic.getContent(info),
+                            text: _sanitizeText(logic.getContent(info)),
                             textStyle: TextStyle(
                               fontFamily: 'FilsonPro',
                               fontSize: 14.sp,
@@ -1104,7 +1311,7 @@ class _ConversationPageState extends State<ConversationPage> {
                             prefixSpan: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: logic.getPrefixTag(info),
+                                  text: _sanitizeText(logic.getPrefixTag(info)??""),
                                   style: TextStyle(
                                     fontFamily: 'FilsonPro',
                                     fontSize: 14.sp,
@@ -1688,7 +1895,7 @@ class _ConversationPageState extends State<ConversationPage> {
                             16.horizontalSpace,
                             // Text
                             Text(
-                              StrRes.cancelTop,
+                              logic.isPinned(info) ? StrRes.unpin : StrRes.pin,
                               style: TextStyle(
                                 fontFamily: 'FilsonPro',
                                 fontSize: 16.sp,

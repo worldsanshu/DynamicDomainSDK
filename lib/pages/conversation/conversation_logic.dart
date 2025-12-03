@@ -93,7 +93,7 @@ class ConversationLogic extends SuperController {
   final RxInt selectedTabIndex = 0.obs; // 0: All, 1: Unread
   List<String> get tabTitles => [StrRes.globalSearchAll, StrRes.unread];
 
-  String get selfNickName => imLogic.userInfo.value.nickname!;
+  // String get selfNickName => imLogic.userInfo.value.nickname!;
 
   // Friends list for horizontal display
   List<ISUserInfo> get friendList => friendListLogic.friendList;
@@ -747,7 +747,8 @@ class ConversationLogic extends SuperController {
     if (imSdkStatus != null) {
       return imSdkStatus!;
     }
-    return selfNickName;
+    // return selfNickName;
+    return StrRes.conversations;
   }
 
   /// 自定义会话列表排序规则

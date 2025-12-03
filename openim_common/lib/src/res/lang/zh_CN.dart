@@ -232,6 +232,8 @@ const Map<String, String> zh_CN = {
   'menuMulti': '多选',
   'menuRevoke': '撤回',
   'menuTopChat': '置顶',
+  'pin': '置顶',
+  'unpin': '取消置顶',
   'menuAdd': '添加',
   'nMessage': '%s条新消息',
   'groupAudioCallHint': '%s人正在语音通话',

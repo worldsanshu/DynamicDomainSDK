@@ -49,15 +49,8 @@ class _ContactsPageState extends State<ContactsPage>
           title:
               '${StrRes.contacts} (${logic.friendListLogic.friendList.length})',
           centerTitle: false,
-          showLeading: true,
+          showLeading: false,
           actions: [
-            CustomButtom(
-              onPressed: logic.searchContacts,
-              icon: CupertinoIcons.search,
-              colorButton: const Color(0xFF60A5FA).withOpacity(0.1),
-              colorIcon: const Color(0xFF60A5FA),
-            ),
-            12.horizontalSpace,
             CustomButtom(
               margin: const EdgeInsets.only(right: 10),
               onPressed: logic.addContacts,

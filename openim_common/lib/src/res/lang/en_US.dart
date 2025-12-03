@@ -243,6 +243,8 @@ const Map<String, String> en_US = {
   'menuMulti': 'Select Multiple',
   'menuRevoke': 'Revoke',
   'menuTopChat': 'Pin Chat',
+  'pin': 'Pin',
+  'unpin': 'Unpin',
   'menuAdd': 'Add',
   'nMessage': '%s New Messages',
   'groupAudioCallHint': '%s people in a voice call',

@@ -60,7 +60,7 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
       child: BasePage(
         showAppBar: true,
         centerTitle: false,
-        showLeading: true,
+        showLeading: false,
         customAppBar: WechatStyleSearchBox(
           controller: logic.searchCtrl,
           focusNode: logic.focusNode,

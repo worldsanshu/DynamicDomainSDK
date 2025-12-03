@@ -316,13 +316,68 @@ abstract class CommonSearchLogic extends GetxController {
   Future<SearchResult> searchTextMessage({
     int pageIndex = 1,
     int count = 20,
-  }) =>
-      OpenIM.iMManager.messageManager.searchLocalMessages(
-        keywordList: [searchKey],
-        messageTypeList: [MessageType.text, MessageType.atText],
-        pageIndex: pageIndex,
-        count: count,
-      );
+  }) async {
+    final result = await OpenIM.iMManager.messageManager.searchLocalMessages(
+      keywordList: [searchKey],
+      messageTypeList: [
+        MessageType.text,
+        MessageType.atText,
+        MessageType.quote
+      ],
+      pageIndex: pageIndex,
+      count: count,
+    );
+
+    // Filter results to include reply messages - search BOTH reply text and quoted message content
+    if (result.searchResultItems != null &&
+        result.searchResultItems!.isNotEmpty) {
+      for (var item in result.searchResultItems!) {
+        if (item.messageList != null) {
+          final filteredMessages = item.messageList!.where((msg) {
+            final keyword = searchKey.toLowerCase();
+            if (msg.contentType == MessageType.text) {
+              final content = (msg.textElem?.content ?? '').toLowerCase();
+              return content.contains(keyword);
+            }
+            if (msg.contentType == MessageType.atText) {
+              final content = (msg.atTextElem?.text ?? '').toLowerCase();
+              return content.contains(keyword);
+            }
+            if (msg.contentType == MessageType.quote) {
+              // Check reply text (the wrapper message)
+              final replyText = (msg.quoteElem?.text ?? '').toLowerCase();
+              if (replyText.contains(keyword)) return true;
+
+              // Check quoted message content
+              final quotedMsg = msg.quoteElem?.quoteMessage;
+              if (quotedMsg != null) {
+                if (quotedMsg.contentType == MessageType.text) {
+                  final quotedText =
+                      (quotedMsg.textElem?.content ?? '').toLowerCase();
+                  if (quotedText.contains(keyword)) return true;
+                }
+                if (quotedMsg.contentType == MessageType.atText) {
+                  final quotedText =
+                      (quotedMsg.atTextElem?.text ?? '').toLowerCase();
+                  if (quotedText.contains(keyword)) return true;
+                }
+              }
+              return false;
+            }
+            return false;
+          }).toList();
+          item.messageList = filteredMessages;
+          // Update message count to reflect filtered results
+          item.messageCount = filteredMessages.length;
+        }
+      }
+      // Remove items with empty message lists
+      result.searchResultItems!
+          .removeWhere((item) => item.messageList?.isEmpty ?? true);
+    }
+
+    return result;
+  }
 
   Future<SearchResult> searchFileMessage({
     int pageIndex = 1,

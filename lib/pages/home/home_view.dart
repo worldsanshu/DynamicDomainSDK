@@ -8,7 +8,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:openim_common/openim_common.dart';
 
+import '../contacts/contacts_view.dart';
 import '../conversation/conversation_view.dart';
+import '../global_search/global_search_view.dart';
 import '../mine/mine_view.dart';
 import '../workbench/workbench_view.dart';
 import 'home_logic.dart';
@@ -23,18 +25,22 @@ class HomePage extends StatelessWidget {
         backgroundColor: const Color(0xFFF9FAFB),
         body: LazyTabView(
           currentIndex: logic.index.value,
-          tabCount: logic.discoverPageURL.isNotEmpty ? 3 : 2,
+          tabCount: logic.discoverPageURL.isNotEmpty ? 5 : 4,
           tabBuilder: (context, index) {
             switch (index) {
               case 0:
                 return ConversationPage();
               case 1:
+                return const ContactsPage();
+              case 2:
+                return const GlobalSearchPage();
+              case 3:
                 if (logic.discoverPageURL.isNotEmpty) {
                   return WorkbenchPage();
                 } else {
                   return MinePage();
                 }
-              case 2:
+              case 4:
                 return MinePage();
               default:
                 return ConversationPage();
@@ -51,6 +57,7 @@ class HomePage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              // Home/Conversation tab
               Stack(
                 children: [
                   GestureDetector(
@@ -60,7 +67,7 @@ class HomePage extends StatelessWidget {
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 20.0, horizontal: 40.0),
+                          vertical: 20.0, horizontal: 30.0),
                       child: HugeIcon(
                         icon: HugeIcons.strokeRoundedHome01,
                         color: logic.index.value == 0
@@ -73,7 +80,7 @@ class HomePage extends StatelessWidget {
                   if (logic.unreadMsgCount.value > 0)
                     Positioned(
                       top: 5.h,
-                      right: 18.w,
+                      right: 10.w,
                       child: Container(
                         constraints:
                             BoxConstraints(minWidth: 24.w, minHeight: 24.h),
@@ -99,46 +106,85 @@ class HomePage extends StatelessWidget {
                     ),
                 ],
               ),
-              GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () => _showActionBottomSheet(context),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  width: MediaQuery.of(context).size.width / 3,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF212121),
-                    borderRadius: BorderRadius.circular(40.r),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        size: 20,
-                        Icons.add,
-                        color: Colors.white,
+              // Contacts tab
+              Stack(
+                children: [
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      logic.switchTab(1);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: 30.0),
+                      child: HugeIcon(
+                        icon: HugeIcons.strokeRoundedUserMultiple02,
+                        color: logic.index.value == 1
+                            ? const Color(0xFF3B82F6)
+                            : const Color(0xFF6B7280),
+                        size: 24.w,
                       ),
-                      Text(
-                        StrRes.newAction,
-                        style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 14.sp,
-                            color: Colors.white),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  if (logic.unhandledCount.value > 0)
+                    Positioned(
+                      top: 5.h,
+                      right: 10.w,
+                      child: Container(
+                        constraints:
+                            BoxConstraints(minWidth: 24.w, minHeight: 24.h),
+                        padding: EdgeInsets.symmetric(horizontal: 6.w),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            logic.unhandledCount.value > 99
+                                ? '99+'
+                                : logic.unhandledCount.value.toString(),
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
+              // Global Search tab
               GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  logic.switchTab(1);
+                  logic.switchTab(2);
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 20.0, horizontal: 40.0),
+                      vertical: 20.0, horizontal: 30.0),
+                  child: HugeIcon(
+                    icon: HugeIcons.strokeRoundedSearch01,
+                    color: logic.index.value == 2
+                        ? const Color(0xFF3B82F6)
+                        : const Color(0xFF6B7280),
+                    size: 24.w,
+                  ),
+                ),
+              ),
+              // User/Profile tab
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  logic.switchTab(3);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 30.0),
                   child: HugeIcon(
                     icon: HugeIcons.strokeRoundedUser03,
-                    color: logic.index.value == 1
+                    color: logic.index.value == 3
                         ? const Color(0xFF3B82F6)
                         : const Color(0xFF6B7280),
                     size: 24.w,
