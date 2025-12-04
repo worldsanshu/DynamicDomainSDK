@@ -23,8 +23,8 @@ class SendVerificationApplicationPage extends StatelessWidget {
         centerTitle: false,
         showLeading: true,
         actions: [
-          CustomButtom(
-            onPressed: logic.send,
+          CustomButton(
+            onTap: logic.send,
             title: StrRes.send,
           ),
         ],

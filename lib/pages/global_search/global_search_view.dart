@@ -65,7 +65,7 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
           children: [
             // 1. Header Background
             Container(
-              height: 130.h,
+              height: 150.h,
               width: double.infinity,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -82,7 +82,7 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
 
             // 2. Main Content Card
             Container(
-              margin: EdgeInsets.only(top: 70.h),
+              margin: EdgeInsets.only(top: 90.h),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
@@ -166,7 +166,7 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
 
             // 3. Search Box (Overlapping)
             Positioned(
-              top: 30.h,
+              top: 50.h,
               left: 20.w,
               right: 20.w,
               child: Container(

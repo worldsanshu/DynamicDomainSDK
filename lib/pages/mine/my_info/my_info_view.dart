@@ -5,13 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:openim_common/openim_common.dart';
 
 import '../../../core/controller/im_controller.dart';
-import '../../../widgets/base_page.dart';
 import 'my_info_logic.dart';
 
 class MyInfoPage extends StatelessWidget {
@@ -22,379 +20,350 @@ class MyInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-      showAppBar: true,
-      centerTitle: false,
-      showLeading: true,
-      customAppBar: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final primaryColor = Theme.of(context).primaryColor;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
+      body: Stack(
+        alignment: Alignment.topCenter,
         children: [
-          Text(
-            StrRes.myInfo,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w500,
-              fontSize: 23,
-              color: Colors.black,
-            ).copyWith(fontSize: 23.sp),
-          ),
-          Text(
-            StrRes.personalInformation,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w400,
-              color: Color(0xFFBDBDBD),
-            ).copyWith(fontSize: 12.sp),
-          ),
-        ],
-      ),
-      body: _buildContentContainer(),
-    );
-  }
-
-  Widget _buildContentContainer() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.only(bottom: 20.h),
-        child: AnimationLimiter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: AnimationConfiguration.toStaggeredList(
-              duration: const Duration(milliseconds: 450),
-              childAnimationBuilder: (widget) => SlideAnimation(
-                verticalOffset: 50.0,
-                curve: Curves.easeOutQuart,
-                child: FadeInAnimation(child: widget),
+          // 1. Header Background
+          Container(
+            height: 220.h,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  primaryColor.withOpacity(0.8),
+                  primaryColor,
+                  primaryColor.withOpacity(0.95),
+                ],
               ),
-              children: [
-                20.verticalSpace,
-                Obx(() => _buildProfileCard()),
-                _buildMenuSection([
-                  Obx(
-                    () => _buildMenuItem(
-                      icon: HugeIcons.strokeRoundedUser,
-                      label: StrRes.nickname,
-                      value: imLogic.userInfo.value.nickname,
-                      onTap: logic.editMyName,
-                      showDivider: true,
-                    ),
-                  ),
-                  Obx(() => _buildMenuItem(
-                        icon: HugeIcons.strokeRoundedUserMultiple,
-                        label: StrRes.gender,
-                        value: imLogic.userInfo.value.gender == 1
-                            ? StrRes.man
-                            : StrRes.woman,
-                        onTap: logic.selectGender,
-                        showDivider: true,
-                      )),
-                  Obx(
-                    () => _buildMenuItem(
-                      icon: HugeIcons.strokeRoundedCalendar03,
-                      label: StrRes.birthDay,
-                      value: DateUtil.formatDateMs(
-                        imLogic.userInfo.value.birth ?? 0,
-                        format: IMUtils.getTimeFormat1(),
-                      ),
-                      onTap: logic.openDatePicker,
-                      showDivider: true,
-                    ),
-                  ),
-                  _buildMenuItem(
-                    icon: HugeIcons.strokeRoundedCall,
-                    label: StrRes.mobile,
-                    value: imLogic.userInfo.value.phoneNumber,
-                    showDivider: false,
-                    hideArrow: true,
-                  ),
-                ]),
-                24.verticalSpace,
-              ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileCard() {
-    final user = imLogic.userInfo.value;
-
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            offset: const Offset(2, 2),
-            blurRadius: 4,
-          ),
-          BoxShadow(
-            color: Colors.white.withOpacity(0.8),
-            offset: const Offset(-1, -1),
-            blurRadius: 4,
-          ),
-        ],
-        border: Border.all(
-          color: Colors.white,
-          width: 1.5,
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.9),
-            const Color(0xFFF8FAFC),
-          ],
-          stops: const [0.05, 0.3],
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16.r),
-          child: Padding(
-            padding: EdgeInsets.all(10.w),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Avatar
-                Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFFE5E7EB),
-                          width: 1.5.w,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF9CA3AF).withOpacity(0.1),
-                            blurRadius: 8.r,
+            child: SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Get.back(),
+                        child: Container(
+                          padding: EdgeInsets.all(8.w),
+                          color: Colors.transparent,
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                            size: 20.w,
                           ),
-                        ],
+                        ),
                       ),
-                      child: InkWell(
-                        onTap: logic.openUpdateAvatarSheet,
-                        child: AvatarView(
-                          url: user.faceURL,
-                          text: user.nickname,
-                          width: 68.w,
-                          height: 68.h,
-                          textStyle: TextStyle(
+                      Expanded(
+                        child: Text(
+                          StrRes.myInfo,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
                             fontFamily: 'FilsonPro',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20.sp,
                             color: Colors.white,
                           ),
-                          isCircle: true,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                16.horizontalSpace,
-
-                // Profile info
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Nickname
-                          Text(
-                            user.nickname ?? StrRes.unknown,
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF374151),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          5.verticalSpace,
-                          // User ID
-                          GestureDetector(
-                            onTap: () {
-                              if (user.userID != null) {
-                                Clipboard.setData(
-                                    ClipboardData(text: user.userID!));
-                                ScaffoldMessenger.of(Get.context!).showSnackBar(
-                                    SnackBar(content: Text(StrRes.idCopied)));
-                              }
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 0.w,
-                                vertical: 8.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    '${StrRes.userIdLabel}${user.userID ?? ''}',
-                                    style: TextStyle(
-                                      fontFamily: 'FilsonPro',
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: const Color(0xFF6B7280),
-                                      letterSpacing: 0.3,
-                                    ),
-                                  ),
-                                  4.horizontalSpace,
-                                  Icon(
-                                    CupertinoIcons.doc_on_doc,
-                                    size: 14.w,
-                                    color: const Color(0xFF6B7280),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      GestureDetector(
-                        onTap: logic.viewMyQrcode,
-                        child: const HugeIcon(
-                          icon: HugeIcons.strokeRoundedQrCode01,
-                          color: Colors.black,
-                        ),
-                      ),
+                      SizedBox(width: 36.w), // Balance the back button
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildMenuSection(List<Widget> items) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.06),
-            offset: const Offset(0, 2),
-            blurRadius: 6.r,
-          ),
-        ],
-        border: Border.all(
-          color: const Color(0xFFF3F4F6),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: items,
-      ),
-    );
-  }
-
-  Widget _buildMenuItem({
-    required List<List<dynamic>> icon,
-    required String label,
-    String? value,
-    VoidCallback? onTap,
-    required bool showDivider,
-    bool hideArrow = false,
-  }) {
-    return Column(
-      children: [
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-              child: Row(
+          // 2. Main Content
+          Container(
+            margin: EdgeInsets.only(top: 160.h),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8F9FA),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+            ),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                  top: 60.h, bottom: 40.h, left: 16.w, right: 16.w),
+              child: Column(
                 children: [
-                  HugeIcon(
-                    icon: icon,
-                    size: 20.w,
-                    color: const Color(0xFF424242),
-                  ),
-                  16.horizontalSpace,
-                  Expanded(
+                  // User ID
+                  Obx(() {
+                    final user = imLogic.userInfo.value;
+                    return GestureDetector(
+                      onTap: () {
+                        if (user.userID != null) {
+                          Clipboard.setData(ClipboardData(text: user.userID!));
+                          ScaffoldMessenger.of(Get.context!).showSnackBar(
+                              SnackBar(content: Text(StrRes.idCopied)));
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.w, vertical: 8.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'ID: ${user.userID ?? ''}',
+                              style: TextStyle(
+                                fontFamily: 'FilsonPro',
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF6B7280),
+                              ),
+                            ),
+                            8.horizontalSpace,
+                            Icon(
+                              CupertinoIcons.doc_on_doc,
+                              size: 14.sp,
+                              color: primaryColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+
+                  24.verticalSpace,
+
+                  // Info Group
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 16,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          label,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF374151),
+                        _buildInfoItem(
+                          icon: HugeIcons.strokeRoundedUser,
+                          label: StrRes.nickname,
+                          valueObx: () => imLogic.userInfo.value.nickname ?? '',
+                          onTap: logic.editMyName,
+                          isFirst: true,
+                        ),
+                        _buildDivider(),
+                        _buildInfoItem(
+                          icon: HugeIcons.strokeRoundedUserMultiple,
+                          label: StrRes.gender,
+                          valueObx: () => imLogic.userInfo.value.gender == 1
+                              ? StrRes.man
+                              : StrRes.woman,
+                          onTap: logic.selectGender,
+                        ),
+                        _buildDivider(),
+                        _buildInfoItem(
+                          icon: HugeIcons.strokeRoundedCalendar03,
+                          label: StrRes.birthDay,
+                          valueObx: () => DateUtil.formatDateMs(
+                            imLogic.userInfo.value.birth ?? 0,
+                            format: IMUtils.getTimeFormat1(),
+                          ),
+                          onTap: logic.openDatePicker,
+                        ),
+                        _buildDivider(),
+                        _buildInfoItem(
+                          icon: HugeIcons.strokeRoundedCall,
+                          label: StrRes.mobile,
+                          valueObx: () =>
+                              imLogic.userInfo.value.phoneNumber ?? '',
+                          hideArrow: true,
+                        ),
+                        _buildDivider(),
+                        _buildInfoItem(
+                          icon: HugeIcons.strokeRoundedQrCode01,
+                          label: StrRes.qrcode,
+                          onTap: logic.viewMyQrcode,
+                          isLast: true,
+                          trailing: Icon(
+                            CupertinoIcons.qrcode,
+                            size: 20.w,
+                            color: const Color(0xFF9CA3AF),
                           ),
                         ),
-                        if (value != null && value.isNotEmpty) ...[
-                          4.verticalSpace,
-                          Text(
-                            value,
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF6B7280),
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ),
-                  if (!hideArrow)
-                    Icon(
-                      CupertinoIcons.chevron_right,
-                      size: 16.w,
-                      color: const Color(0xFF9CA3AF),
-                    ),
                 ],
               ),
             ),
           ),
-        ),
-        if (showDivider)
-          Padding(
-            padding: EdgeInsets.only(left: 70.w),
-            child: const Divider(
-              height: 1,
-              thickness: 1,
-              color: Color(0xFFF3F4F6),
-            ),
+
+          // 3. Avatar (Overlapping)
+          Positioned(
+            top: 110.h,
+            child: Obx(() {
+              final user = imLogic.userInfo.value;
+              return GestureDetector(
+                onTap: logic.openUpdateAvatarSheet,
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 4.w),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: AvatarView(
+                        url: user.faceURL,
+                        text: user.nickname,
+                        width: 100.w,
+                        height: 100.w,
+                        textStyle:
+                            TextStyle(fontSize: 32.sp, color: Colors.white),
+                        isCircle: true,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(right: 4.w, bottom: 4.w),
+                      padding: EdgeInsets.all(8.w),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF212121),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2.w),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: HugeIcon(
+                        icon: HugeIcons.strokeRoundedCamera01,
+                        size: 14.w,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
           ),
-      ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: EdgeInsets.only(left: 56.w, right: 16.w),
+      child: const Divider(height: 1, color: Color(0xFFF3F4F6)),
+    );
+  }
+
+  Widget _buildInfoItem({
+    required dynamic icon,
+    required String label,
+    String Function()? valueObx,
+    VoidCallback? onTap,
+    bool hideArrow = false,
+    bool isFirst = false,
+    bool isLast = false,
+    Widget? trailing,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.vertical(
+          top: isFirst ? Radius.circular(20.r) : Radius.zero,
+          bottom: isLast ? Radius.circular(20.r) : Radius.zero,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8.w),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: icon is IconData
+                    ? Icon(icon, size: 20.w, color: const Color(0xFF4B5563))
+                    : HugeIcon(
+                        icon: icon,
+                        size: 20.w,
+                        color: const Color(0xFF4B5563),
+                      ),
+              ),
+              16.horizontalSpace,
+              Text(
+                label,
+                style: TextStyle(
+                  fontFamily: 'FilsonPro',
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1F2937),
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (valueObx != null)
+                      Obx(() => Flexible(
+                            child: Text(
+                              valueObx(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: 'FilsonPro',
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF6B7280),
+                              ),
+                            ),
+                          )),
+                    if (trailing != null) trailing,
+                  ],
+                ),
+              ),
+              if (!hideArrow && trailing == null) ...[
+                8.horizontalSpace,
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14.w,
+                  color: const Color(0xFF9CA3AF),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

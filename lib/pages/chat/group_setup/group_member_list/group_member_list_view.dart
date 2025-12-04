@@ -52,9 +52,9 @@ class GroupMemberListPage extends StatelessWidget {
           ),
           actions: logic.opType == GroupMemberOpType.view
               ? [
-                  CustomButtom(
+                  CustomButton(
                     margin: EdgeInsets.only(right: 10.w, top: 6.h, bottom: 6.h),
-                    onPressed: () => logic.poController.showMenu(),
+                    onTap: () => logic.poController.showMenu(),
                     icon: Ionicons.ellipsis_horizontal,
                     colorButton: Colors.white.withOpacity(0.3),
                     colorIcon: Colors.white,

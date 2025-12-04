@@ -25,10 +25,10 @@ class EditGroupAnnouncementPage extends StatelessWidget {
             showLeading: true,
             actions: logic.hasEditPermissions.value
                 ? [
-                    CustomButtom(
+                    CustomButton(
                       title:
                           logic.onlyRead.value ? StrRes.edit : StrRes.publish,
-                      onPressed:
+                      onTap:
                           logic.onlyRead.value ? logic.editing : logic.publish,
                       colorButton: Colors.white.withOpacity(0.3),
                     )

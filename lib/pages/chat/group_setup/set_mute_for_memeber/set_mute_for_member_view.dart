@@ -22,9 +22,9 @@ class SetMuteForGroupMemberPage extends StatelessWidget {
       centerTitle: false,
       showLeading: true,
       actions: [
-        CustomButtom(
+        CustomButton(
           title: StrRes.determine,
-          onPressed: logic.completed,
+          onTap: logic.completed,
           colorButton: Colors.white.withOpacity(0.3),
         ),
       ],

@@ -1,8 +1,15 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomButtom extends StatefulWidget {
-  final Function()? onPressed;
+/// A customizable button widget that supports:
+/// - Icon only button (circular)
+/// - Text only button
+/// - Icon with label below (action button style)
+/// - Badge count indicator
+class CustomButton extends StatelessWidget {
+  final Function()? onTap;
   final String? title;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
@@ -12,9 +19,20 @@ class CustomButtom extends StatefulWidget {
   final int? badgeCount;
   final double? fontSize;
 
-  const CustomButtom({
+  /// Optional label displayed below the button.
+  /// When provided, creates an action button with icon above and label below.
+  final String? label;
+
+  /// Color for the label text. Defaults to Color(0xFF374151).
+  final Color? labelColor;
+
+  /// Whether to use primary color from theme for button and icon colors.
+  /// Defaults to false.
+  final bool usePrimaryColor;
+
+  const CustomButton({
     super.key,
-    this.onPressed,
+    this.onTap,
     this.title,
     this.margin,
     this.padding,
@@ -23,51 +41,56 @@ class CustomButtom extends StatefulWidget {
     this.colorIcon,
     this.badgeCount,
     this.fontSize,
+    this.label,
+    this.labelColor,
+    this.usePrimaryColor = false,
   });
 
   @override
-  State<CustomButtom> createState() => _CustomButtomState();
-}
-
-class _CustomButtomState extends State<CustomButtom> {
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onPressed,
+    final primaryColor = Theme.of(context).primaryColor;
+
+    final effectiveButtonColor = colorButton ??
+        (usePrimaryColor ? primaryColor.withOpacity(0.15) : const Color(0xFFF5F5F5));
+    final effectiveIconColor = colorIcon ??
+        (usePrimaryColor ? primaryColor : const Color(0xFF757575));
+    final effectivePadding = padding ??
+        (label != null
+            ? EdgeInsets.all(16.w)
+            : EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h));
+
+    final button = GestureDetector(
+      onTap: onTap,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           Container(
-            margin: widget.margin,
-            padding: widget.padding ??
-                EdgeInsets.symmetric(
-                  horizontal: 10.w,
-                  vertical: 10.h,
-                ),
+            margin: margin,
+            padding: effectivePadding,
             decoration: BoxDecoration(
-              color: widget.colorButton ?? const Color(0xFFF5F5F5),
+              color: effectiveButtonColor,
               borderRadius: BorderRadius.circular(50.r),
             ),
             child: IntrinsicWidth(
-              child: widget.icon != null
+              child: icon != null
                   ? Icon(
-                      color: widget.colorIcon ?? const Color(0xFF757575),
-                      widget.icon,
+                      icon,
+                      color: effectiveIconColor,
                       size: 16.w,
                     )
                   : Text(
-                      widget.title ?? '',
+                      title ?? '',
                       style: TextStyle(
                         fontFamily: 'FilsonPro',
-                        color: widget.colorIcon ?? const Color(0xFF757575),
-                        fontSize: widget.fontSize ?? 17.sp,
+                        color: effectiveIconColor,
+                        fontSize: fontSize ?? 17.sp,
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
                     ),
             ),
           ),
-          if (widget.badgeCount != null && widget.badgeCount! > 0)
+          if (badgeCount != null && badgeCount! > 0)
             Positioned(
               top: -5.h,
               right: 0.w,
@@ -80,9 +103,7 @@ class _CustomButtomState extends State<CustomButtom> {
                 ),
                 child: Center(
                   child: Text(
-                    widget.badgeCount! > 99
-                        ? '99+'
-                        : widget.badgeCount.toString(),
+                    badgeCount! > 99 ? '99+' : badgeCount.toString(),
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
                       fontSize: 12.sp,
@@ -96,5 +117,27 @@ class _CustomButtomState extends State<CustomButtom> {
         ],
       ),
     );
+
+    // If label is provided, wrap button with Column to show label below
+    if (label != null) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          button,
+          8.verticalSpace,
+          Text(
+            label!,
+            style: TextStyle(
+              fontFamily: 'FilsonPro',
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w500,
+              color: labelColor ?? const Color(0xFF374151),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return button;
   }
 }

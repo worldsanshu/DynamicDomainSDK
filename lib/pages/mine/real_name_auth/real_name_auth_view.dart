@@ -8,9 +8,8 @@ import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/constants/app_color.dart';
-import 'package:openim_common/openim_common.dart';
-import 'package:openim/widgets/base_page.dart';
 import 'package:openim/widgets/custom_buttom.dart';
+import 'package:openim_common/openim_common.dart';
 import 'package:openim/pages/auth/widget/app_text_button.dart';
 import 'real_name_auth_logic.dart';
 
@@ -21,100 +20,172 @@ class RealNameAuthView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-      showAppBar: true,
-      centerTitle: false,
-      showLeading: true,
-      customAppBar: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final primaryColor = Theme.of(context).primaryColor;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        alignment: Alignment.topCenter,
         children: [
-          Text(
-            StrRes.realNameAuth,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-              color: Colors.black,
-            ).copyWith(fontSize: 20.sp),
-          ),
-          Text(
-            StrRes.identityVerification,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF9CA3AF),
-            ).copyWith(fontSize: 12.sp),
-          ),
-        ],
-      ),
-      actions: [
-        CustomButtom(
-          margin: const EdgeInsets.only(right: 5),
-          onPressed: logic.loadAuthInfo,
-          icon: CupertinoIcons.refresh,
-          colorButton: const Color(0xFF34D399).withOpacity(0.1),
-          colorIcon: const Color(0xFF34D399),
-        ),
-      ],
-      body: Obx(
-        () => logic.isLoading.value
-            ? const Center(
-                child: SpinKitFadingCircle(color: Color(0xFF8E9AB0)),
-              )
-            : AnimationLimiter(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.only(bottom: 20.h),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: AnimationConfiguration.toStaggeredList(
-                        duration: const Duration(milliseconds: 420),
-                        childAnimationBuilder: (widget) => SlideAnimation(
-                          verticalOffset: 40.0,
-                          curve: Curves.easeOutQuart,
-                          child: FadeInAnimation(child: widget),
+          // 1. Header Background
+          Container(
+            height: 200.h,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  primaryColor.withOpacity(0.7),
+                  primaryColor,
+                  primaryColor.withOpacity(0.9),
+                ],
+              ),
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () => Get.back(),
+                          behavior: HitTestBehavior.translucent,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.w),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                              size: 20.sp,
+                            ),
+                          ),
                         ),
-                        children: [
-                          20.verticalSpace,
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: _buildStatusCard(),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                StrRes.realNameAuth,
+                                style: TextStyle(
+                                  fontFamily: 'FilsonPro',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 24.sp,
+                                  color: Colors.white,
+                                  height: 1.2,
+                                ),
+                              ),
+                              6.verticalSpace,
+                              Text(
+                                StrRes.identityVerification,
+                                style: TextStyle(
+                                  fontFamily: 'FilsonPro',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13.sp,
+                                  color: Colors.white.withOpacity(0.85),
+                                ),
+                              ),
+                            ],
                           ),
-                          12.verticalSpace,
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: logic.canEdit
-                                ? Column(
-                                    children: [
-                                      _buildFormCard(),
-                                      12.verticalSpace,
-                                      _buildImageUploadCard(),
-                                      20.verticalSpace,
-                                      _buildSubmitButton(),
-                                    ],
-                                  )
-                                : logic.authStatus.value == 3
-                                    ? Column(
-                                        children: [
-                                          _buildRejectReasonCard(),
-                                          12.verticalSpace,
-                                          _buildResubmitButton(),
-                                        ],
-                                      )
-                                    : _buildApprovedInfoCard(),
-                          ),
-                          30.verticalSpace,
-                        ],
-                      ),
+                        ),
+                        10.horizontalSpace,
+                        CustomButton(
+                          icon: CupertinoIcons.refresh,
+                          onTap: logic.loadAuthInfo,
+                        ),
+                      ],
                     ),
-                  ),
+                  ],
                 ),
               ),
+            ),
+          ),
+
+          // 2. Main Content Card
+          Container(
+            margin: EdgeInsets.only(top: 150.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, -5),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+              child: Obx(
+                () => logic.isLoading.value
+                    ? const Center(
+                        child: SpinKitFadingCircle(color: Color(0xFF8E9AB0)),
+                      )
+                    : AnimationLimiter(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.only(bottom: 40.h, top: 20.h),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: AnimationConfiguration.toStaggeredList(
+                                duration: const Duration(milliseconds: 420),
+                                childAnimationBuilder: (widget) =>
+                                    SlideAnimation(
+                                  verticalOffset: 40.0,
+                                  curve: Curves.easeOutQuart,
+                                  child: FadeInAnimation(child: widget),
+                                ),
+                                children: [
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16.w),
+                                    child: _buildStatusCard(),
+                                  ),
+                                  12.verticalSpace,
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16.w),
+                                    child: logic.canEdit
+                                        ? Column(
+                                            children: [
+                                              _buildFormCard(),
+                                              12.verticalSpace,
+                                              _buildImageUploadCard(),
+                                              20.verticalSpace,
+                                              _buildSubmitButton(),
+                                            ],
+                                          )
+                                        : logic.authStatus.value == 3
+                                            ? Column(
+                                                children: [
+                                                  _buildRejectReasonCard(),
+                                                  12.verticalSpace,
+                                                  _buildResubmitButton(),
+                                                ],
+                                              )
+                                            : _buildApprovedInfoCard(),
+                                  ),
+                                  30.verticalSpace,
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -122,34 +193,36 @@ class RealNameAuthView extends StatelessWidget {
   Widget _buildStatusCard() {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(18.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14.r),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0A2540).withOpacity(0.04),
-            offset: const Offset(0, 1),
-            blurRadius: 6.r,
+            color: const Color(0xFF0A2540).withOpacity(0.08),
+            offset: const Offset(0, 2),
+            blurRadius: 8.r,
           ),
         ],
+        border: Border.all(color: const Color(0xFFE5E7EB)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 44.w,
-                height: 44.h,
+                width: 48.w,
+                height: 48.h,
                 decoration: BoxDecoration(
-                  color: logic.statusColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(10.r),
+                  color: logic.statusColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Center(
                   child: HugeIcon(
                     icon: _getStatusIcon(logic.authStatus.value),
-                    size: 20.w,
+                    size: 24.w,
                     color: logic.statusColor,
                   ),
                 ),
@@ -162,18 +235,19 @@ class RealNameAuthView extends StatelessWidget {
                     Text(
                       StrRes.realNameAuthStatus,
                       style: const TextStyle(fontFamily: 'FilsonPro').copyWith(
-                        fontSize: 14.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w500,
-                        color: const Color(0xFF6B7280),
+                        color: const Color(0xFF9CA3AF),
                       ),
                     ),
-                    4.verticalSpace,
+                    6.verticalSpace,
                     Text(
                       logic.statusText,
                       style: const TextStyle(fontFamily: 'FilsonPro').copyWith(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
                         color: logic.statusColor,
+                        height: 1.2,
                       ),
                     ),
                   ],
@@ -238,6 +312,7 @@ class RealNameAuthView extends StatelessWidget {
             blurRadius: 6.r,
           ),
         ],
+        border: Border.all(color: const Color(0xFFF3F4F6)),
       ),
       child: Form(
         key: logic.formKey,
@@ -369,6 +444,7 @@ class RealNameAuthView extends StatelessWidget {
             blurRadius: 6.r,
           ),
         ],
+        border: Border.all(color: const Color(0xFFF3F4F6)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,20 +633,38 @@ class RealNameAuthView extends StatelessWidget {
 
   Widget _buildSubmitButton() {
     return Obx(
-      () => AppTextButton(
-        buttonText: StrRes.submitAuth,
-        buttonWidth: 100.w,
-        // buttonHeight: 52.h,
-        backgroundColor: logic.isSubmitButtonEnabled.value
-            ? const Color(0xFF3B82F6)
-            : const Color(0xFF9CA3AF),
-        textStyle: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
+      () => SizedBox(
+        width: double.infinity,
+        height: 56.h,
+        child: ElevatedButton(
+          onPressed: logic.isSubmitButtonEnabled.value
+              ? logic.submitRealNameAuth
+              : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: logic.isSubmitButtonEnabled.value
+                ? const Color(0xFF3B82F6)
+                : const Color(0xFFF3F4F6),
+            disabledBackgroundColor: const Color(0xFFF3F4F6),
+            foregroundColor: Colors.white,
+            disabledForegroundColor: const Color(0xFFD1D5DB),
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14.r),
+            ),
+          ),
+          child: Text(
+            StrRes.submitAuth,
+            style: TextStyle(
+              fontFamily: 'FilsonPro',
+              fontSize: 17.sp,
+              fontWeight: FontWeight.w700,
+              color: logic.isSubmitButtonEnabled.value
+                  ? Colors.white
+                  : const Color(0xFFC5CAD3),
+            ),
+          ),
         ),
-        onPressed: logic.submitRealNameAuth,
       ),
     );
   }

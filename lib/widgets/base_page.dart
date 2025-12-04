@@ -55,9 +55,9 @@ class _BasePageState extends State<BasePage> {
               titleSpacing: 0,
               leading: widget.showLeading
                   ? widget.leading ??
-                      CustomButtom(
+                      CustomButton(
                         margin: const EdgeInsets.only(left: 5, top: 5),
-                        onPressed: () => widget.leadingAction != null
+                        onTap: () => widget.leadingAction != null
                             ? widget.leadingAction!()
                             : Get.back(),
                         icon: Icons.arrow_back_ios_new,

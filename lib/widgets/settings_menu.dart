@@ -185,7 +185,7 @@ class SettingsMenuItem extends StatelessWidget {
         height: 30.h,
         decoration: BoxDecoration(
           color: switchValue == true
-              ? const Color(0xFF10B981)
+              ? const Color(0xFF1510F0)
               : const Color(0xFFE2E8F0),
           borderRadius: BorderRadius.circular(15.r),
         ),

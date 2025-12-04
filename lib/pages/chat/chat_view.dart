@@ -319,23 +319,23 @@ class ChatPage extends StatelessWidget {
                 logic.multiSelMode.value ? logic.closeMultiSelMode : Get.back,
             actions: [
               if (logic.showAudioAndVideoCall) ...[
-                CustomButtom(
+                CustomButton(
                   margin: const EdgeInsets.only(right: 5),
-                  onPressed: logic.onTapAudioCall,
+                  onTap: logic.onTapAudioCall,
                   icon: Icons.call,
                   colorButton: theme.primaryColor.withOpacity(0.15),
                   colorIcon: theme.primaryColor,
                 ),
-                CustomButtom(
+                CustomButton(
                   margin: const EdgeInsets.only(right: 5),
-                  onPressed: logic.onTapVideoCall,
+                  onTap: logic.onTapVideoCall,
                   icon: Icons.videocam_outlined,
                   colorButton: theme.primaryColor.withOpacity(0.15),
                   colorIcon: theme.primaryColor,
                 ),
               ],
-              CustomButtom(
-                onPressed: logic.chatSetup,
+              CustomButton(
+                onTap: logic.chatSetup,
                 icon: Icons.more_horiz,
                 colorButton: Colors.black.withOpacity(0.1),
                 colorIcon: const Color(0xFF6B7280),

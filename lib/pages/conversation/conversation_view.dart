@@ -50,7 +50,7 @@ class _ConversationPageState extends State<ConversationPage> {
             children: [
               // 1. Header Background
               Container(
-                height: 180.h,
+                height: 210.h,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -120,7 +120,7 @@ class _ConversationPageState extends State<ConversationPage> {
 
               // 2. Main Content Card
               Container(
-                margin: EdgeInsets.only(top: 100.h),
+                margin: EdgeInsets.only(top: 120.h),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius:

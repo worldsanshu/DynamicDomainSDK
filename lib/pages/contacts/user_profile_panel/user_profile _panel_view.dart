@@ -221,8 +221,8 @@ class UserProfilePanelPage extends StatelessWidget {
     final primaryColor = Theme.of(context).primaryColor;
     return Column(
       children: [
-        CustomButtom(
-          onPressed: onTap,
+        CustomButton(
+          onTap: onTap,
           icon: icon,
           colorButton: primaryColor.withOpacity(0.15),
           colorIcon: primaryColor,

@@ -226,8 +226,8 @@ class EditMyInfoPage extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       width: double.infinity,
-      child: CustomButtom(
-        onPressed: logic.save,
+      child: CustomButton(
+        onTap: logic.save,
         title: StrRes.save,
         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
         colorButton: const Color(0xFF4F42FF),

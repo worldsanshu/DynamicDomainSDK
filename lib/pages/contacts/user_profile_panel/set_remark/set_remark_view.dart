@@ -50,9 +50,9 @@ class _SetFriendRemarkPageState extends State<SetFriendRemarkPage> {
       centerTitle: false,
       showLeading: true,
       actions: [
-        CustomButtom(
+        CustomButton(
           margin: EdgeInsets.symmetric(horizontal: 5.w),
-          onPressed: logic.save,
+          onTap: logic.save,
           title: StrRes.save,
           colorButton: AppColor.appBarEnd.withOpacity(0.9),
         ),

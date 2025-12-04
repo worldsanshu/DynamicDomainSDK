@@ -59,7 +59,7 @@ class _ContactsPageState extends State<ContactsPage>
         children: [
           // 1. Header Background
           Container(
-            height: 180.h,
+            height: 210.h,
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -128,7 +128,7 @@ class _ContactsPageState extends State<ContactsPage>
 
           // 2. Main Content Card
           Container(
-            margin: EdgeInsets.only(top: 100.h),
+            margin: EdgeInsets.only(top: 120.h),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),

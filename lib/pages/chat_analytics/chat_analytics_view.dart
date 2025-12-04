@@ -46,9 +46,9 @@ class ChatAnalyticsView extends StatelessWidget {
           ],
         ),
         actions: [
-          CustomButtom(
+          CustomButton(
             margin: const EdgeInsets.only(right: 10),
-            onPressed: logic.refreshData,
+            onTap: logic.refreshData,
             icon: CupertinoIcons.refresh,
             colorButton: const Color(0xFF4F42FF).withOpacity(0.1),
             colorIcon: const Color(0xFF4F42FF),

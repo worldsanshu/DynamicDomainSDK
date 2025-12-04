@@ -25,9 +25,9 @@ class ReportDetailPage extends StatelessWidget {
         centerTitle: false,
         showLeading: true,
         actions: [
-          CustomButtom(
+          CustomButton(
             margin: EdgeInsets.symmetric(horizontal: 5.w),
-            onPressed: logic.submitReport,
+            onTap: logic.submitReport,
             title: StrRes.confirm,
             colorButton: const Color(0xFF4F42FF).withOpacity(0.8),
           ),

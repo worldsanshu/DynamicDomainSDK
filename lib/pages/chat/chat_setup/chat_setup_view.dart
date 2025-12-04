@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 
 import '../../../widgets/custom_buttom.dart';
+import '../../../widgets/menu_item_widgets.dart';
 import 'chat_setup_logic.dart';
 
 class ChatSetupPage extends StatelessWidget {
@@ -107,26 +108,22 @@ class ChatSetupPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            _buildActionButtonWithCustomButtom(
-                              context: context,
+                            CustomButton(
                               icon: CupertinoIcons.search,
                               label: StrRes.search,
                               onTap: logic.searchChatHistory,
                             ),
-                            _buildActionButtonWithCustomButtom(
-                              context: context,
+                            CustomButton(
                               icon: CupertinoIcons.photo,
                               label: StrRes.picture,
                               onTap: logic.searchChatHistoryPicture,
                             ),
-                            _buildActionButtonWithCustomButtom(
-                              context: context,
+                           CustomButton(
                               icon: CupertinoIcons.video_camera,
                               label: StrRes.video,
                               onTap: logic.searchChatHistoryVideo,
                             ),
-                            _buildActionButtonWithCustomButtom(
-                              context: context,
+                           CustomButton(
                               icon: CupertinoIcons.doc,
                               label: StrRes.file,
                               onTap: logic.searchChatHistoryFile,
@@ -140,42 +137,42 @@ class ChatSetupPage extends StatelessWidget {
 
                       // Menu Sections
                       _buildSectionTitle(StrRes.chatSettings),
-                      _buildToggleMenuItem(
+                      ToggleMenuItemWidget(
                         label: StrRes.topContacts,
                         isOn: logic.isPinned,
                         onChanged: (_) => logic.toggleTopContacts(),
                       ),
-                      _buildToggleMenuItem(
+                      ToggleMenuItemWidget(
                         label: StrRes.messageNotDisturb,
                         isOn: logic.isNotDisturb,
                         onChanged: (_) => logic.toggleNotDisturb(),
                       ),
 
                       _buildSectionTitle(StrRes.appearance),
-                      _buildMenuItem(
+                      MenuItemWidget(
                         icon: CupertinoIcons.photo,
                         label: StrRes.setChatBackground,
                         onTap: logic.setBackgroundImage,
                       ),
-                      _buildMenuItem(
+                      MenuItemWidget(
                         icon: CupertinoIcons.textformat,
                         label: StrRes.fontSize,
                         onTap: logic.setFontSize,
                       ),
 
                       _buildSectionTitle(StrRes.actions),
-                      _buildMenuItem(
+                      MenuItemWidget(
                         icon: CupertinoIcons.person_2,
                         label: StrRes.createGroup,
                         onTap: logic.createGroup,
                       ),
-                      _buildMenuItem(
+                      MenuItemWidget(
                         icon: CupertinoIcons.flag,
                         label: StrRes.report,
                         onTap: logic.startReport,
                         textColor: Colors.amber,
                       ),
-                      _buildMenuItem(
+                      MenuItemWidget(
                         icon: CupertinoIcons.delete,
                         label: StrRes.clearChatHistory,
                         onTap: logic.clearChatHistory,
@@ -238,36 +235,6 @@ class ChatSetupPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtonWithCustomButtom({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    final primaryColor = Theme.of(context).primaryColor;
-    return Column(
-      children: [
-        CustomButtom(
-          onPressed: onTap,
-          icon: icon,
-          colorButton: primaryColor.withOpacity(0.15),
-          colorIcon: primaryColor,
-          padding: EdgeInsets.all(16.w),
-        ),
-        8.verticalSpace,
-        Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'FilsonPro',
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF374151),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildSectionTitle(String title) {
     return Container(
       width: double.infinity,
@@ -283,120 +250,4 @@ class ChatSetupPage extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildMenuItem({
-    required String label,
-    required VoidCallback onTap,
-    IconData? icon,
-    Color? textColor,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-        child: Row(
-          children: [
-            if (icon != null) ...[
-              Icon(
-                icon,
-                size: 20.w,
-                color: textColor ?? const Color(0xFF1F2937),
-              ),
-              12.horizontalSpace,
-            ],
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: textColor ?? const Color(0xFF1F2937),
-                ),
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 14.w,
-              color: const Color(0xFF9CA3AF),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildToggleMenuItem({
-    required String label,
-    required bool isOn,
-    required ValueChanged<bool> onChanged,
-  }) =>
-      InkWell(
-        onTap: () => onChanged(!isOn),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF1F2937),
-                  ),
-                ),
-              ),
-              _buildToggleSwitch(isOn: isOn, onChanged: onChanged),
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildToggleSwitch({
-    required bool isOn,
-    required ValueChanged<bool> onChanged,
-  }) =>
-      GestureDetector(
-        onTap: () => onChanged(!isOn),
-        child: Container(
-          width: 52.w,
-          height: 30.h,
-          decoration: BoxDecoration(
-            color: isOn ? const Color(0xFF10B981) : const Color(0xFFE2E8F0),
-            borderRadius: BorderRadius.circular(15.r),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF64748B).withOpacity(0.1),
-                offset: const Offset(0, 2),
-                blurRadius: 6,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: AnimatedAlign(
-            alignment: isOn ? Alignment.centerRight : Alignment.centerLeft,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-            child: Container(
-              width: 26.w,
-              height: 26.h,
-              margin: EdgeInsets.all(2.w),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF64748B).withOpacity(0.15),
-                    offset: const Offset(0, 2),
-                    blurRadius: 4,
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
 }

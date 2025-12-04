@@ -8,6 +8,7 @@ class SectionTitle extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final TextStyle? style;
   final Widget? trailing;
+  final Color? color;
 
   const SectionTitle({
     super.key,
@@ -15,6 +16,7 @@ class SectionTitle extends StatelessWidget {
     this.padding,
     this.style,
     this.trailing,
+    this.color,
   });
 
   @override
@@ -33,7 +35,7 @@ class SectionTitle extends StatelessWidget {
                   fontFamily: 'FilsonPro',
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF9CA3AF),
+                  color: color ?? const Color(0xFF9CA3AF),
                 ),
           ),
           if (trailing != null) trailing!,

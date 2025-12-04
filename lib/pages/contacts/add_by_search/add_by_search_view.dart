@@ -50,9 +50,9 @@ class AddContactsBySearchPage extends StatelessWidget {
       ),
       actions: [
         if (logic.isSearchUser)
-          CustomButtom(
+          CustomButton(
             margin: const EdgeInsets.only(right: 10),
-            onPressed: AppNavigator.startScan,
+            onTap: AppNavigator.startScan,
             icon: CupertinoIcons.qrcode_viewfinder,
             colorButton: const Color(0xFF10B981).withOpacity(0.1),
             colorIcon: const Color(0xFF10B981),

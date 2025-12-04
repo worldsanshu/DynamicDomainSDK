@@ -21,8 +21,8 @@ class AppealPage extends StatelessWidget {
         centerTitle: false,
         showLeading: true,
         actions: [
-          CustomButtom(
-            onPressed: logic.submitAppeal,
+          CustomButton(
+            onTap: logic.submitAppeal,
             title: StrRes.confirm,
             colorButton: const Color(0xFF34D399).withOpacity(0.1),
             colorIcon: const Color(0xFF34D399),

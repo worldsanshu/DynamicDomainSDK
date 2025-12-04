@@ -50,9 +50,9 @@ class CreateGroupPage extends StatelessWidget {
           ],
         ),
         actions: [
-          CustomButtom(
+          CustomButton(
             margin: const EdgeInsets.only(right: 10),
-            onPressed: logic.completeCreation,
+            onTap: logic.completeCreation,
             icon: CupertinoIcons.checkmark,
             colorButton: theme.primaryColor.withOpacity(0.1),
             colorIcon: theme.primaryColor,

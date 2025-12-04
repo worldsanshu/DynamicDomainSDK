@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:openim_common/openim_common.dart';
 
 import '../../widgets/custom_buttom.dart';
+import '../../../widgets/menu_item_widgets.dart';
 import 'mine_logic.dart';
 
 class MinePage extends StatelessWidget {
@@ -41,8 +41,24 @@ class MinePage extends StatelessWidget {
                   ],
                 ),
               ),
+              child: SafeArea(
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 12.h,left: 16.h),
+                    child: Text(
+                      StrRes.mine,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-
             // 2. Main Content Card
             Container(
               margin: EdgeInsets.only(top: 120.h),
@@ -111,20 +127,17 @@ class MinePage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildActionButtonWithCustomButtom(
-                          context: context,
+                        CustomButton(
                           icon: CupertinoIcons.qrcode,
                           label: StrRes.qrcode,
                           onTap: logic.viewMyQrcode,
                         ),
-                        _buildActionButtonWithCustomButtom(
-                          context: context,
+                        CustomButton(
                           icon: CupertinoIcons.person,
                           label: StrRes.information,
                           onTap: logic.viewMyInfo,
                         ),
-                        _buildActionButtonWithCustomButtom(
-                          context: context,
+                        CustomButton(
                           icon: CupertinoIcons.settings,
                           label: StrRes.settings,
                           onTap: logic.accountSetup,
@@ -138,38 +151,49 @@ class MinePage extends StatelessWidget {
 
                   // Menu List
                   _buildSectionTitle(StrRes.aboutSection),
-                  _buildMenuItem(
+                  MenuItemWidget(
+                    icon: CupertinoIcons.person_crop_circle_badge_checkmark,
                     label: StrRes.realNameAuth,
                     onTap: logic.startRealNameAuth,
                   ),
-                  _buildMenuItem(
+                  MenuItemWidget(
+                    icon: CupertinoIcons.shield,
                     label: StrRes.privacyPolicy,
                     onTap: logic.privacyPolicy,
                   ),
-                  _buildMenuItem(
+                  MenuItemWidget(
+                    icon: CupertinoIcons.doc_text,
                     label: StrRes.serviceAgreement,
                     onTap: logic.serviceAgreement,
                   ),
-                  _buildMenuItem(
+                  MenuItemWidget(
+                    icon: CupertinoIcons.info,
                     label: StrRes.aboutUs,
                     onTap: logic.aboutUs,
                   ),
 
                   _buildSectionTitle(StrRes.systemSection),
-                  _buildMenuItem(
+                  MenuItemWidget(
+                    icon: CupertinoIcons.chart_bar,
                     label: StrRes.chatAnalytics,
                     onTap: logic.startChatAnalytics,
                   ),
-                  _buildMenuItem(
+                  MenuItemWidget(
+                    icon: CupertinoIcons.delete,
                     label: StrRes.clearCache,
                     onTap: logic.clearCache,
+                    textColor: const Color(0xFFEF4444),
                   ),
 
                   24.verticalSpace,
 
-                  // Logout Button
-                  _buildLogoutButton(),
-
+                
+                  MenuItemWidget(
+                    icon: Icons.logout,
+                    label: StrRes.logout,
+                    onTap: logic.logout,
+                    textColor: const Color(0xFFEF4444),
+                  ),
                   40.verticalSpace,
                 ],
               ),
@@ -209,36 +233,6 @@ class MinePage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtonWithCustomButtom({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    final primaryColor = Theme.of(context).primaryColor;
-    return Column(
-      children: [
-        CustomButtom(
-          onPressed: onTap,
-          icon: icon,
-          colorButton: primaryColor.withOpacity(0.15),
-          colorIcon: primaryColor,
-          padding: EdgeInsets.all(16.w),
-        ),
-        8.verticalSpace,
-        Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'FilsonPro',
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF374151),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildSectionTitle(String title) {
     return Container(
       width: double.infinity,
@@ -250,67 +244,6 @@ class MinePage extends StatelessWidget {
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
           color: const Color(0xFF9CA3AF),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMenuItem({
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF1F2937),
-                ),
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 14.w,
-              color: const Color(0xFF9CA3AF),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLogoutButton() {
-    return InkWell(
-      onTap: logic.logout,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 16.h),
-        margin: EdgeInsets.symmetric(horizontal: 24.w),
-        child: Row(
-          children: [
-            HugeIcon(
-                icon: HugeIcons.strokeRoundedLogout01,
-                color: const Color(0xFFEF4444),
-                size: 20.w),
-            12.horizontalSpace,
-            Text(
-              StrRes.logout,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFFEF4444),
-              ),
-            ),
-          ],
         ),
       ),
     );
