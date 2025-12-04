@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -62,6 +64,7 @@ class _UpgradeViewV2State extends State<UpgradeViewV2> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: duplicate_ignore
     return WillPopScope(
       onWillPop: () async {
         return !widget.upgradeInfo.needForceUpdate!;

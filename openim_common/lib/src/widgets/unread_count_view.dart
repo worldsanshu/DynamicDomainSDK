@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:openim_common/openim_common.dart';
 
 class UnreadCountView extends StatelessWidget {
   const UnreadCountView({
@@ -45,16 +43,16 @@ class UnreadCountView extends StatelessWidget {
         color: const Color(0xFFF87171),
         shape: count > 99 ? BoxShape.rectangle : BoxShape.circle,
         borderRadius: count > 99 ? BorderRadius.circular(10.r) : null,
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.white,
-            offset: const Offset(0, 1),
+            offset: Offset(0, 1),
             blurRadius: 2,
             spreadRadius: 0.5,
           ),
           BoxShadow(
-            color: const Color(0x269CA3AF),
-            offset: const Offset(0, 1),
+            color: Color(0x269CA3AF),
+            offset: Offset(0, 1),
             blurRadius: 3,
           ),
         ],

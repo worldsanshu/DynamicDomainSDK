@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
@@ -9,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:openim/core/controller/client_config_controller.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:qr_flutter/qr_flutter.dart';

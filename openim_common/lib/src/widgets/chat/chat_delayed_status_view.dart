@@ -18,7 +18,6 @@ class ChatDelayedStatusView extends StatefulWidget {
 class _ChatDelayedStatusViewState extends State<ChatDelayedStatusView> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

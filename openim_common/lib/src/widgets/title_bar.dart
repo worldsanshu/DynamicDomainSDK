@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -262,19 +264,19 @@ class TitleBar extends StatelessWidget implements PreferredSizeWidget {
   })  : height = 44.h,
         backgroundColor = Styles.c_FFFFFF,
         center = Expanded(
-          child: Container(
-              child: SearchBox(
-            enabled: true,
-            autofocus: autofocus,
-            hintText: hintText,
-            controller: controller,
-            focusNode: focusNode,
-            onSubmitted: onSubmitted,
-            onCleared: onCleared,
-            onChanged: onChanged,
-          )),
+          child: SearchBox(
+                      enabled: true,
+                      autofocus: autofocus,
+                      hintText: hintText,
+                      controller: controller,
+                      focusNode: focusNode,
+                      onSubmitted: onSubmitted,
+                      onCleared: onCleared,
+                      onChanged: onChanged,
+                    ),
         ),
         showUnderline = true,
+        // ignore: prefer_initializing_formals
         right = right,
         left = GestureDetector(
           onTap: () => Get.back(),

@@ -1,9 +1,10 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim/constants/app_color.dart';
 import 'package:openim_common/openim_common.dart';
 
 import '../../../widgets/custom_buttom.dart';

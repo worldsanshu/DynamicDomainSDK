@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element, unused_field, deprecated_member_use
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -2944,12 +2946,10 @@ class ChatLogic extends SuperController {
 
   @override
   void onDetached() {
-    // TODO: implement onDetached
   }
 
   @override
   void onHidden() {
-    // TODO: implement onHidden
   }
 
   @override
@@ -2957,13 +2957,11 @@ class ChatLogic extends SuperController {
 
   @override
   void onPaused() {
-    // TODO: implement onPaused
   }
 
   @override
   void onResumed() {
     _loadHistoryForSyncEnd(false);
-    // TODO: implement onResumed
   }
 
   // 在 ChatLogic 类中添加以下属性和方法

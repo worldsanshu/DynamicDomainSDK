@@ -54,6 +54,7 @@ class LanguageSetupLogic extends GetxController {
         isFollowSystem.value = true;
         isChinese.value = false;
         isEnglish.value = false;
+        // ignore: deprecated_member_use
         Get.updateLocale(window.locale);
         break;
     }

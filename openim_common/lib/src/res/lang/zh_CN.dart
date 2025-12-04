@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names, file_names
+
 const Map<String, String> zh_CN = {
   "welcome": "欢迎使用CNL",
   "userID": "用户ID",

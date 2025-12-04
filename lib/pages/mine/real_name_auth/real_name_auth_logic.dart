@@ -395,9 +395,9 @@ class RealNameAuthLogic extends GetxController {
       } catch (e) {
         if (e is (int, String?, dynamic)) {
           LoadingView.singleton.dismiss();
-          final errCode = e.$1;
+          // final errCode = e.$1;
           final errMsg = e.$2;
-          final data = e.$3;
+          // final data = e.$3;
           IMViews.showToast(errMsg!);
         }
       }

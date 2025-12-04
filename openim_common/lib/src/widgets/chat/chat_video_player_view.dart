@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
@@ -50,7 +52,6 @@ class CachedVideoControllerService extends VideoControllerService {
 
   @override
   Future<File?> getCacheFile(String videoUrl) async {
-    // TODO: implement getCacheFile
     final fileInfo = await _cacheManager.getFileFromCache(videoUrl);
 
     return fileInfo?.file;
@@ -217,7 +218,7 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView>
           try {
             src = await _cachedVideoControllerService.ensureLocalFile(_url!);
             Logger.print(
-                '[ChatVideoPlayerView] Downloaded source file for Android transcode: ${src?.path}');
+                '[ChatVideoPlayerView] Downloaded source file for Android transcode: ${src.path}');
           } catch (e) {
             Logger.print(
                 '[ChatVideoPlayerView] Download for Android transcode failed: $e');
@@ -358,7 +359,7 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView>
           try {
             src = await _cachedVideoControllerService.ensureLocalFile(_url!);
             Logger.print(
-                '[ChatVideoPlayerView] Downloaded source file: ${src?.path}');
+                '[ChatVideoPlayerView] Downloaded source file: ${src.path}');
           } catch (e) {
             Logger.print(
                 '[ChatVideoPlayerView] download for transcode failed: $e');
@@ -474,6 +475,7 @@ class _ChatVideoPlayerViewState extends State<ChatVideoPlayerView>
     return '${cachesBase.path}/${digest.toString()}.mp4';
   }
 
+  // ignore: unused_element
   String _ffArg(String p) => '"$p"';
 
   void _createChewieController() {

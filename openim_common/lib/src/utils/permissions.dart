@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -6,10 +8,8 @@ import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sprintf/sprintf.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../res/strings.dart';
 
 enum PermissionType { photos, storage, camera, microphone }
 

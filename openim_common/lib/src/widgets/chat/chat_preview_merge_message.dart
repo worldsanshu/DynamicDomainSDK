@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -183,7 +185,6 @@ class _ChatPreviewMergeMsgViewState extends State<ChatPreviewMergeMsgView> {
 
   @override
   Widget build(BuildContext context) {
-    print('Hehe: ${title}');
     return GestureDetector(
       onTap: () {
         focusNode.unfocus();
@@ -309,6 +310,7 @@ class _ChatPreviewMergeMsgViewState extends State<ChatPreviewMergeMsgView> {
   Widget _buildItemView(int index) {
     var message = widget.messageList[index];
     //和上个数据是否相同,相同就隐藏头像
+    // ignore: unused_local_variable
     bool isSame = index == 0
         ? false
         : widget.messageList[index - 1].senderFaceUrl == message.senderFaceUrl;

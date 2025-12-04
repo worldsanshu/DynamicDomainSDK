@@ -1039,6 +1039,7 @@ class ConversationLogic extends SuperController {
     // 删除所有@标识/公告标识
     var groupAtType = list.firstWhereOrNull(equal)?.groupAtType;
     if (groupAtType != GroupAtType.atNormal) {
+      // ignore: deprecated_member_use
       OpenIM.iMManager.conversationManager.resetConversationGroupAtType(
         conversationID: conversationInfo.conversationID,
       );

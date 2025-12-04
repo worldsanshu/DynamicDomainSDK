@@ -1,14 +1,14 @@
+// ignore_for_file: depend_on_referenced_packages, unused_element, unrelated_type_equality_checks, no_leading_underscores_for_local_identifiers
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 // import 'package:android_path_provider/android_path_provider.dart';
 import 'package:azlistview/azlistview.dart';
-import 'package:collection/collection.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dart_date/dart_date.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit_config.dart';
@@ -39,7 +39,6 @@ import 'package:open_filex/open_filex.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:openim_common/src/utils/multi_thread_downloader.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_browser/page/custom_page.dart';
 import 'package:photo_browser/photo_browser.dart';
 import 'package:sprintf/sprintf.dart';
@@ -1139,6 +1138,7 @@ class IMUtils {
   static void previewCustomFace(Message message) {
     final face = message.faceElem;
     final map = json.decode(face!.data!);
+    // ignore: unused_local_variable
     final urls = <String>[map['url']];
     // previewUrlPicture(urls);
     Get.to(

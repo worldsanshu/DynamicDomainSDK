@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter/gestures.dart';
@@ -8,7 +10,6 @@ import 'package:openim/core/controller/auth_controller.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/controller/gateway_config_controller.dart';
 import '../../routes/app_navigator.dart';

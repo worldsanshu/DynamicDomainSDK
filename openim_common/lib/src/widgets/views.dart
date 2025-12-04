@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -25,6 +27,7 @@ import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 class IMViews {
   IMViews._();
 
+  // ignore: unused_field
   static final ImagePicker _picker = ImagePicker();
 
   static Future showToast(String msg, {Duration? duration}) {
@@ -442,7 +445,7 @@ class IMViews {
         Logger.print('-----------crop path: ${cropFile.path}');
         if (showLoading) LoadingView.singleton.show();
         final image = await IMUtils.compressImageAndGetFile(
-            File(cropFile!.path),
+            File(cropFile.path),
             quality: quality);
 
         result = await OpenIM.iMManager.uploadFile(

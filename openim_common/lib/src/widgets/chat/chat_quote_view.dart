@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:openim_common/openim_common.dart';
 
 class ChatQuoteView extends StatelessWidget {
@@ -31,6 +30,7 @@ class _ChatQuoteContentView extends StatelessWidget {
   final Message message;
   final String? senderNickname;
 
+  // ignore: unused_field
   final _decoder = const JsonDecoder();
 
   @override

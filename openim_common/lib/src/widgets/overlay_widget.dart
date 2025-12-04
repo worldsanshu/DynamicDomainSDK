@@ -1,9 +1,10 @@
+// ignore_for_file: deprecated_member_use, unused_local_variable
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OverlayWidget {
   static final OverlayWidget singleton = OverlayWidget._();
@@ -23,6 +24,7 @@ class OverlayWidget {
   OverlayState? _toastOverlayState;
   OverlayEntry? _toastOverlayEntry;
   bool _isToastVisible = false;
+  // ignore: unused_field
   Timer? _toastTimer;
 
   void showDialog({

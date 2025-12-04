@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/services.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 
-import '../models/update_req.dart';
 
 class ConversationManager {
   MethodChannel _channel;

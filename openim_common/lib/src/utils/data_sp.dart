@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';

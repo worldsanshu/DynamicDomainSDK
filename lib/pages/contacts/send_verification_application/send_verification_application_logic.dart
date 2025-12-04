@@ -56,6 +56,7 @@ class SendVerificationApplicationLogic extends GetxController {
       });
     }
 
+    // ignore: deprecated_member_use
     final list = await OpenIM.iMManager.userManager.getUsersInfoWithCache(
       [userID],
     );

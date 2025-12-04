@@ -1,8 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:emoji_selector/emoji_selector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart' hide Config;
 import 'package:should_rebuild/should_rebuild.dart';
 

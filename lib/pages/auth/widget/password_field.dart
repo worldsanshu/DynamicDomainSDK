@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:openim_common/openim_common.dart';
 import 'app_text_form_field.dart';

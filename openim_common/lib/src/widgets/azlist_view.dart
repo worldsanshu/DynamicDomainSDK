@@ -79,7 +79,7 @@ class WrapAzListView<T extends ISuspensionBean> extends StatelessWidget {
         alignment: Alignment.centerLeft,
         width: 1.sw,
         child: tag.toText
-          ..style = TextStyle(
+          ..style = const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
             fontFamily: 'FilsonPro',

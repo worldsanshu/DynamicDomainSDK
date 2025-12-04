@@ -390,7 +390,6 @@ abstract class CommonSearchLogic extends GetxController {
         count: count,
       );
 
-  // TODO:parseID
   String? parseID(e) {
     if (e is ConversationInfo) {
       return e.isSingleChat ? e.userID : e.groupID;

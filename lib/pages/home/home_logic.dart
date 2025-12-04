@@ -336,6 +336,5 @@ class HomeLogic extends SuperController with UpgradeManger {
 
   @override
   void onHidden() {
-    // TODO: implement onHidden
   }
 }

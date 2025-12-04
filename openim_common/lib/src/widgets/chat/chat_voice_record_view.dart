@@ -98,6 +98,7 @@ class _ChatRecordVoiceViewState extends State<ChatRecordVoiceView> {
 //   }
 // }
 
+// ignore: unused_element
 class _ArrowClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

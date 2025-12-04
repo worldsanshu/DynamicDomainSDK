@@ -1,4 +1,5 @@
-import 'package:collection/collection.dart';
+// ignore_for_file: unused_element
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';

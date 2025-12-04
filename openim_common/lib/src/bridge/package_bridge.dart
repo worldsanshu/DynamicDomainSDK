@@ -1,6 +1,3 @@
-import 'package:openim_common/openim_common.dart';
-import 'package:rxdart/rxdart.dart';
-
 class PackageBridge {
   PackageBridge._();
 

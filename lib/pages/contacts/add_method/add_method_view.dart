@@ -1,13 +1,13 @@
+// ignore_for_file: unused_element, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim_common/openim_common.dart';
 import '../../../widgets/base_page.dart';
-import '../../../widgets/custom_buttom.dart';
 
 import 'add_method_logic.dart';
 

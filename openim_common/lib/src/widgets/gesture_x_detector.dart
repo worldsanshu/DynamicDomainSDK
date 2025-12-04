@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, constant_identifier_names
+
 library gesture_x_detector;
 
 import 'dart:async';

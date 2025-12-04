@@ -5,15 +5,11 @@ import 'dart:convert';
 // import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
 // import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
 // import 'package:ffmpeg_kit_flutter_full_gpl/log.dart';
-import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit_config.dart';
-import 'package:ffmpeg_kit_flutter_new/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/return_code.dart';
-import 'package:ffmpeg_kit_flutter_new/session_state.dart';
 
 
 /// Utility class for video transcoding operations
@@ -91,7 +87,7 @@ class VideoTranscoder {
       }
 
       Logger.print(
-          '[VideoTranscoder] Transcode completed successfully: $outPath (${outSize} bytes)');
+          '[VideoTranscoder] Transcode completed successfully: $outPath ($outSize bytes)');
       return outFile;
     } catch (e, s) {
       Logger.print('[VideoTranscoder] Transcode error: $e\n$s');
@@ -182,7 +178,7 @@ class VideoTranscoder {
       }
 
       Logger.print(
-          '[VideoTranscoder] Android transcode completed successfully: $outPath (${outSize} bytes)');
+          '[VideoTranscoder] Android transcode completed successfully: $outPath ($outSize bytes)');
       return outFile;
     } catch (e, s) {
       Logger.print('[VideoTranscoder] Android transcode error: $e\n$s');

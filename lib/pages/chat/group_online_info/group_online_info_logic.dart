@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:get/get.dart';
 import 'package:openim/core/controller/im_controller.dart';
 import 'package:openim/routes/app_navigator.dart';

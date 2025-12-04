@@ -1,9 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -12,7 +12,6 @@ import 'package:openim/constants/app_color.dart';
 import 'package:openim/core/controller/client_config_controller.dart';
 import 'package:openim/pages/chat/chat_setup/search_chat_history/multimedia/multimedia_logic.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:sprintf/sprintf.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 

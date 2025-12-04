@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 
+// ignore: must_be_immutable
 class ChatPicturePreview extends StatelessWidget {
   ChatPicturePreview({
     super.key,

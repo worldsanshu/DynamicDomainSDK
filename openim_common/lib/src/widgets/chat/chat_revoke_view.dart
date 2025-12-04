@@ -26,6 +26,7 @@ class ChatRevokeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final bridge = PackageBridge.viewUserProfileBridge;
     final groupID = message.groupID;
     String? revoker, sender;

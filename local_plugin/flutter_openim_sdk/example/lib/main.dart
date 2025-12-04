@@ -1,11 +1,15 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -31,7 +35,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Column(
           children: [
-            TextButton(onPressed: () {}, child: Text('login')),
+            TextButton(onPressed: () {}, child: const Text('login')),
           ],
         ),
       ),

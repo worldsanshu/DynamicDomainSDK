@@ -81,6 +81,7 @@ class GroupRequestsLogic extends GetxController {
       }
       DataSp.putHaveReadUnHandleGroupApplication(haveReadList);
 
+      // ignore: unused_local_variable
       var groupIDList = <String>[];
       // 记录邀请者id
       for (var a in allList) {

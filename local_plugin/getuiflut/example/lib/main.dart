@@ -32,6 +32,7 @@ class _MyAppState extends State<MyApp> {
   // 初始化平台状态
   Future<void> initPlatformState() async {
     String platformVersion;
+    // ignore: unused_local_variable
     String payloadInfo = 'default';
     String notificationState = 'default';
 

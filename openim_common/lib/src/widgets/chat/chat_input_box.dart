@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unused_field, library_private_types_in_public_api
+
 import 'dart:io';
 
 import 'package:chat_bottom_container/panel_container.dart';

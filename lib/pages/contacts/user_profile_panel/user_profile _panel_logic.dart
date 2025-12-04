@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element, deprecated_member_use
+
 import 'dart:async';
 
 import 'package:collection/collection.dart';

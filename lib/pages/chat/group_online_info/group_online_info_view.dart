@@ -1,10 +1,11 @@
+// ignore_for_file: deprecated_member_use, unused_element
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:openim/constants/app_color.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:openim/widgets/base_page.dart';
 import 'group_online_info_logic.dart';

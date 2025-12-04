@@ -58,7 +58,6 @@ class ContactsLogic extends GetxController implements ViewUserProfileBridge, Sel
   @override
   void onClose() {
     PackageBridge.selectContactsBridge = null;
-    // TODO：viewUserProfileBridge
     // PackageBridge.viewUserProfileBridge = null;
     PackageBridge.scanBridge = null;
     super.onClose();

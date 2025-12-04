@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 
-import '../models/update_req.dart';
-
 class FriendshipManager {
   MethodChannel _channel;
   late OnFriendshipListener listener;

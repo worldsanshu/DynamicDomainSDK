@@ -187,9 +187,10 @@ class PushController extends GetxController {
 
   /// 获取冷启动Apns参数
   Future<void> getLaunchNotification() async {
-    Map info;
+    // ignore: unused_local_variable
+    Map _info;
     try {
-      info = await _getui.getLaunchNotification;
+      _info = await _getui.getLaunchNotification;
     } catch (e) {
       Logger.print(e.toString());
     }

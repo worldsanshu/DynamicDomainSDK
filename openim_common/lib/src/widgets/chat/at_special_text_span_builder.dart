@@ -44,7 +44,6 @@ class AtSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     final pattern = '(${list.toList().join('|')})';
     final atReg = RegExp(regexAt);
     final atAllReg = RegExp(regexAtAll);
-    final emojiReg = RegExp(regexEmoji);
 
     data.splitMapJoin(
       RegExp(pattern),

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, duplicate_ignore
+
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -35,6 +37,7 @@ class GroupManageLogic extends GetxController {
   /// 不允许通过群获取成员资料 0：关闭，1：打开
   void toggleMemberProfiles() async {
     await LoadingView.singleton.wrap(
+      // ignore: deprecated_member_use
       asyncFunction: () => OpenIM.iMManager.groupManager.setGroupLookMemberInfo(
         groupID: groupInfo.value.groupID,
         status: !allowLookProfiles ? 1 : 0,
@@ -46,6 +49,7 @@ class GroupManageLogic extends GetxController {
   void toggleAddMemberToFriend() async {
     await LoadingView.singleton.wrap(
       asyncFunction: () =>
+          // ignore: deprecated_member_use
           OpenIM.iMManager.groupManager.setGroupApplyMemberFriend(
         groupID: groupInfo.value.groupID,
         status: !allowAddFriend ? 1 : 0,

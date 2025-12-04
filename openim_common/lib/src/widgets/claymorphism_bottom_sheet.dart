@@ -1,9 +1,10 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:openim_common/openim_common.dart';
 
 class ClaymorphismBottomSheet extends StatelessWidget {
@@ -179,7 +180,7 @@ class ClaymorphismBottomSheet extends StatelessWidget {
                       width: 1,
                     ),
                   ),
-                  child: Container(
+                  child: SizedBox(
                     height: 56.h,
                     child: Center(
                       child: Text(
@@ -227,9 +228,9 @@ class ClaymorphismBottomSheet extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
           decoration: BoxDecoration(
             border: !isLast
-                ? Border(
+                ? const Border(
                     bottom: BorderSide(
-                      color: const Color(0xFFF3F4F6),
+                      color: Color(0xFFF3F4F6),
                       width: 1,
                     ),
                   )

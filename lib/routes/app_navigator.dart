@@ -8,7 +8,6 @@ import '../pages/contacts/add_by_search/add_by_search_logic.dart';
 import '../pages/contacts/contacts_logic.dart';
 import '../pages/contacts/group_profile_panel/group_profile_panel_logic.dart';
 import '../pages/contacts/select_contacts/select_contacts_logic.dart';
-import '../pages/home/home_logic.dart';
 import '../pages/mine/edit_my_info/edit_my_info_logic.dart';
 import 'app_pages.dart';
 

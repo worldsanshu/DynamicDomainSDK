@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 import 'package:openim_common/openim_common.dart';
 import 'video_transcoder.dart';

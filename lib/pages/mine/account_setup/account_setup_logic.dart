@@ -28,7 +28,6 @@ class AccountSetupLogic extends GetxController {
 
   @override
   void onClose() {
-    // TODO: implement onClose
     super.onClose();
   }
 
@@ -102,7 +101,7 @@ class AccountSetupLogic extends GetxController {
   void toggleForbidAddMeToFriend() async {
     final allowAddFriend = !isAllowAddFriend ? 1 : 2;
     // 1关闭 2开启
-    final data = await LoadingView.singleton.wrap(
+    await LoadingView.singleton.wrap(
       asyncFunction: () => ChatApis.updateUserInfo(
         allowAddFriend: allowAddFriend,
         userID: OpenIM.iMManager.userID,
@@ -148,7 +147,7 @@ class AccountSetupLogic extends GetxController {
           content: StrRes.confirmDeleteAccountContent,
         ));
     if (confirm == true) {
-      var confirm = await Get.dialog(
+      await Get.dialog(
           barrierColor: Colors.transparent,
           CustomDialog(
             title: StrRes.confirmDeleteAccountTipsTitle,

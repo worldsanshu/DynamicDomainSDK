@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
-import 'package:flutter_openim_sdk/src/models/set_group_member_info.dart';
 
 class GroupManager {
   MethodChannel _channel;

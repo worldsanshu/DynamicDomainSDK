@@ -1,15 +1,17 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+// ignore: library_prefixes
 import 'package:get/get.dart' as GetPackage;
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
-import '/src/utils/device_info_util.dart';
 
 var dio = Dio();
 

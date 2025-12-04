@@ -1,6 +1,7 @@
+// ignore_for_file: non_constant_identifier_names, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Styles {
   Styles._();

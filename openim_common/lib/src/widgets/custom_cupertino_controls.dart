@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, implementation_imports, unused_element
+
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
@@ -13,11 +15,10 @@ import 'package:chewie/src/models/option_item.dart';
 import 'package:chewie/src/models/subtitle_model.dart';
 import 'package:chewie/src/notifiers/index.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:google_fonts/google_fonts.dart';
+// ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -943,9 +944,9 @@ class _PlaybackSpeedDialog extends StatelessWidget {
                                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                                 decoration: BoxDecoration(
                                   border: !isLast
-                                      ? Border(
+                                      ? const Border(
                                           bottom: BorderSide(
-                                            color: const Color(0xFFF3F4F6),
+                                            color: Color(0xFFF3F4F6),
                                             width: 1,
                                           ),
                                         )

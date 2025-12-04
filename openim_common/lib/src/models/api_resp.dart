@@ -55,5 +55,6 @@ class ApiError {
     '50004': '未知错误',
     '50005': '创建错误',
   };
+  // ignore: unused_field
   static const _errorEN = {};
 }

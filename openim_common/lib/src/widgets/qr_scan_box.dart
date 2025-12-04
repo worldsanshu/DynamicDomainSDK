@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class QrScanBoxPainter extends CustomPainter {
@@ -13,7 +15,7 @@ class QrScanBoxPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Outer rounded rectangle with soft shadow
-    final borderRadius = BorderRadius.all(Radius.circular(20)).toRRect(
+    final borderRadius = const BorderRadius.all(Radius.circular(20)).toRRect(
       Rect.fromLTWH(0, 0, size.width, size.height),
     );
 
@@ -72,7 +74,7 @@ class QrScanBoxPainter extends CustomPainter {
 
     // Clip the canvas to the rounded rectangle
     canvas.clipRRect(
-        BorderRadius.all(Radius.circular(20)).toRRect(Offset.zero & size));
+        const BorderRadius.all(Radius.circular(20)).toRRect(Offset.zero & size));
 
     // Draw scan line with smooth gradient
     final linePaint = Paint();

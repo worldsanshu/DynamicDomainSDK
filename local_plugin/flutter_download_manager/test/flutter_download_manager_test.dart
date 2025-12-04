@@ -101,6 +101,7 @@ void main() {
       print(task.status.value);
     });
 
+    // ignore: unused_local_variable
     var error = dl.whenDownloadComplete(url);
   });
 
