@@ -2,13 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim/constants/app_color.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:hugeicons/hugeicons.dart';
 
+import '../../../widgets/custom_buttom.dart';
 import 'chat_setup_logic.dart';
-import '../../../widgets/base_page.dart';
 
 class ChatSetupPage extends StatelessWidget {
   final logic = Get.find<ChatSetupLogic>();
@@ -17,585 +14,387 @@ class ChatSetupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-      showAppBar: true,
-      title: StrRes.personalChatSettings,
-      centerTitle: false,
-      showLeading: true,
-      body: Obx(() => Column(
-            children: [
-              // Content Container
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.r),
-                      topRight: Radius.circular(20.r),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                        offset: const Offset(0, 0),
-                        blurRadius: 12,
-                      ),
-                    ],
-                  ),
-                  child: AnimationLimiter(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: AnimationConfiguration.toStaggeredList(
-                          duration: const Duration(milliseconds: 400),
-                          childAnimationBuilder: (widget) => SlideAnimation(
-                            verticalOffset: 40.0,
-                            curve: Curves.easeOutCubic,
-                            child: FadeInAnimation(
-                              curve: Curves.easeOutCubic,
-                              child: widget,
-                            ),
-                          ),
-                          children: [
-                            18.verticalSpace,
+    final primaryColor = Theme.of(context).primaryColor;
 
-                            // Profile Card
-                            _buildProfileCard(),
-
-                            18.verticalSpace,
-
-                            // Content Search Section
-                            _buildContentSearchSection(),
-
-                            18.verticalSpace,
-
-                            // Chat Settings Section
-                            _buildChatSettingsSection(),
-
-                            18.verticalSpace,
-
-                            // Appearance Section
-                            _buildAppearanceSection(),
-
-                            18.verticalSpace,
-
-                            // Actions Section
-                            _buildActionsSection(),
-
-                            24.verticalSpace,
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          )),
-    );
-  }
-
-  Widget _buildProfileCard() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      padding: EdgeInsets.all(10.w),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFF9FAFB),
-            Color(0xFFF3F4F6),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.07),
-            offset: const Offset(0, 3),
-            blurRadius: 8,
-          ),
-        ],
-        border: Border.all(
-          color: const Color(0xFFE5E7EB),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          // Avatar with border
-          GestureDetector(
-            onTap: logic.viewUserInfo,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(34.r),
-                border: Border.all(
-                  color: const Color(0xFFE5E7EB),
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF9CA3AF).withOpacity(0.1),
-                    offset: const Offset(0, 0),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: AvatarView(
-                width: 68.w,
-                height: 68.h,
-                url: logic.conversationInfo.value.faceURL,
-                text: logic.conversationInfo.value.showName,
-                textStyle: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-                isCircle: true,
-              ),
-            ),
-          ),
-
-          16.horizontalSpace,
-
-          // User Info
-          Expanded(
-            child: GestureDetector(
-              onTap: logic.viewUserInfo,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    logic.conversationInfo.value.showName ?? '',
-                    style: TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF374151),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  6.verticalSpace,
-                  Text(
-                    '${StrRes.idLabel} ${logic.conversationInfo.value.userID ?? ''}',
-                    style: TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF6B7280),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Create Group button
-          GestureDetector(
-            onTap: logic.createGroup,
-            child: HugeIcon(
-              icon: HugeIcons.strokeRoundedUserAdd01,
-              size: 25.w,
-              color: AppColor.iconColor, //const Color(0xFF4F42FF),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContentSearchSection() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.08),
-            offset: const Offset(0, 3),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-        ],
-        border: Border.all(
-          color: const Color(0xFFF0F4F8),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-            child: Text(
-              StrRes.chatContent,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF374151),
-                letterSpacing: 0.3,
-                shadows: [
-                  Shadow(
-                    offset: const Offset(0, 0.5),
-                    blurRadius: 1,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: 20.w,
-              right: 20.w,
-              bottom: 20.h,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildContentSearchItem(
-                  hugeIcon: HugeIcons.strokeRoundedSearch01,
-                  text: StrRes.search,
-                  color: const Color(0xFF4F42FF),
-                  onTap: logic.searchChatHistory,
-                ),
-                _buildContentSearchItem(
-                  hugeIcon: HugeIcons.strokeRoundedImage02,
-                  text: StrRes.picture,
-                  color: const Color(0xFF34D399),
-                  onTap: logic.searchChatHistoryPicture,
-                ),
-                _buildContentSearchItem(
-                  hugeIcon: HugeIcons.strokeRoundedVideoReplay,
-                  text: StrRes.video,
-                  color: const Color(0xFFF87171),
-                  onTap: logic.searchChatHistoryVideo,
-                ),
-                _buildContentSearchItem(
-                  hugeIcon: HugeIcons.strokeRoundedFile02,
-                  text: StrRes.file,
-                  color: const Color(0xFFFBBF24),
-                  onTap: logic.searchChatHistoryFile,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContentSearchItem({
-    required List<List<dynamic>> hugeIcon,
-    required String text,
-    required Color color,
-    Function()? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            width: 56.w,
-            height: 56.h,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                  offset: const Offset(0, 3),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: Colors.white.withOpacity(0.95),
-                  offset: const Offset(0, -1),
-                  blurRadius: 6,
-                  spreadRadius: 0,
-                ),
-              ],
-              border: Border.all(
-                color: const Color(0xFFF3F4F6),
-                width: 0.5,
-              ),
-            ),
-            child: Container(
-              margin: EdgeInsets.all(2.w),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            // 1. Header Background
+            Container(
+              height: 180.h,
+              width: double.infinity,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    // color.withOpacity(0.12),
-                    // color.withOpacity(0.05),
-                    AppColor.iconColor.withOpacity(0.12),
-                    AppColor.iconColor.withOpacity(0.05),
+                    primaryColor.withOpacity(0.7),
+                    primaryColor,
+                    primaryColor.withOpacity(0.9),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(14.r),
               ),
-              child: Center(
-                child: HugeIcon(
-                  icon: hugeIcon,
-                  size: 24.w,
-                  color: AppColor.iconColor, //color,
+            ),
+
+            // 2. Main Content Card
+            Container(
+              margin: EdgeInsets.only(top: 120.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
+                  ),
+                ],
+              ),
+              child: Obx(() => Column(
+                    children: [
+                      SizedBox(height: 60.h), // Space for avatar
+
+                      // User Info
+                      GestureDetector(
+                        onTap: logic.viewUserInfo,
+                        child: Text(
+                          logic.conversationInfo.value.showName ?? '',
+                          style: TextStyle(
+                            fontFamily: 'FilsonPro',
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      8.verticalSpace,
+                      GestureDetector(
+                        onTap: () => IMUtils.copy(
+                            text: logic.conversationInfo.value.userID ?? ''),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              logic.conversationInfo.value.userID ?? '',
+                              style: TextStyle(
+                                fontFamily: 'FilsonPro',
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFF6B7280),
+                              ),
+                            ),
+                            6.horizontalSpace,
+                            Icon(
+                              CupertinoIcons.doc_on_doc,
+                              size: 14.sp,
+                              color: primaryColor,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      24.verticalSpace,
+
+                      // Action Buttons Row (Search Content)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildActionButtonWithCustomButtom(
+                              context: context,
+                              icon: CupertinoIcons.search,
+                              label: StrRes.search,
+                              onTap: logic.searchChatHistory,
+                            ),
+                            _buildActionButtonWithCustomButtom(
+                              context: context,
+                              icon: CupertinoIcons.photo,
+                              label: StrRes.picture,
+                              onTap: logic.searchChatHistoryPicture,
+                            ),
+                            _buildActionButtonWithCustomButtom(
+                              context: context,
+                              icon: CupertinoIcons.video_camera,
+                              label: StrRes.video,
+                              onTap: logic.searchChatHistoryVideo,
+                            ),
+                            _buildActionButtonWithCustomButtom(
+                              context: context,
+                              icon: CupertinoIcons.doc,
+                              label: StrRes.file,
+                              onTap: logic.searchChatHistoryFile,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      24.verticalSpace,
+                      const Divider(height: 1, color: Color(0xFFF3F4F6)),
+
+                      // Menu Sections
+                      _buildSectionTitle(StrRes.chatSettings),
+                      _buildToggleMenuItem(
+                        label: StrRes.topContacts,
+                        isOn: logic.isPinned,
+                        onChanged: (_) => logic.toggleTopContacts(),
+                      ),
+                      _buildToggleMenuItem(
+                        label: StrRes.messageNotDisturb,
+                        isOn: logic.isNotDisturb,
+                        onChanged: (_) => logic.toggleNotDisturb(),
+                      ),
+
+                      _buildSectionTitle(StrRes.appearance),
+                      _buildMenuItem(
+                        icon: CupertinoIcons.photo,
+                        label: StrRes.setChatBackground,
+                        onTap: logic.setBackgroundImage,
+                      ),
+                      _buildMenuItem(
+                        icon: CupertinoIcons.textformat,
+                        label: StrRes.fontSize,
+                        onTap: logic.setFontSize,
+                      ),
+
+                      _buildSectionTitle(StrRes.actions),
+                      _buildMenuItem(
+                        icon: CupertinoIcons.person_2,
+                        label: StrRes.createGroup,
+                        onTap: logic.createGroup,
+                      ),
+                      _buildMenuItem(
+                        icon: CupertinoIcons.flag,
+                        label: StrRes.report,
+                        onTap: logic.startReport,
+                        textColor: Colors.amber,
+                      ),
+                      _buildMenuItem(
+                        icon: CupertinoIcons.delete,
+                        label: StrRes.clearChatHistory,
+                        onTap: logic.clearChatHistory,
+                        textColor: const Color(0xFFF87171),
+                      ),
+
+                      40.verticalSpace,
+                    ],
+                  )),
+            ),
+
+            // 3. Avatar (Overlapping)
+            Positioned(
+              top: 70.h,
+              child: Obx(() => GestureDetector(
+                    onTap: logic.viewUserInfo,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 4.w),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: AvatarView(
+                        url: logic.conversationInfo.value.faceURL,
+                        text: logic.conversationInfo.value.showName,
+                        width: 100.w,
+                        height: 100.w,
+                        textStyle:
+                            TextStyle(fontSize: 32.sp, color: Colors.white),
+                        isCircle: true,
+                        enabledPreview: true,
+                      ),
+                    ),
+                  )),
+            ),
+
+            // 4. Custom AppBar
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                  onPressed: () => Get.back(),
                 ),
               ),
             ),
-          ),
-          8.verticalSpace,
-          Text(
-            text,
-            style: TextStyle(
-              fontFamily: 'FilsonPro',
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF374151),
-              shadows: [
-                Shadow(
-                  offset: const Offset(0, 0.5),
-                  blurRadius: 1,
-                  color: Colors.white.withOpacity(0.8),
-                ),
-              ],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildChatSettingsSection() {
-    return _buildMenuSection(
-      title: StrRes.chatSettings,
-      items: [
-        _buildMenuItem(
-          hugeIcon: HugeIcons.strokeRoundedPin,
-          text: StrRes.topContacts,
-          color: const Color(0xFFFB923C),
-          switchOn: logic.isPinned,
-          onChanged: (_) => logic.toggleTopContacts(),
-        ),
-        _buildMenuItem(
-          hugeIcon: HugeIcons.strokeRoundedNotificationOff02,
-          text: StrRes.messageNotDisturb,
-          color: const Color(0xFFA78BFA),
-          switchOn: logic.isNotDisturb,
-          onChanged: (_) => logic.toggleNotDisturb(),
-          isLast: true,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAppearanceSection() {
-    return _buildMenuSection(
-      title: StrRes.appearance,
-      items: [
-        _buildMenuItem(
-          hugeIcon: HugeIcons.strokeRoundedImage02,
-          text: StrRes.setChatBackground,
-          color: const Color(0xFF2DD4BF),
-          onTap: logic.setBackgroundImage,
-        ),
-        _buildMenuItem(
-          hugeIcon: HugeIcons.strokeRoundedTextFont,
-          text: StrRes.fontSize,
-          color: const Color(0xFFA78BFA),
-          onTap: logic.setFontSize,
-          isLast: true,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionsSection() {
-    return _buildMenuSection(
-      title: StrRes.actions,
-      items: [
-        _buildMenuItem(
-          hugeIcon: HugeIcons.strokeRoundedFlag01,
-          text: StrRes.report,
-          color: const Color(0xFF34D399),
-          onTap: logic.startReport,
-        ),
-        _buildMenuItem(
-          hugeIcon: HugeIcons.strokeRoundedDelete02,
-          text: StrRes.clearChatHistory,
-          color: const Color(0xFFF87171),
-          textStyle: TextStyle(
-            fontFamily: 'FilsonPro',
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFFF87171),
-          ),
-          onTap: logic.clearChatHistory,
-          hideArrow: true,
-          isLast: true,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMenuSection({
-    required String title,
-    required List<Widget> items,
+  Widget _buildActionButtonWithCustomButtom({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
   }) {
+    final primaryColor = Theme.of(context).primaryColor;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontFamily: 'FilsonPro',
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF374151),
-              letterSpacing: 0.3,
-              shadows: [
-                Shadow(
-                  offset: const Offset(0, 0.5),
-                  blurRadius: 1,
-                  color: Colors.white.withOpacity(0.8),
-                ),
-              ],
-            ),
-          ),
+        CustomButtom(
+          onPressed: onTap,
+          icon: icon,
+          colorButton: primaryColor.withOpacity(0.15),
+          colorIcon: primaryColor,
+          padding: EdgeInsets.all(16.w),
         ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 16.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                offset: const Offset(0, 3),
-                blurRadius: 12,
-                spreadRadius: 0,
-              ),
-            ],
-            border: Border.all(
-              color: const Color(0xFFF0F4F8),
-              width: 1,
-            ),
-          ),
-          child: Column(
-            children: items,
+        8.verticalSpace,
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'FilsonPro',
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF374151),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(left: 24.w, top: 24.h, bottom: 8.h),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'FilsonPro',
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFF9CA3AF),
+        ),
+      ),
     );
   }
 
   Widget _buildMenuItem({
-    required List<List<dynamic>> hugeIcon,
-    required String text,
-    required Color color,
-    String? value,
-    TextStyle? textStyle,
-    bool switchOn = false,
-    bool hideArrow = false,
-    bool isLast = false,
-    ValueChanged<bool>? onChanged,
-    Function()? onTap,
+    required String label,
+    required VoidCallback onTap,
+    IconData? icon,
+    Color? textColor,
   }) {
-    final bool isWarning = color == const Color(0xFFF87171);
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+        child: Row(
+          children: [
+            if (icon != null) ...[
+              Icon(
+                icon,
+                size: 20.w,
+                color: textColor ?? const Color(0xFF1F2937),
+              ),
+              12.horizontalSpace,
+            ],
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontFamily: 'FilsonPro',
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: textColor ?? const Color(0xFF1F2937),
+                ),
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 14.w,
+              color: const Color(0xFF9CA3AF),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-    return Column(
-      children: [
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
+  Widget _buildToggleMenuItem({
+    required String label,
+    required bool isOn,
+    required ValueChanged<bool> onChanged,
+  }) =>
+      InkWell(
+        onTap: () => onChanged(!isOn),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF1F2937),
+                  ),
+                ),
+              ),
+              _buildToggleSwitch(isOn: isOn, onChanged: onChanged),
+            ],
+          ),
+        ),
+      );
+
+  Widget _buildToggleSwitch({
+    required bool isOn,
+    required ValueChanged<bool> onChanged,
+  }) =>
+      GestureDetector(
+        onTap: () => onChanged(!isOn),
+        child: Container(
+          width: 52.w,
+          height: 30.h,
+          decoration: BoxDecoration(
+            color: isOn ? const Color(0xFF10B981) : const Color(0xFFE2E8F0),
+            borderRadius: BorderRadius.circular(15.r),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF64748B).withOpacity(0.1),
+                offset: const Offset(0, 2),
+                blurRadius: 6,
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: AnimatedAlign(
+            alignment: isOn ? Alignment.centerRight : Alignment.centerLeft,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-              child: Row(
-                children: [
-                  HugeIcon(
-                    icon: hugeIcon,
-                    size: 20.w,
-                    color: AppColor.iconColor, //color,
+              width: 26.w,
+              height: 26.h,
+              margin: EdgeInsets.all(2.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF64748B).withOpacity(0.15),
+                    offset: const Offset(0, 2),
+                    blurRadius: 4,
+                    spreadRadius: 0,
                   ),
-                  16.horizontalSpace,
-                  Expanded(
-                    child: Text(
-                      text,
-                      style: textStyle ??
-                          TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: isWarning
-                                ? const Color(0xFFF87171)
-                                : const Color(0xFF374151),
-                          ),
-                    ),
-                  ),
-
-                  // Value text
-                  if (value != null) ...[
-                    8.horizontalSpace,
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 150.w),
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF6B7280),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-
-                  // Switch
-                  if (onChanged != null) ...[
-                    8.horizontalSpace,
-                    CupertinoSwitch(
-                      value: switchOn,
-                      activeColor: const Color(0xFF4F42FF),
-                      trackColor: const Color(0xFFE5E7EB),
-                      thumbColor: Colors.white,
-                      onChanged: onChanged,
-                    ),
-                  ],
-
-                  // Arrow - only show if no switch and not hideArrow
-                  if (!hideArrow && onChanged == null) ...[
-                    8.horizontalSpace,
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedArrowRight01,
-                      size: 16.w,
-                      color: const Color(0xFF6B7280),
-                    ),
-                  ],
                 ],
               ),
             ),
           ),
         ),
-        // Divider
-        if (!isLast)
-          Padding(
-            padding: EdgeInsets.only(left: 52.w),
-            child: const Divider(
-              height: 1,
-              thickness: 1,
-              color: Color(0xFFF3F4F6),
-            ),
-          ),
-      ],
-    );
-  }
+      );
 }
