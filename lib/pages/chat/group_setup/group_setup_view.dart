@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';
+import '../../../widgets/custom_buttom.dart';
 import '../../../widgets/menu_item_widgets.dart';
 import 'group_setup_logic.dart';
 
@@ -22,43 +23,51 @@ class GroupSetupPage extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
-        child: Stack(
-          alignment: Alignment.topCenter,
+        child: Column(
           children: [
-            // 1. Header Background
-            Container(
-              height: 180.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    primaryColor.withOpacity(0.7),
-                    primaryColor,
-                    primaryColor.withOpacity(0.9),
-                  ],
-                ),
-              ),
-            ),
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.topCenter,
+              children: [
+                // Main Content (determines size)
+                Column(
+                  children: [
+                    // 1. Header Background
+                    Container(
+                      height: 190.h,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            primaryColor.withOpacity(0.7),
+                            primaryColor,
+                            primaryColor.withOpacity(0.9),
+                          ],
+                        ),
+                      ),
+                    ),
 
-            // 2. Main Content Card
-            Container(
-              margin: EdgeInsets.only(top: 120.h),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5),
-                  ),
-                ],
-              ),
-              child: Obx(() => Column(
-                    children: [
-                      SizedBox(height: 60.h), // Space for avatar
+                    // 2. Main Content Card
+                    Container(
+                      width: double.infinity,
+                      transform: Matrix4.translationValues(0, -60.h, 0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, -5),
+                          ),
+                        ],
+                      ),
+                      child: Obx(() => Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(height: 60.h), // Space for avatar
 
                       // Group Name
                       GestureDetector(
@@ -121,35 +130,43 @@ class GroupSetupPage extends StatelessWidget {
 
                       24.verticalSpace,
 
-                      // Action Buttons Row (Search Content)
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            MenuItemWidget(
-                              icon: CupertinoIcons.search,
-                              label: StrRes.search,
-                              onTap: logic.searchChatHistory,
-                            ),
-                            MenuItemWidget(
-                              icon: CupertinoIcons.photo,
-                              label: StrRes.picture,
-                              onTap: logic.searchChatHistoryPicture,
-                            ),
-                            MenuItemWidget(
-                              icon: CupertinoIcons.video_camera,
-                              label: StrRes.video,
-                              onTap: logic.searchChatHistoryVideo,
-                            ),
-                            MenuItemWidget(
-                              icon: CupertinoIcons.doc,
-                              label: StrRes.file,
-                              onTap: logic.searchChatHistoryFile,
-                            ),
-                          ],
-                        ),
-                      ),
+                              // Action Buttons Row (Search Content)
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    CustomButton(
+                                      icon: CupertinoIcons.search,
+                                      label: StrRes.search,
+                                      onTap: logic.searchChatHistory,
+                                      colorButton: primaryColor.withOpacity(.15),
+                                      colorIcon: primaryColor,
+                                    ),
+                                    CustomButton(
+                                      icon: CupertinoIcons.photo,
+                                      label: StrRes.picture,
+                                      onTap: logic.searchChatHistoryPicture,
+                                      colorButton: primaryColor.withOpacity(.15),
+                                      colorIcon: primaryColor,
+                                    ),
+                                    CustomButton(
+                                      icon: CupertinoIcons.video_camera,
+                                      label: StrRes.video,
+                                      onTap: logic.searchChatHistoryVideo,
+                                      colorButton: primaryColor.withOpacity(.15),
+                                      colorIcon: primaryColor,
+                                    ),
+                                    CustomButton(
+                                      icon: CupertinoIcons.doc,
+                                      label: StrRes.file,
+                                      onTap: logic.searchChatHistoryFile,
+                                      colorButton: primaryColor.withOpacity(.15),
+                                      colorIcon: primaryColor,
+                                    ),
+                                  ],
+                                ),
+                              ),
 
                       24.verticalSpace,
                       const Divider(height: 1, color: Color(0xFFF3F4F6)),
@@ -231,56 +248,72 @@ class GroupSetupPage extends StatelessWidget {
                           textColor: const Color(0xFFF87171),
                         ),
 
-                      40.verticalSpace,
-                    ],
-                  )),
-            ),
-
-            // 3. Avatar (Overlapping)
-            Positioned(
-              top: 70.h,
-              child: Obx(() => GestureDetector(
-                    onTap:
-                        logic.isOwnerOrAdmin ? logic.modifyGroupAvatar : null,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 4.w),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: AvatarView(
-                        url: logic.groupInfo.value.faceURL,
-                        text: logic.groupInfo.value.groupName,
-                        width: 100.w,
-                        height: 100.w,
-                        textStyle:
-                            TextStyle(fontSize: 32.sp, color: Colors.white),
-                        isCircle: true,
-                        isGroup: true,
-                      ),
+                              40.verticalSpace,
+                            ],
+                          )),
                     ),
-                  )),
-            ),
-
-            // 4. Custom AppBar
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                  onPressed: () => Get.back(),
+                  ],
                 ),
-              ),
+
+                // 3. Avatar (Overlapping)
+                Positioned(
+                  top: 80.h,
+                  child: Obx(() => GestureDetector(
+                        onTap:
+                            logic.isOwnerOrAdmin ? logic.modifyGroupAvatar : null,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 4.w),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: AvatarView(
+                            url: logic.groupInfo.value.faceURL,
+                            text: logic.groupInfo.value.groupName,
+                            width: 100.w,
+                            height: 100.w,
+                            textStyle:
+                                TextStyle(fontSize: 32.sp, color: Colors.white),
+                            isCircle: true,
+                            isGroup: true,
+                          ),
+                        ),
+                      )),
+                ),
+
+                // 4. Custom AppBar
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    automaticallyImplyLeading: false,
+                    title: Row(children: [
+                      IconButton(
+                      icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                      onPressed: () => Get.back(),
+                    ),
+                     Text(
+                      StrRes.groupChatSetup,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20.sp,
+                        color: Colors.white,
+                      ),
+                    ) 
+                    ],),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -396,8 +429,8 @@ class GroupSetupPage extends StatelessWidget {
                       Container(
                         width: 48.w,
                         height: 48.h,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF3F4F6),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF3F4F6),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(Icons.add,
@@ -426,8 +459,8 @@ class GroupSetupPage extends StatelessWidget {
                             Container(
                               width: 48.w,
                               height: 48.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF3F4F6),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFF3F4F6),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(Icons.remove,

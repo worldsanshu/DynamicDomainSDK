@@ -45,22 +45,36 @@ class GroupSetupLogic extends GetxController {
   late Rx<ConversationInfo> conversationInfo;
   late Rx<GroupInfo> groupInfo;
   late Rx<GroupMembersInfo> myGroupMembersInfo;
-  late StreamSubscription _guSub;
-  late StreamSubscription _mASub;
-  late StreamSubscription _mISub;
-  late StreamSubscription _mDSub;
-  late StreamSubscription _ccSub;
-  late StreamSubscription _jasSub;
-  late StreamSubscription _jdsSub;
+  StreamSubscription? _guSub;
+  StreamSubscription? _mASub;
+  StreamSubscription? _mISub;
+  StreamSubscription? _mDSub;
+  StreamSubscription? _ccSub;
+  StreamSubscription? _jasSub;
+  StreamSubscription? _jdsSub;
   final lock = Lock();
   final isJoinedGroup = false.obs;
   final avatar = Rx<File?>(null);
 
   @override
-  void onInit() async {
+  void onInit() {
+    super.onInit();
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    // Initialize with default values first to prevent late initialization errors
+    conversationInfo = Rx(ConversationInfo(conversationID: ''));
+    groupInfo = Rx(GroupInfo(groupID: '', groupName: '', memberCount: 0));
+    myGroupMembersInfo = Rx(GroupMembersInfo(
+      userID: OpenIM.iMManager.userID,
+      nickname: OpenIM.iMManager.userInfo.nickname,
+    ));
+    
     _initMemberStatusListener();
-    if (Get.arguments['conversationInfo'] != null) {
-      conversationInfo = Rx(Get.arguments['conversationInfo']);
+    
+    if (Get.arguments != null && Get.arguments['conversationInfo'] != null) {
+      conversationInfo.value = Get.arguments['conversationInfo'];
     } else if (chatLogic != null) {
       final temp = await OpenIM.iMManager.conversationManager
           .getOneConversation(
@@ -68,13 +82,13 @@ class GroupSetupLogic extends GetxController {
                   ? chatLogic!.conversationInfo.groupID!
                   : chatLogic!.conversationInfo.userID!,
               sessionType: chatLogic!.conversationInfo.conversationType!);
-      conversationInfo = Rx(temp);
+      conversationInfo.value = temp;
     } else {
-      print('GroupSetupLogic: No conversationInfo provided');
       return;
     }
-    groupInfo = Rx(_defaultGroupInfo);
-    myGroupMembersInfo = Rx(_defaultMemberInfo);
+    
+    groupInfo.value = _defaultGroupInfo;
+    myGroupMembersInfo.value = _defaultMemberInfo;
 
     _ccSub = imLogic.conversationChangedSubject.listen((newList) {
       final newValue = newList.firstWhereOrNull((element) =>
@@ -177,27 +191,23 @@ class GroupSetupLogic extends GetxController {
       }
     });
 
-    super.onInit();
+    _checkIsJoinedGroup();
   }
 
   @override
   void onReady() {
-    // getGroupInfo();
-    // getGroupMembers();
-    // getMyGroupMemberInfo();
-    _checkIsJoinedGroup();
     super.onReady();
   }
 
   @override
   void onClose() {
-    _guSub.cancel();
-    _mASub.cancel();
-    _mDSub.cancel();
-    _ccSub.cancel();
-    _mISub.cancel();
-    _jdsSub.cancel();
-    _jasSub.cancel();
+    _guSub?.cancel();
+    _mASub?.cancel();
+    _mDSub?.cancel();
+    _ccSub?.cancel();
+    _mISub?.cancel();
+    _jdsSub?.cancel();
+    _jasSub?.cancel();
 
     // Unsubscribe from online status for all members
     for (var member in memberList) {
@@ -214,7 +224,7 @@ class GroupSetupLogic extends GetxController {
   }
 
   get _defaultGroupInfo => GroupInfo(
-        groupID: conversationInfo.value.groupID!,
+        groupID: conversationInfo.value.groupID ?? '',
         groupName: conversationInfo.value.showName,
         faceURL: conversationInfo.value.faceURL,
         memberCount: 0,

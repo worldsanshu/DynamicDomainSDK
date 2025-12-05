@@ -11,7 +11,6 @@ import 'package:openim/routes/app_navigator.dart';
 import 'package:openim_common/openim_common.dart';
 import '../../../widgets/custom_buttom.dart';
 import 'add_by_search_logic.dart';
-import '../../../widgets/base_page.dart';
 
 class AddContactsBySearchPage extends StatelessWidget {
   final logic = Get.find<AddContactsBySearchLogic>();
@@ -20,126 +19,147 @@ class AddContactsBySearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-      showAppBar: true,
-      centerTitle: false,
-      showLeading: true,
-      customAppBar: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final theme = Theme.of(context);
+    return Scaffold(
+      backgroundColor: const Color(0xFFF4F5F9),
+      body: Stack(
         children: [
-          Text(
-            logic.isSearchUser ? StrRes.addFriend : StrRes.addGroup,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w500,
-              fontSize: 23,
-              color: Colors.black,
-            ).copyWith(fontSize: 23.sp),
-          ),
-          Text(
-            logic.isSearchUser
-                ? StrRes.searchAddFriends
-                : StrRes.searchJoinGroups,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w400,
-              color: Color(0xFFBDBDBD),
-            ).copyWith(fontSize: 12.sp),
-          ),
+          _buildHeader(context, theme),
+          _buildContent(context),
         ],
       ),
-      actions: [
-        if (logic.isSearchUser)
-          CustomButton(
-            margin: const EdgeInsets.only(right: 10),
-            onTap: AppNavigator.startScan,
-            icon: CupertinoIcons.qrcode_viewfinder,
-            colorButton: const Color(0xFF10B981).withOpacity(0.1),
-            colorIcon: const Color(0xFF10B981),
-          ),
-      ],
-      body: _buildContentContainer(),
     );
   }
 
-  Widget _buildContentContainer() {
+  Widget _buildHeader(BuildContext context, ThemeData theme) {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
+      height: 200.h,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Obx(() {
-        // Check if there are search results
-        bool hasSearchResults = logic.isSearchUser
-            ? logic.userInfoList.isNotEmpty
-            : logic.groupInfoList.isNotEmpty;
-        bool isSearching = logic.searchCtrl.text.trim().isNotEmpty;
-
-        return SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.only(bottom: 20.h),
-          child: AnimationLimiter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: AnimationConfiguration.toStaggeredList(
-                duration: const Duration(milliseconds: 450),
-                childAnimationBuilder: (widget) => SlideAnimation(
-                  verticalOffset: 50.0,
-                  curve: Curves.easeOutQuart,
-                  child: FadeInAnimation(child: widget),
-                ),
-                children: [
-                  20.verticalSpace,
-                  _buildSearchSection(),
-                  if (isSearching && hasSearchResults) ...[
-                    18.verticalSpace,
-                    _buildResultsSection(),
-                  ],
-                  if (isSearching && !hasSearchResults) ...[
-                    18.verticalSpace,
-                    _buildNotFoundView(),
-                  ],
-                  24.verticalSpace,
-                ],
-              ),
-            ),
-          ),
-        );
-      }),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 15.sp,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF212121),
-          shadows: [
-            Shadow(
-              color: Colors.white.withOpacity(0.9),
-              offset: const Offset(0.5, 0.5),
-              blurRadius: 0.5,
-            ),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.primaryColor.withOpacity(0.7),
+            theme.primaryColor.withOpacity(0.9),
           ],
         ),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  CustomButton(
+                    onTap: () => Get.back(),
+                    icon: Icons.arrow_back_ios_new_rounded,
+                    colorIcon: Colors.white,
+                    colorButton: Colors.white.withOpacity(0.2),
+                    padding: EdgeInsets.all(10.w),
+                  ),
+                  16.horizontalSpace,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          logic.isSearchUser
+                              ? StrRes.addFriend
+                              : StrRes.addGroup,
+                          style: TextStyle(
+                            fontFamily: 'FilsonPro',
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        4.verticalSpace,
+                        Text(
+                          logic.isSearchUser
+                              ? StrRes.searchAddFriends
+                              : StrRes.searchJoinGroups,
+                          style: TextStyle(
+                            fontFamily: 'FilsonPro',
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (logic.isSearchUser)
+                    CustomButton(
+                      onTap: AppNavigator.startScan,
+                      icon: CupertinoIcons.qrcode_viewfinder,
+                      colorButton: Colors.white.withOpacity(0.2),
+                      colorIcon: Colors.white,
+                      padding: EdgeInsets.all(10.w),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 130.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF4F5F9),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.r),
+          topRight: Radius.circular(30.r),
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.r),
+          topRight: Radius.circular(30.r),
+        ),
+        child: Obx(() {
+          // Check if there are search results
+          bool hasSearchResults = logic.isSearchUser
+              ? logic.userInfoList.isNotEmpty
+              : logic.groupInfoList.isNotEmpty;
+          bool isSearching = logic.searchCtrl.text.trim().isNotEmpty;
+
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.only(bottom: 20.h),
+            child: AnimationLimiter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: AnimationConfiguration.toStaggeredList(
+                  duration: const Duration(milliseconds: 450),
+                  childAnimationBuilder: (widget) => SlideAnimation(
+                    verticalOffset: 50.0,
+                    curve: Curves.easeOutQuart,
+                    child: FadeInAnimation(child: widget),
+                  ),
+                  children: [
+                    20.verticalSpace,
+                    _buildSearchSection(),
+                    if (isSearching && hasSearchResults) ...[
+                      18.verticalSpace,
+                      _buildResultsSection(),
+                    ],
+                    if (isSearching && !hasSearchResults) ...[
+                      18.verticalSpace,
+                      _buildNotFoundView(),
+                    ],
+                    24.verticalSpace,
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -185,7 +205,7 @@ class AddContactsBySearchPage extends StatelessWidget {
           prefixIcon: Container(
             width: 20.w,
             height: 20.h,
-            margin: EdgeInsets.all(8.w),
+            margin: EdgeInsets.all(14.w),
             child: HugeIcon(
               icon: HugeIcons.strokeRoundedSearch01,
               color: AppColor.iconColor,
@@ -195,78 +215,6 @@ class AddContactsBySearchPage extends StatelessWidget {
           border: InputBorder.none,
           contentPadding:
               EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildScanSection() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.06),
-            offset: const Offset(0, 2),
-            blurRadius: 6.r,
-          ),
-        ],
-        border: Border.all(
-          color: const Color(0xFFF3F4F6),
-          width: 1,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: AppNavigator.startScan,
-          borderRadius: BorderRadius.circular(16.r),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-            child: Row(
-              children: [
-                HugeIcon(
-                  icon: HugeIcons.strokeRoundedQrCode01,
-                  color: AppColor.iconColor,
-                  size: 20.w,
-                ),
-                16.horizontalSpace,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        StrRes.scan,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF374151),
-                        ),
-                      ),
-                      4.verticalSpace,
-                      Text(
-                        StrRes.scanHint,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF6B7280),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                HugeIcon(
-                  icon: HugeIcons.strokeRoundedArrowRight01,
-                  size: 20.w,
-                  color: AppColor.iconColor,
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );

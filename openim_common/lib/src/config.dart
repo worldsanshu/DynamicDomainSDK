@@ -65,14 +65,14 @@ class Config {
 
   // 主域名
   static String get mainGatewayDomain {
-    // return 'https://api.kelaiguanxin.cloud';
-    return 'https://api.xinchangyou.com';
+    return 'https://api.kelaiguanxin.cloud';
+    // return 'https://api.xinchangyou.com';
   }
 
   // 本地备用域名
   static List<String> get localFallbackGatewayDomains {
-    return ['https://api.xinchangyou.com'];
-    // return ['https://api.kelaiguanxin.cloud'];
+    // return ['https://api.xinchangyou.com'];
+    return ['https://api.kelaiguanxin.cloud'];
   }
 
   static const scrambleKey = 'scrambleKey';

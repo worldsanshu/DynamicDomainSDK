@@ -112,21 +112,29 @@ class ChatSetupPage extends StatelessWidget {
                               icon: CupertinoIcons.search,
                               label: StrRes.search,
                               onTap: logic.searchChatHistory,
+                              colorButton: primaryColor.withOpacity(.15),
+                              colorIcon: primaryColor,
                             ),
                             CustomButton(
                               icon: CupertinoIcons.photo,
                               label: StrRes.picture,
                               onTap: logic.searchChatHistoryPicture,
+                              colorButton: primaryColor.withOpacity(.15),
+                              colorIcon: primaryColor,
                             ),
                            CustomButton(
                               icon: CupertinoIcons.video_camera,
                               label: StrRes.video,
                               onTap: logic.searchChatHistoryVideo,
+                              colorButton: primaryColor.withOpacity(.15),
+                              colorIcon: primaryColor,
                             ),
                            CustomButton(
                               icon: CupertinoIcons.doc,
                               label: StrRes.file,
                               onTap: logic.searchChatHistoryFile,
+                              colorButton: primaryColor.withOpacity(.15),
+                              colorIcon: primaryColor,
                             ),
                           ],
                         ),
@@ -217,18 +225,30 @@ class ChatSetupPage extends StatelessWidget {
 
             // 4. Custom AppBar
             Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                  onPressed: () => Get.back(),
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: AppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    automaticallyImplyLeading: false,
+                    title: Row(children: [
+                      IconButton(
+                      icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                      onPressed: () => Get.back(),
+                    ),
+                     Text(
+                      StrRes.chatSettings,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20.sp,
+                        color: Colors.white,
+                      ),
+                    ) 
+                    ],),
+                  ),
                 ),
-              ),
-            ),
           ],
         ),
       ),
