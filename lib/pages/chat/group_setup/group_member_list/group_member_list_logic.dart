@@ -257,6 +257,7 @@ class GroupMemberListLogic extends GetxController {
   List<GroupMembersInfo> get displayList =>
       isSearching.value ? searchResults : memberList;
 
+  // ignore: unused_element
   void _oldSearch() async {
     final memberInfo = await AppNavigator.startSearchGroupMember(
         groupInfo: groupInfo, opType: opType, isOwnerOrAdmin: isOwnerOrAdmin);

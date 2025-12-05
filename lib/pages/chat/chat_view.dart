@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim/widgets/base_page.dart';
 import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -280,6 +279,7 @@ class ChatPage extends StatelessWidget {
       : const SizedBox();
 
   // Content Container with Cute Minimalist Style
+  // ignore: unused_element
   Widget _buildCuteMinimalistContent({required Widget child}) {
     return Expanded(
       child: Container(

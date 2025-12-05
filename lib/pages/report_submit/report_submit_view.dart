@@ -1,15 +1,17 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:openim/pages/report_submit/report_submit_logic.dart';
 import 'package:openim/widgets/custom_buttom.dart';
+import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
-import '../../widgets/base_page.dart';
 
 class ReportDetailPage extends StatelessWidget {
   ReportDetailPage({super.key});
@@ -19,37 +21,38 @@ class ReportDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TouchCloseSoftKeyboard(
-      child: BasePage(
-        showAppBar: true,
+      child: GradientScaffoldWithBack(
         title: StrRes.reportSubmit,
-        centerTitle: false,
-        showLeading: true,
-        actions: [
-          CustomButton(
-            margin: EdgeInsets.symmetric(horizontal: 5.w),
-            onTap: logic.submitReport,
-            title: StrRes.confirm,
-            colorButton: const Color(0xFF4F42FF).withOpacity(0.8),
+        subtitle: logic.reportReason.value,
+        headerTrailing: CustomButton(
+          icon: CupertinoIcons.paperplane,
+          onTap: logic.submitReport,
+          colorButton: Colors.white.withOpacity(0.3),
+          colorIcon: Colors.white,
+        ),
+         content: ClipRRect(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(30.r),
           ),
-        ],
-        body: Container(
-          width: double.infinity,
-          color: const Color(0xFFF9FAFB),
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  16.verticalSpace,
-                  _buildReportReason(),
-                  16.verticalSpace,
-                  _buildDescriptionInput(),
-                  16.verticalSpace,
-                  _buildImageSection(),
-                  24.verticalSpace,
-                ],
+          child: Container(
+            color: const Color(0xFFF9FAFB),
+            height: double.infinity,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    16.verticalSpace,
+                    _buildReportReason(),
+                    16.verticalSpace,
+                    _buildDescriptionInput(),
+                    16.verticalSpace,
+                    _buildImageSection(),
+                    24.verticalSpace,
+                  ],
+                ),
               ),
             ),
           ),
@@ -83,16 +86,15 @@ class ReportDetailPage extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 32.w,
-                  height: 32.h,
+                  width: 40.w,
+                  height: 40.w,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF87171).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  padding: EdgeInsets.all(5.w),
-                  child: HugeIcon(
-                    icon: HugeIcons.strokeRoundedAlert02,
-                    size: 16.w,
+                  child: Icon(
+                    Icons.flag_outlined,
+                    size: 20.w,
                     color: const Color(0xFFF87171),
                   ),
                 ),
@@ -105,21 +107,21 @@ class ReportDetailPage extends StatelessWidget {
                         StrRes.reportReasonLabel,
                         style: TextStyle(
                           fontFamily: 'FilsonPro',
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
-                          color: const Color(0xFF6B7280),
+                          color: const Color(0xFF9CA3AF),
                         ),
                       ),
                       4.verticalSpace,
-                      Text(
-                        logic.reportReason.value,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF374151),
-                        ),
-                      ),
+                      Obx(() => Text(
+                            logic.reportReason.value,
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF374151),
+                            ),
+                          )),
                     ],
                   ),
                 ),
@@ -158,17 +160,25 @@ class ReportDetailPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedEdit02,
-                      size: 16.w,
-                      color: const Color(0xFF6B7280),
+                    Container(
+                      width: 32.w,
+                      height: 32.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3B82F6).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(
+                        Icons.edit_note_rounded,
+                        size: 18.w,
+                        color: const Color(0xFF3B82F6),
+                      ),
                     ),
-                    8.horizontalSpace,
+                    10.horizontalSpace,
                     Text(
                       StrRes.detailedDescriptionLabel,
                       style: TextStyle(
                         fontFamily: 'FilsonPro',
-                        fontSize: 16.sp,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF374151),
                       ),
@@ -177,12 +187,12 @@ class ReportDetailPage extends StatelessWidget {
                 ),
                 16.verticalSpace,
                 Container(
-                  height: 120.h,
+                  height: 140.h,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF9FAFB),
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                      color: const Color(0xFFF3F4F6),
+                      color: const Color(0xFFE5E7EB),
                       width: 1,
                     ),
                   ),
@@ -190,9 +200,11 @@ class ReportDetailPage extends StatelessWidget {
                     controller: logic.descriptionController,
                     focusNode: logic.descriptionFocusNode,
                     maxLines: null,
+                    expands: true,
+                    textAlignVertical: TextAlignVertical.top,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.all(12.w),
+                      contentPadding: EdgeInsets.all(14.w),
                       hintText: StrRes.enterDetailedReportContent,
                       hintStyle: TextStyle(
                         fontFamily: 'FilsonPro',
@@ -244,33 +256,74 @@ class ReportDetailPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedImage01,
-                      size: 16.w,
-                      color: const Color(0xFF6B7280),
-                    ),
-                    8.horizontalSpace,
-                    Text(
-                      StrRes.reportImages,
-                      style: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF374151),
+                    Container(
+                      width: 32.w,
+                      height: 32.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF10B981).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(
+                        Icons.photo_library_outlined,
+                        size: 18.w,
+                        color: const Color(0xFF10B981),
                       ),
                     ),
+                    10.horizontalSpace,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            StrRes.reportImages,
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF374151),
+                            ),
+                          ),
+                          Text(
+                            '${StrRes.optional} (Max: 5)',
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF9CA3AF),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Obx(() => Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF3F4F6),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Text(
+                            '${logic.images.length}/5',
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF6B7280),
+                            ),
+                          ),
+                        )),
                   ],
                 ),
                 16.verticalSpace,
-                Obx(() => SizedBox(
-                      child: Wrap(
-                        spacing: 10.w,
-                        runSpacing: 10.h,
-                        children: [
-                          ...logic.images.map((e) => _buildPictureView(e)),
-                          if (logic.images.length < 5) _buildAddButton(),
-                        ],
-                      ),
+                Obx(() => Wrap(
+                      spacing: 10.w,
+                      runSpacing: 10.h,
+                      children: [
+                        ...logic.images.map((e) => _buildPictureView(e)),
+                        if (logic.images.length < 5) _buildAddButton(),
+                      ],
                     )),
               ],
             ),
@@ -284,24 +337,24 @@ class ReportDetailPage extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          width: 90.w,
-          height: 90.h,
+          width: 80.w,
+          height: 80.w,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: const Color(0xFFF3F4F6),
+              color: const Color(0xFFE5E7EB),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF9CA3AF).withOpacity(0.05),
+                color: const Color(0xFF9CA3AF).withOpacity(0.08),
                 offset: const Offset(0, 2),
                 blurRadius: 4,
               ),
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(11.r),
             child: Image.file(
               file,
               fit: BoxFit.cover,
@@ -309,27 +362,31 @@ class ReportDetailPage extends StatelessWidget {
           ),
         ),
         Positioned(
-          right: 0,
-          top: 0,
+          right: -4,
+          top: -4,
           child: GestureDetector(
             onTap: () => logic.removeImage(file),
             child: Container(
-              width: 22.w,
-              height: 22.h,
+              width: 24.w,
+              height: 24.w,
               decoration: BoxDecoration(
-                color: const Color(0xFFF87171),
-                borderRadius: BorderRadius.circular(11.r),
+                color: const Color(0xFFEF4444),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF9CA3AF).withOpacity(0.1),
+                    color: const Color(0xFF9CA3AF).withOpacity(0.15),
                     offset: const Offset(0, 1),
-                    blurRadius: 2,
+                    blurRadius: 3,
                   ),
                 ],
               ),
-              child: HugeIcon(
-                icon: HugeIcons.strokeRoundedCancel01,
-                size: 12.w,
+              child: Icon(
+                Icons.close_rounded,
+                size: 14.w,
                 color: Colors.white,
               ),
             ),
@@ -343,20 +400,36 @@ class ReportDetailPage extends StatelessWidget {
     return GestureDetector(
       onTap: logic.pickImage,
       child: Container(
-        width: 70.w,
-        height: 70.h,
+        width: 80.w,
+        height: 80.w,
         decoration: BoxDecoration(
           color: const Color(0xFFF9FAFB),
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: const Color(0xFFF3F4F6),
-            width: 1,
+            color: const Color(0xFFE5E7EB),
+            width: 1.5,
+            strokeAlign: BorderSide.strokeAlignInside,
           ),
         ),
-        child: HugeIcon(
-          icon: HugeIcons.strokeRoundedCamera01,
-          size: 20.w,
-          color: const Color(0xFF9CA3AF),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.add_photo_alternate_outlined,
+              size: 24.w,
+              color: const Color(0xFF9CA3AF),
+            ),
+            4.verticalSpace,
+            Text(
+              StrRes.add,
+              style: TextStyle(
+                fontFamily: 'FilsonPro',
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF9CA3AF),
+              ),
+            ),
+          ],
         ),
       ),
     );

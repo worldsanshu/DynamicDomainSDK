@@ -8,10 +8,8 @@ import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/constants/app_color.dart';
-import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim/widgets/gradient_header.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:openim/pages/auth/widget/app_text_button.dart';
 import 'real_name_auth_logic.dart';
 
 class RealNameAuthView extends StatelessWidget {

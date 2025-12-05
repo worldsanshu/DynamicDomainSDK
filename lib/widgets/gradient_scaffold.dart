@@ -133,10 +133,6 @@ class GradientScaffoldWithBack extends StatelessWidget {
   final String? subtitle;
   final Widget? headerTrailing;
   final Widget content;
-  final Widget? headerContent;
-  final double headerHeight;
-  final double contentTopMargin;
-  final double contentBorderRadius;
   final Color? backgroundColor;
   final VoidCallback? onBack;
   final Widget? floatingActionButton;
@@ -148,10 +144,6 @@ class GradientScaffoldWithBack extends StatelessWidget {
     this.subtitle,
     this.headerTrailing,
     required this.content,
-    this.headerContent,
-    this.headerHeight = 180,
-    this.contentTopMargin = 100,
-    this.contentBorderRadius = 30,
     this.backgroundColor,
     this.onBack,
     this.floatingActionButton,
@@ -161,6 +153,10 @@ class GradientScaffoldWithBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
+
+    final headerHeight = 180;
+    final contentTopMargin = 100;
+    final contentBorderRadius = 30;
 
     return Scaffold(
       backgroundColor: backgroundColor ?? primaryColor,
@@ -211,7 +207,7 @@ class GradientScaffoldWithBack extends StatelessWidget {
                                 style: TextStyle(
                                   fontFamily: 'FilsonPro',
                                   fontWeight: FontWeight.w700,
-                                  fontSize: 24.sp,
+                                  fontSize: 20.sp,
                                   color: Colors.white,
                                 ),
                                 maxLines: 1,
@@ -239,7 +235,6 @@ class GradientScaffoldWithBack extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (headerContent != null) headerContent!,
                 ],
               ),
             ),

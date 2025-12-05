@@ -9,8 +9,8 @@ import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/pages/mine/edit_my_info/edit_my_info_logic.dart';
 import 'package:openim/routes/app_navigator.dart';
+import 'package:openim/widgets/qr_code_bottom_sheet.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/controller/im_controller.dart';
 import '../../../core/controller/trtc_controller.dart';
@@ -269,165 +269,18 @@ class MyInfoLogic extends GetxController {
 
   void _showQRCodeBottomSheet() {
     Get.bottomSheet(
-      barrierColor: Colors.transparent,
-      Stack(
-        children: [
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              child: Container(
-                color: Colors.transparent,
-              ),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.r),
-                topRight: Radius.circular(32.r),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                  offset: const Offset(0, -3),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Handle bar
-                Container(
-                  margin: EdgeInsets.only(top: 12.h),
-                  width: 40.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE5E7EB),
-                    borderRadius: BorderRadius.circular(2.r),
-                  ),
-                ),
-
-                // Title Section
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                  child: Row(
-                    children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedQrCode01,
-                        size: 24.w,
-                        color: const Color(0xFF374151),
-                      ),
-                      12.horizontalSpace,
-                      Text(
-                        StrRes.qrcode,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF374151),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // QR Code Section
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                        offset: const Offset(0, 2),
-                        blurRadius: 6.r,
-                      ),
-                    ],
-                    border: Border.all(
-                      color: const Color(0xFFF3F4F6),
-                      width: 1,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(24.w),
-                    child: Column(
-                      children: [
-                        // QR Title
-                        Text(
-                          StrRes.scanToAddMe,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF374151),
-                          ),
-                        ),
-                        16.verticalSpace,
-                        // QR Code
-                        Center(
-                          child: Container(
-                            width: 180.w,
-                            height: 180.w,
-                            padding: EdgeInsets.all(16.w),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  offset: const Offset(1, 1),
-                                  blurRadius: 3,
-                                ),
-                                BoxShadow(
-                                  color: Colors.white.withOpacity(0.9),
-                                  offset: const Offset(-0.5, -0.5),
-                                  blurRadius: 3,
-                                ),
-                              ],
-                            ),
-                            child: QrImageView(
-                              data: _buildQRContent(),
-                              size: 150.w,
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                        16.verticalSpace,
-                        // Hint Text
-                        Text(
-                          StrRes.qrcodeHint,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF6B7280),
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 30.h),
-              ],
-            ),
-          ),
-        ],
+      QRCodeBottomSheet(
+        title: StrRes.qrcode,
+        name: imLogic.userInfo.value.nickname ?? '',
+        avatarUrl: imLogic.userInfo.value.faceURL,
+        qrData: '${Config.friendScheme}${imLogic.userInfo.value.userID}',
+        isGroup: false,
+        description: StrRes.scanToAddMe,
+        hintText: StrRes.qrcodeHint,
       ),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
     );
-  }
-
-  String _buildQRContent() {
-    return '${Config.friendScheme}${imLogic.userInfo.value.userID}';
   }
 
   void editEnglishName() => AppNavigator.startEditMyInfo(

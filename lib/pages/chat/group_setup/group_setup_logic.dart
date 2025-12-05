@@ -13,7 +13,7 @@ import 'package:openim_common/openim_common.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:openim/widgets/qr_code_bottom_sheet.dart';
 
 import '../../../core/controller/im_controller.dart';
 import '../../../routes/app_navigator.dart';
@@ -970,209 +970,15 @@ class GroupSetupLogic extends GetxController {
 
   void _showGroupQRCodeBottomSheet() {
     Get.bottomSheet(
-      barrierColor: Colors.transparent,
-      Stack(
-        children: [
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              child: Container(
-                color: Colors.transparent,
-              ),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.r),
-                topRight: Radius.circular(32.r),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                  offset: const Offset(0, -3),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Handle bar
-                Container(
-                  margin: EdgeInsets.only(top: 12.h),
-                  width: 40.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE5E7EB),
-                    borderRadius: BorderRadius.circular(2.r),
-                  ),
-                ),
-
-                // Title Section
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                  child: Row(
-                    children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedQrCode01,
-                        size: 24.w,
-                        color: const Color(0xFF374151),
-                      ),
-                      12.horizontalSpace,
-                      Text(
-                        StrRes.qrcode,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF374151),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // QR Code Section
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                        offset: const Offset(0, 2),
-                        blurRadius: 6.r,
-                      ),
-                    ],
-                    border: Border.all(
-                      color: const Color(0xFFF3F4F6),
-                      width: 1,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(24.w),
-                    child: Column(
-                      children: [
-                        // Group Avatar and Name
-                        Row(
-                          children: [
-                            AvatarView(
-                              isGroup: true,
-                              url: groupInfo.value.faceURL,
-                              text: groupInfo.value.groupName,
-                              width: 50.w,
-                              height: 50.h,
-                              textStyle: TextStyle(
-                                fontFamily: 'FilsonPro',
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                              isCircle: true,
-                            ),
-                            12.horizontalSpace,
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    groupInfo.value.groupName ?? '',
-                                    style: TextStyle(
-                                      fontFamily: 'FilsonPro',
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF374151),
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  4.verticalSpace,
-                                  if (showMemberCount) ...[
-                                    4.verticalSpace,
-                                    Text(
-                                      '${groupInfo.value.memberCount ?? 0} ${StrRes.members}',
-                                      style: TextStyle(
-                                        fontFamily: 'FilsonPro',
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: const Color(0xFF6B7280),
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        20.verticalSpace,
-                        // QR Title
-                        Text(
-                          StrRes.scanToJoinGroup,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF374151),
-                          ),
-                        ),
-                        16.verticalSpace,
-                        // QR Code
-                        Center(
-                          child: Container(
-                            width: 180.w,
-                            height: 180.w,
-                            padding: EdgeInsets.all(16.w),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16.r),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  offset: const Offset(1, 1),
-                                  blurRadius: 3,
-                                ),
-                                BoxShadow(
-                                  color: Colors.white.withOpacity(0.9),
-                                  offset: const Offset(-0.5, -0.5),
-                                  blurRadius: 3,
-                                ),
-                              ],
-                            ),
-                            child: QrImageView(
-                              data: _buildGroupQRContent(),
-                              size: 150.w,
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                        16.verticalSpace,
-                        // Hint Text
-                        Text(
-                          StrRes.shareQRCodeToJoinGroup,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF6B7280),
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 30.h),
-              ],
-            ),
-          ),
-        ],
+      QRCodeBottomSheet(
+        title: StrRes.qrcode,
+        name: groupInfo.value.groupName ?? '',
+        avatarUrl: groupInfo.value.faceURL,
+        qrData: _buildGroupQRContent(),
+        isGroup: true,
+        memberCount: showMemberCount ? groupInfo.value.memberCount : null,
+        description: StrRes.scanToJoinGroup,
+        hintText: StrRes.shareQRCodeToJoinGroup,
       ),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

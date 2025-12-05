@@ -10,14 +10,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// - Badge count indicator
 class CustomButton extends StatelessWidget {
   final Function()? onTap;
-  final String? title;
+  final String title;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final IconData? icon;
   final Color? colorButton;
   final Color? colorIcon;
   final int? badgeCount;
-  final double? fontSize;
+  final double fontSize;
 
   /// Optional label displayed below the button.
   /// When provided, creates an action button with icon above and label below.
@@ -33,14 +33,14 @@ class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
     this.onTap,
-    this.title,
+    this.title="",
     this.margin,
     this.padding,
     this.icon,
     this.colorButton,
     this.colorIcon,
     this.badgeCount,
-    this.fontSize,
+    this.fontSize=14,
     this.label,
     this.labelColor,
     this.usePrimaryColor = false,
@@ -69,7 +69,7 @@ class CustomButton extends StatelessWidget {
             padding: effectivePadding,
             decoration: BoxDecoration(
               color: effectiveButtonColor,
-              borderRadius: BorderRadius.circular(50.r),
+              borderRadius: BorderRadius.circular(icon != null ? 50.r : 12.r),
             ),
             child: IntrinsicWidth(
               child: icon != null
@@ -79,11 +79,11 @@ class CustomButton extends StatelessWidget {
                       size: 16.w,
                     )
                   : Text(
-                      title ?? '',
+                      title,
                       style: TextStyle(
                         fontFamily: 'FilsonPro',
-                        color: effectiveIconColor,
-                        fontSize: fontSize ?? 17.sp,
+                        color: Colors.white,
+                        fontSize: fontSize,
                         fontWeight: FontWeight.w600,
                       ),
                       textAlign: TextAlign.center,
