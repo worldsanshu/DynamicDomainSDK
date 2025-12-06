@@ -14,6 +14,7 @@ class CustomButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final IconData? icon;
+  final double iconSize;
   final Color? colorButton;
   final Color? colorIcon;
   final int? badgeCount;
@@ -37,10 +38,12 @@ class CustomButton extends StatelessWidget {
     this.margin,
     this.padding,
     this.icon,
+    this.iconSize = 16,
     this.colorButton,
     this.colorIcon,
     this.badgeCount,
     this.fontSize=14,
+
     this.label,
     this.labelColor,
     this.usePrimaryColor = false,
@@ -76,7 +79,7 @@ class CustomButton extends StatelessWidget {
                   ? Icon(
                       icon,
                       color: effectiveIconColor,
-                      size: 16.w,
+                      size: iconSize.w,
                     )
                   : Text(
                       title,

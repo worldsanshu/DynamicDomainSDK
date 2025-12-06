@@ -120,7 +120,7 @@ class StrRes {
   static String get refresh => 'refresh'.tr;
   static String get agree => 'agree'.tr;
   static String get warmTips => 'warmTips'.tr;
-  static String get disagreeAndExit => 'disagreeAndExit'.tr;
+      static String get rejectAndExit => 'rejectAndExit'.tr;
   static String get plsReadBeforeUse => 'plsReadBeforeUse'.tr;
   static String get userAgreement => 'userAgreement'.tr;
   static String get userAgreementDoc => 'userAgreementDoc'.tr;
@@ -1611,4 +1611,6 @@ class StrRes {
   static String get maxAtUserHint => 'maxAtUserHint'.tr;
   static String get cannotSelectEveryoneWithOthers =>
       'cannotSelectEveryoneWithOthers'.tr;
+  static String get addMeAsFriend => 'addMeAsFriend'.tr;
+  static String get acceptMeJoin => 'acceptMeJoin'.tr;
 }

@@ -2,8 +2,8 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -28,38 +28,12 @@ class _ChatPreviewMergeMsgViewState extends State<ChatPreviewMergeMsgView> {
   final FocusNode focusNode = FocusNode();
   final AudioPlayer _audioPlayer = AudioPlayer();
   final _currentPlayClientMsgID = ''.obs;
-  String title = '';
 
   @override
   void initState() {
-    title = widget.title;
 
-    // Remove any existing suffix pattern like " (Chat Records)" or " (聊天记录)"
-    // This handles language switching correctly
-    final suffixPattern = RegExp(r'\s*\([^)]+\)\s*$');
-    title = title.replaceAll(suffixPattern, '');
+    // // Remove any existing suffix pattern like " (Chat Records)" or " (聊天记录)"
 
-    // Remove all known language variants of chatRecord (with or without parentheses)
-    final knownSuffixes = [
-      'Chat Records', // English
-      '聊天记录', // Chinese
-      'chatRecord', // Fallback
-    ];
-
-    for (final suffix in knownSuffixes) {
-      if (title.endsWith(suffix)) {
-        title = title.substring(0, title.length - suffix.length).trim();
-        break;
-      }
-      // Also try with space before suffix
-      if (title.endsWith(' $suffix')) {
-        title = title.substring(0, title.length - suffix.length - 1).trim();
-        break;
-      }
-    }
-
-    // Add the localized suffix
-    title += ' (${StrRes.chatRecord})';
     _initPlayListener();
     super.initState();
   }
@@ -185,103 +159,129 @@ class _ChatPreviewMergeMsgViewState extends State<ChatPreviewMergeMsgView> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
     return GestureDetector(
       onTap: () {
         focusNode.unfocus();
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
-        appBar: AppBar(
-          backgroundColor: const Color(0xFFF8F9FA),
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-          leading: Container(
-            margin: EdgeInsets.all(8.w),
-            child: GestureDetector(
-              onTap: () => Get.back(),
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10.w,
-                  vertical: 10.h,
-                ),
-                child: Icon(
-                  Icons.arrow_back_ios_new,
-                  color: const Color(0xFF757575),
-                  size: 16.w,
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            // 1. Gradient Header
+            Container(
+              height: 160.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    primaryColor.withOpacity(0.7),
+                    primaryColor,
+                    primaryColor.withOpacity(0.9),
+                  ],
                 ),
               ),
             ),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontWeight: FontWeight.w500,
-                  fontSize: 23.sp,
-                  color: Colors.black,
+
+            // 2. Body Container
+            Container(
+              margin: EdgeInsets.only(top: 130.h),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+                child: _buildList(),
+              ),
+            ),
+
+            // 3. Header Content
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Get.back(),
+                        child: Container(
+                          padding: EdgeInsets.all(8.w),
+                          color: Colors.transparent,
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                            size: 20.w,
+                          ),
+                        ),
+                      ),
+                      12.horizontalSpace,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              StrRes.chatRecord,
+                              style: TextStyle(
+                                fontFamily: 'FilsonPro',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20.sp,
+                                color: Colors.white,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              widget.title.replaceAll("Chat Records", '').trim(),
+                              style: TextStyle(
+                                fontFamily: 'FilsonPro',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14.sp,
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Text(
-                StrRes.mergedMessages,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12.sp,
-                  color: const Color(0xFFBDBDBD),
-                ),
-              ),
-            ],
-          ),
-          titleSpacing: 0,
-          centerTitle: false,
+            ),
+          ],
         ),
-        body: _buildContentContainer(),
       ),
     );
   }
 
-  Widget _buildContentContainer() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        child: AnimationLimiter(
-          child: ListView.builder(
-            itemCount: widget.messageList.length,
-            padding: EdgeInsets.only(top: 16.h),
-            itemBuilder: (_, index) => AnimationConfiguration.staggeredList(
-              position: index,
-              duration: const Duration(milliseconds: 400),
-              child: SlideAnimation(
-                curve: Curves.easeOutCubic,
-                verticalOffset: 40.0,
-                child: FadeInAnimation(
-                  child: _buildItemView(index),
-                ),
-              ),
+  Widget _buildList() {
+    return AnimationLimiter(
+      child: ListView.builder(
+        itemCount: widget.messageList.length,
+        padding: EdgeInsets.only(top: 20.h, bottom: 20.h),
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (_, index) => AnimationConfiguration.staggeredList(
+          position: index,
+          duration: const Duration(milliseconds: 400),
+          child: SlideAnimation(
+            curve: Curves.easeOutCubic,
+            verticalOffset: 40.0,
+            child: FadeInAnimation(
+              child: _buildItemView(index),
             ),
           ),
         ),

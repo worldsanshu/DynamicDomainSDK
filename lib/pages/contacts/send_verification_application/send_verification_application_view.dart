@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim_common/openim_common.dart';
-import '../../../widgets/base_page.dart';
+import '../../../widgets/gradient_scaffold.dart';
 
 import 'send_verification_application_logic.dart';
 
@@ -14,47 +15,70 @@ class SendVerificationApplicationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logic.inputCtrl.text =
+        logic.isEnterGroup ? StrRes.addMeAsFriend : StrRes.acceptMeJoin;
     return TouchCloseSoftKeyboard(
-      child: BasePage(
-        showAppBar: true,
+      child: GradientScaffold(
         title: logic.isEnterGroup
             ? StrRes.groupVerification
             : StrRes.friendVerification,
-        centerTitle: false,
-        showLeading: true,
-        actions: [
-          CustomButton(
-            onTap: logic.send,
-            title: StrRes.send,
-          ),
-        ],
-        body: SingleChildScrollView(
+        subtitle: logic.isEnterGroup
+            ? StrRes.sendEnterGroupApplication
+            : StrRes.sendToBeFriendApplication,
+        showBackButton: true,
+        bodyColor: const Color(0xFFF9FAFB),
+        trailing: CustomButton(
+          onTap: logic.send,
+          icon: CupertinoIcons.paperplane,
+          colorButton: Colors.white.withOpacity(.15),
+          colorIcon: Colors.white,
+        ),
+        body: Padding(
+          padding: EdgeInsets.only(left: 20.w, right: 20.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
-                child: (logic.isEnterGroup
-                        ? StrRes.sendEnterGroupApplication
-                        : StrRes.sendToBeFriendApplication)
-                    .toText
-                  ..style = Styles.ts_8E9AB0_14sp,
+              Text(
+                StrRes.leaveMessage,
+                style: TextStyle(
+                  fontFamily: 'FilsonPro',
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF374151),
+                ),
               ),
+              16.verticalSpace,
               Container(
-                height: 122.h,
-                color: Styles.c_FFFFFF,
-                padding: EdgeInsets.symmetric(vertical: 12.h),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
                 child: TextField(
-                  // expands: true,
                   controller: logic.inputCtrl,
                   autofocus: true,
-                  maxLines: 10,
+                  maxLines: 6,
                   maxLength: 20,
+                  style: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF1F2937),
+                  ),
                   decoration: InputDecoration(
                     isDense: true,
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
+                    contentPadding: EdgeInsets.all(16.w),
+                    counterStyle: TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontSize: 12.sp,
+                      color: const Color(0xFF9CA3AF),
                     ),
                   ),
                 ),

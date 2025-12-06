@@ -16,6 +16,7 @@ class InviteCodeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor= Theme.of(context).primaryColor;
     return TouchCloseSoftKeyboard(
       child: Scaffold(
         body: Stack(
@@ -31,12 +32,12 @@ class InviteCodeView extends StatelessWidget {
                         center: const Alignment(0.0, -1.0),
                         radius: 1.8,
                         colors: [
-                          const Color(0xFF4A90E2).withOpacity(value * 0.9),
+                          primaryColor.withOpacity(value * 0.9),
                           const Color(0xFFB3D4F5).withOpacity(value * 0.5),
                           Colors.white.withOpacity(0.0),
                         ],
                         stops: const [0.0, 0.4, 1.0],
-                        tileMode: TileMode.clamp,
+                        tileMode: TileMode.clamp, 
                       ),
                     ),
                   );
@@ -118,7 +119,7 @@ class InviteCodeView extends StatelessWidget {
                             buttonText: StrRes.enter,
                             buttonWidth: 100.w,
                             backgroundColor: logic.isButtonEnabled.value
-                                ? const Color(0xFF3B82F6)
+                                ? primaryColor
                                 : const Color(0xFF9CA3AF),
                             textStyle: TextStyle(
                               fontFamily: 'FilsonPro',

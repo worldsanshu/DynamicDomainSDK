@@ -9,8 +9,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:ionicons/ionicons.dart';
 
 import 'package:openim/core/controller/im_controller.dart';
+import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter/cupertino.dart';
@@ -945,78 +947,42 @@ class _ConversationPageState extends State<ConversationPage> {
 
   Widget _buildConversationItemView(ConversationInfo info) => Slidable(
         endActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          extentRatio: logic.existUnreadMsg(info) ? 0.7 : 0.4,
+          motion: const BehindMotion(),
+          extentRatio: logic.existUnreadMsg(info) ? 0.65 : 0.45,
           children: [
-            CustomSlidableAction(
-              onPressed: (_) => logic.pinConversation(info),
-              flex: 2,
-              backgroundColor: const Color(0xFF3B82F6),
-              borderRadius: BorderRadius.circular(16.r),
-              padding: EdgeInsets.all(8.w),
-              child: Text(
-                logic.isPinned(info) ? StrRes.unpin : StrRes.pin,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
+            8.horizontalSpace,
+            CustomButton(
+              onTap: () => logic.pinConversation(info),
+              icon: info.isPinned! ? CupertinoIcons.pin_slash : CupertinoIcons.pin,
+              colorButton: Colors.teal.withOpacity(.15),
+              colorIcon: Colors.teal,
+              iconSize: 25.w,
             ),
-            if (logic.existUnreadMsg(info))
-              CustomSlidableAction(
-                onPressed: (_) => logic.markMessageHasRead(info),
-                flex: 3,
-                backgroundColor: const Color(0xFF8B5CF6),
-                borderRadius: BorderRadius.circular(16.r),
-                padding: EdgeInsets.all(3.w),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    // Calculate responsive font size based on available width
-                    double responsiveFontSize =
-                        (constraints.maxWidth * 0.12).clamp(10.0, 20.0);
-
-                    return Center(
-                      child: Text(
-                        StrRes.markHasRead,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: responsiveFontSize.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2, // Allow text to wrap to 2 lines
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true, // Enable text wrapping
-                      ),
-                    );
-                  },
-                ),
+            8.horizontalSpace,
+            if (logic.existUnreadMsg(info)) ...[
+              CustomButton(
+                onTap: () => logic.markMessageHasRead(info),
+                icon:Ionicons.checkmark_done_circle_outline,
+                colorButton:Colors.green.withOpacity(.15),
+                colorIcon: Colors.green,
+              iconSize: 25.w,
               ),
-            CustomSlidableAction(
-              onPressed: (_) => logic.deleteConversation(info),
-              flex: 2,
-              backgroundColor: const Color(0xFFEF4444),
-              borderRadius: BorderRadius.circular(16.r),
-              padding: EdgeInsets.all(8.w),
-              child: Text(
-                StrRes.delete,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
+              8.horizontalSpace,
+            ],
+            CustomButton(
+              onTap: () => logic.deleteConversation(info),
+              icon: CupertinoIcons.trash,
+              colorButton: Colors.red.withOpacity(.15),
+              colorIcon: Colors.red,
+              iconSize: 25.w,
             ),
+            8.horizontalSpace,
           ],
         ),
         child: _buildItemView(info),
       );
 
-  Widget _buildItemView(ConversationInfo info) {
+ Widget _buildItemView(ConversationInfo info) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),

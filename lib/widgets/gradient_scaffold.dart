@@ -39,10 +39,10 @@ class GradientScaffold extends StatelessWidget {
   final Widget? searchBox;
 
   /// Fixed values for consistency
-  static const double headerHeight = 150;
+  static const double headerHeight = 160;
   static const double titleFontSize = 20;
   static const double subtitleFontSize = 14;
-  static const double bodyTopMargin = 120;
+  static const double bodyTopMargin = 130;
   static const double bodyTopPadding = 20;
 
   const GradientScaffold({
@@ -100,14 +100,14 @@ class GradientScaffold extends StatelessWidget {
         // 3. Avatar (Overlapping) - optional
         if (avatar != null)
           Positioned(
-            top: 80.h,
+            top: 90.h,
             child: avatar!,
           ),
           
         // 4. Search Box (Overlapping) - optional
         if (searchBox != null)
           Positioned(
-            top: (headerHeight - 80).h,
+            top: (headerHeight - 70).h,
             left: 20.w,
             right: 20.w,
             child: searchBox!,
@@ -144,7 +144,7 @@ class GradientScaffold extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: (headerHeight-95).h),
+          padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: (headerHeight-105).h),
           child: _buildHeaderContent(),
         ),
       ),
@@ -189,7 +189,6 @@ class GradientScaffold extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               if (subtitle != null && subtitle!.isNotEmpty) ...[
-                2.verticalSpace,
                 Text(
                   subtitle!,
                   style: TextStyle(

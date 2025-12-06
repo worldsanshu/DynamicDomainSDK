@@ -1023,4 +1023,6 @@ const Map<String, String> zh_CN = {
   "createGroupMinMemberHint": "创建群聊至少需要3位成员。",
   "maxAtUserHint": "最多只能@10位用户。",
   "cannotSelectEveryoneWithOthers": "已选择其他成员时无法选择@所有人，请先清空选择。",
+  "addMeAsFriend": "让我们成为朋友吧！",
+  "acceptMeJoin": "请接受我加入",
 };

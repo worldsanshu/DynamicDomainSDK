@@ -41,7 +41,6 @@ class GroupManagePage extends StatelessWidget {
           top: Radius.circular(30.r),
         ),
         child: Container(
-          height: double.infinity,
           color: const Color(0xFFF9FAFB),
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),

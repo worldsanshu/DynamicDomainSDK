@@ -6,10 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:openim/widgets/custom_buttom.dart';
+import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 
-import '../../widgets/base_page.dart';
 import 'chat_analytics_logic.dart';
 
 class ChatAnalyticsView extends StatelessWidget {
@@ -19,111 +18,50 @@ class ChatAnalyticsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => BasePage(
-        showAppBar: true,
-        centerTitle: false,
-        showLeading: true,
-        customAppBar: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              StrRes.chatAnalytics,
-              style: const TextStyle(
-                fontFamily: 'FilsonPro',
-                fontWeight: FontWeight.w500,
-                fontSize: 23,
-                color: Colors.black,
-              ).copyWith(fontSize: 23.sp),
-            ),
-            Text(
-              StrRes.usageAnalyticsInsights,
-              style: const TextStyle(
-                fontFamily: 'FilsonPro',
-                fontWeight: FontWeight.w400,
-                color: Color(0xFFBDBDBD),
-              ).copyWith(fontSize: 12.sp),
-            ),
-          ],
-        ),
-        actions: [
-          CustomButton(
-            margin: const EdgeInsets.only(right: 10),
+    return Obx(() => GradientScaffold(
+          title: StrRes.chatAnalytics,
+          subtitle: StrRes.usageAnalyticsInsights,
+          showBackButton: true,
+          trailing: HeaderActionButton(
             onTap: logic.refreshData,
             icon: CupertinoIcons.refresh,
-            colorButton: const Color(0xFF4F42FF).withOpacity(0.1),
-            colorIcon: const Color(0xFF4F42FF),
-          )
-        ],
-        body: logic.isLoading.value
-            ? _buildLoadingView()
-            : _buildContentContainer()));
+          ),
+          body: logic.isLoading.value
+              ? _buildLoadingView()
+              : _buildContent(),
+        ));
   }
 
-  Widget _buildContentContainer() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: RefreshIndicator(
-        onRefresh: logic.refreshData,
-        color: const Color(0xFF4F42FF),
-        backgroundColor: Colors.white,
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.only(bottom: 20.h),
-          child: AnimationLimiter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: AnimationConfiguration.toStaggeredList(
-                duration: const Duration(milliseconds: 450),
-                childAnimationBuilder: (widget) => SlideAnimation(
-                  verticalOffset: 50.0,
-                  curve: Curves.easeOutQuart,
-                  child: FadeInAnimation(child: widget),
-                ),
-                children: [
-                  20.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: _buildOverviewCards(),
-                  ),
-                  18.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: _buildActivityChart(),
-                  ),
-                  18.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: _buildMessageTypeChart(),
-                  ),
-                  18.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: _buildTopContacts(),
-                  ),
-                  18.verticalSpace,
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: _buildTopGroups(),
-                  ),
-                  24.verticalSpace,
-                ],
+  Widget _buildContent() {
+    return RefreshIndicator(
+      onRefresh: logic.refreshData,
+      color: const Color(0xFF4F42FF),
+      backgroundColor: Colors.white,
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        child: AnimationLimiter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: AnimationConfiguration.toStaggeredList(
+              duration: const Duration(milliseconds: 450),
+              childAnimationBuilder: (widget) => SlideAnimation(
+                verticalOffset: 50.0,
+                curve: Curves.easeOutQuart,
+                child: FadeInAnimation(child: widget),
               ),
+              children: [
+                _buildOverviewCards(),
+                16.verticalSpace,
+                _buildActivityChart(),
+                16.verticalSpace,
+                _buildMessageTypeChart(),
+                16.verticalSpace,
+                _buildTopContacts(),
+                16.verticalSpace,
+                _buildTopGroups(),
+                30.verticalSpace,
+              ],
             ),
           ),
         ),
@@ -137,24 +75,21 @@ class ChatAnalyticsView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 80.w,
-            height: 80.w,
+            padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFFFFF),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(20.r),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                  offset: const Offset(0, 2),
-                  blurRadius: 12.r,
+                  color: const Color(0xFF9CA3AF).withOpacity(0.1),
+                  offset: const Offset(0, 4),
+                  blurRadius: 12,
                 ),
               ],
             ),
-            child: const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4F42FF)),
-                strokeWidth: 3,
-              ),
+            child: const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4F42FF)),
+              strokeWidth: 3,
             ),
           ),
           20.verticalSpace,
@@ -190,7 +125,7 @@ class ChatAnalyticsView extends StatelessWidget {
             title: StrRes.conversations,
             value: '${logic.totalConversations.value}',
             icon: HugeIcons.strokeRoundedUserMultiple,
-            color: const Color(0xFF34D399),
+            color: const Color(0xFF10B981),
             subtitle:
                 '${StrRes.friends}: ${logic.totalFriends.value} | ${StrRes.groups}: ${logic.totalGroups.value}',
           ),
@@ -207,119 +142,78 @@ class ChatAnalyticsView extends StatelessWidget {
     required String subtitle,
   }) {
     return Container(
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            offset: const Offset(2, 2),
-            blurRadius: 4,
-          ),
-          BoxShadow(
-            color: Colors.white.withOpacity(0.8),
-            offset: const Offset(-1, -1),
-            blurRadius: 4,
+            color: color.withOpacity(0.05),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
           ),
         ],
         border: Border.all(
-          color: Colors.white,
-          width: 1.5,
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.9),
-            const Color(0xFFF8FAFC),
-          ],
-          stops: const [0.05, 0.3],
+          color: color.withOpacity(0.1),
+          width: 1,
         ),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 30.w,
-                  height: 30.h,
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.02),
-                        offset: const Offset(1, 1),
-                        blurRadius: 2,
-                      ),
-                      BoxShadow(
-                        color: Colors.white.withOpacity(0.7),
-                        offset: const Offset(-0.5, -0.5),
-                        blurRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: HugeIcon(
-                    icon: icon,
-                    color: color,
-                    size: 15.w,
-                  ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8.w),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-                8.horizontalSpace,
-                Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      title.replaceAll(' ', '\n'),
-                      style: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF6B7280),
-                        letterSpacing: 0.3,
-                        height: 1.2,
-                      ),
-                      maxLines: 2,
-                    ),
-                  ),
+                child: HugeIcon(
+                  icon: icon,
+                  color: color,
+                  size: 20.w,
                 ),
-              ],
-            ),
-            12.verticalSpace,
-            Text(
-              value,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF374151),
-                shadows: [
-                  Shadow(
-                    color: Colors.white.withOpacity(0.8),
-                    offset: const Offset(0.5, 0.5),
-                    blurRadius: 0.5,
+              ),
+              8.horizontalSpace,
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF6B7280),
                   ),
-                ],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+            ],
+          ),
+          16.verticalSpace,
+          Text(
+            value,
+            style: TextStyle(
+              fontFamily: 'FilsonPro',
+              fontSize: 24.sp,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1F2937),
             ),
-            6.verticalSpace,
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFF9CA3AF),
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+          ),
+          4.verticalSpace,
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontFamily: 'FilsonPro',
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF9CA3AF),
             ),
-          ],
-        ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
@@ -331,68 +225,66 @@ class ChatAnalyticsView extends StatelessWidget {
       color: const Color(0xFFA78BFA),
       child: Column(
         children: [
-          16.verticalSpace,
+          20.verticalSpace,
           SizedBox(
-            height: 140.h,
+            height: 160.h,
             child: Obx(() {
               final data = logic.weeklyActivity;
               if (data.isEmpty) return _buildEmptyChart();
 
+              final maxValue = data.values.isEmpty
+                  ? 1
+                  : data.values.reduce((a, b) => a > b ? a : b);
+
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: data.entries.map((entry) {
-                  final maxValue = data.values.isEmpty
-                      ? 1
-                      : data.values.reduce((a, b) => a > b ? a : b);
-                  // Giảm chiều cao bar để chừa chỗ cho text
                   final height = maxValue == 0
-                      ? 15.h
-                      : (entry.value / maxValue * 70.h).clamp(15.h, 70.h);
+                      ? 10.h
+                      : (entry.value / maxValue * 100.h).clamp(10.h, 100.h);
+                  
+                  final isToday = entry.key == data.keys.last;
 
-                  return Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2.w),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            '${entry.value}',
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 10.sp,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF6B7280),
-                            ),
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (entry.value > 0)
+                        Text(
+                          '${entry.value}',
+                          style: TextStyle(
+                            fontFamily: 'FilsonPro',
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w600,
+                            color: isToday ? const Color(0xFFA78BFA) : const Color(0xFF9CA3AF),
                           ),
-                          4.verticalSpace,
-                          Container(
-                            width: double.infinity,
-                            height: height,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  const Color(0xFFA78BFA),
-                                  const Color(0xFFA78BFA).withOpacity(0.6),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
+                        ),
+                      6.verticalSpace,
+                      Container(
+                        width: 24.w,
+                        height: height,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: isToday 
+                              ? [const Color(0xFFA78BFA), const Color(0xFFC4B5FD)]
+                              : [const Color(0xFFE5E7EB), const Color(0xFFF3F4F6)],
                           ),
-                          4.verticalSpace,
-                          Text(
-                            entry.key,
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 9.sp,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF9CA3AF),
-                            ),
-                          ),
-                        ],
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
                       ),
-                    ),
+                      8.verticalSpace,
+                      Text(
+                        entry.key,
+                        style: TextStyle(
+                          fontFamily: 'FilsonPro',
+                          fontSize: 10.sp,
+                          fontWeight: isToday ? FontWeight.w600 : FontWeight.w500,
+                          color: isToday ? const Color(0xFFA78BFA) : const Color(0xFF9CA3AF),
+                        ),
+                      ),
+                    ],
                   );
                 }).toList(),
               );
@@ -423,52 +315,57 @@ class ChatAnalyticsView extends StatelessWidget {
                     total == 0 ? 0.0 : (entry.value / total * 100);
 
                 return Padding(
-                  padding: EdgeInsets.only(bottom: 12.h),
-                  child: Row(
+                  padding: EdgeInsets.only(bottom: 16.h),
+                  child: Column(
                     children: [
-                      _getMessageTypeIcon(entry.key),
-                      12.horizontalSpace,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  _getMessageTypeName(entry.key),
-                                  style: TextStyle(
-                                    fontFamily: 'FilsonPro',
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF374151),
-                                  ),
-                                ),
-                                Text(
-                                  '${entry.value} (${percentage.toStringAsFixed(1)}%)',
-                                  style: TextStyle(
-                                    fontFamily: 'FilsonPro',
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF6B7280),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            4.verticalSpace,
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(4.r),
-                              child: LinearProgressIndicator(
-                                value: percentage / 100,
-                                backgroundColor: const Color(0xFFE5E7EB),
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  _getMessageTypeColor(entry.key),
-                                ),
-                                minHeight: 6.h,
+                      Row(
+                        children: [
+                          _getMessageTypeIcon(entry.key),
+                          12.horizontalSpace,
+                          Expanded(
+                            child: Text(
+                              _getMessageTypeName(entry.key),
+                              style: TextStyle(
+                                fontFamily: 'FilsonPro',
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF374151),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Text(
+                            '${entry.value}',
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF374151),
+                            ),
+                          ),
+                        ],
+                      ),
+                      8.verticalSpace,
+                      Stack(
+                        children: [
+                          Container(
+                            height: 8.h,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF3F4F6),
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                          ),
+                          FractionallySizedBox(
+                            widthFactor: percentage / 100,
+                            child: Container(
+                              height: 8.h,
+                              decoration: BoxDecoration(
+                                color: _getMessageTypeColor(entry.key),
+                                borderRadius: BorderRadius.circular(4.r),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -485,7 +382,7 @@ class ChatAnalyticsView extends StatelessWidget {
     return _buildSectionCard(
       title: StrRes.topFriends,
       icon: HugeIcons.strokeRoundedUser,
-      color: const Color(0xFF34D399),
+      color: const Color(0xFF10B981),
       child: Column(
         children: [
           16.verticalSpace,
@@ -497,15 +394,11 @@ class ChatAnalyticsView extends StatelessWidget {
 
             return Column(
               children: contacts.asMap().entries.map((entry) {
-                final index = entry.key;
-                final contact = entry.value;
-
                 return _buildRankingItem(
-                  rank: index + 1,
-                  name: contact.name,
-                  subtitle:
-                      '${_formatMessageCount(contact.messageCount)} ${StrRes.messagesCount}',
-                  avatar: contact.avatar,
+                  rank: entry.key + 1,
+                  name: entry.value.name,
+                  subtitle: '${_formatMessageCount(entry.value.messageCount)} ${StrRes.messagesCount}',
+                  avatar: entry.value.avatar,
                 );
               }).toList(),
             );
@@ -519,7 +412,7 @@ class ChatAnalyticsView extends StatelessWidget {
     return _buildSectionCard(
       title: StrRes.topGroups,
       icon: HugeIcons.strokeRoundedUserGroup,
-      color: const Color(0xFFF9A8D4),
+      color: const Color(0xFFEC4899),
       child: Column(
         children: [
           16.verticalSpace,
@@ -531,16 +424,12 @@ class ChatAnalyticsView extends StatelessWidget {
 
             return Column(
               children: groups.asMap().entries.map((entry) {
-                final index = entry.key;
-                final group = entry.value;
-
                 return _buildRankingItem(
-                  rank: index + 1,
-                  name: group.name,
+                  rank: entry.key + 1,
+                  name: entry.value.name,
                   isGroup: true,
-                  subtitle:
-                      '${_formatMessageCount(group.messageCount)} ${StrRes.messagesCount}',
-                  avatar: group.avatar,
+                  subtitle: '${_formatMessageCount(entry.value.messageCount)} ${StrRes.messagesCount}',
+                  avatar: entry.value.avatar,
                 );
               }).toList(),
             );
@@ -559,51 +448,54 @@ class ChatAnalyticsView extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: BorderRadius.circular(16.r),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.06),
-            offset: const Offset(0, 2),
-            blurRadius: 6.r,
+            color: Colors.black.withOpacity(0.03),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
           ),
         ],
-        border: Border.all(
-          color: const Color(0xFFF3F4F6),
-          width: 1,
-        ),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(20.w),
+            child: Row(
               children: [
                 Container(
-                  width: 30.w,
-                  height: 30.h,
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
                   child: HugeIcon(
                     icon: icon,
                     color: color,
-                    size: 20,
+                    size: 20.w,
                   ),
                 ),
-                16.horizontalSpace,
+                12.horizontalSpace,
                 Text(
                   title,
                   style: TextStyle(
                     fontFamily: 'FilsonPro',
-                    fontSize: 18.sp,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF374151),
+                    color: const Color(0xFF1F2937),
                   ),
                 ),
               ],
             ),
-            child,
-          ],
-        ),
+          ),
+          const Divider(height: 1, color: Color(0xFFF3F4F6)),
+          Padding(
+            padding: EdgeInsets.all(20.w),
+            child: child,
+          ),
+        ],
       ),
     );
   }
@@ -615,16 +507,21 @@ class ChatAnalyticsView extends StatelessWidget {
     String? avatar,
     bool isGroup = false,
   }) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
+    return Container(
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9FAFB),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
       child: Row(
         children: [
           Container(
-            width: 24.w,
-            height: 24.h,
+            width: 28.w,
+            height: 28.h,
             decoration: BoxDecoration(
               color: _getRankColor(rank),
-              borderRadius: BorderRadius.circular(12.r),
+              shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
                   color: _getRankColor(rank).withOpacity(0.3),
@@ -638,7 +535,7 @@ class ChatAnalyticsView extends StatelessWidget {
                 '$rank',
                 style: TextStyle(
                   fontFamily: 'FilsonPro',
-                  fontSize: 12.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
@@ -647,8 +544,8 @@ class ChatAnalyticsView extends StatelessWidget {
           ),
           12.horizontalSpace,
           AvatarView(
-            width: 36.w,
-            height: 36.h,
+            width: 40.w,
+            height: 40.h,
             url: avatar,
             text: name,
             isCircle: true,
@@ -689,61 +586,39 @@ class ChatAnalyticsView extends StatelessWidget {
   }
 
   Widget _buildEmptyChart() {
-    return Container(
-      height: 100.h,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: const Color(0xFFE5E7EB),
-          width: 1,
-        ),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const HugeIcon(
-              icon: HugeIcons.strokeRoundedBarChart,
-              size: 32,
-              color: Color(0xFFD1D5DB),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          HugeIcon(
+            icon: HugeIcons.strokeRoundedBarChart,
+            size: 32.w,
+            color: const Color(0xFFD1D5DB),
+          ),
+          8.verticalSpace,
+          Text(
+            StrRes.noData,
+            style: TextStyle(
+              fontFamily: 'FilsonPro',
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF9CA3AF),
             ),
-            8.verticalSpace,
-            Text(
-              StrRes.noData,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFF9CA3AF),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildEmptyList(String message) {
-    return Container(
-      height: 80.h,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: const Color(0xFFE5E7EB),
-          width: 1,
-        ),
-      ),
-      child: Center(
-        child: Text(
-          message,
-          style: TextStyle(
-            fontFamily: 'FilsonPro',
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF9CA3AF),
-          ),
+    return Center(
+      child: Text(
+        message,
+        style: TextStyle(
+          fontFamily: 'FilsonPro',
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF9CA3AF),
         ),
       ),
     );
@@ -760,15 +635,15 @@ class ChatAnalyticsView extends StatelessWidget {
         break;
       case 'Image':
         iconData = HugeIcons.strokeRoundedImage01;
-        color = const Color(0xFF34D399);
+        color = const Color(0xFF10B981);
         break;
       case 'Voice':
         iconData = HugeIcons.strokeRoundedMic01;
-        color = const Color(0xFFFBBF24);
+        color = const Color(0xFFF59E0B);
         break;
       case 'Video':
         iconData = HugeIcons.strokeRoundedVideo01;
-        color = const Color(0xFFF87171);
+        color = const Color(0xFFEF4444);
         break;
       case 'File':
         iconData = HugeIcons.strokeRoundedFile01;
@@ -780,10 +655,17 @@ class ChatAnalyticsView extends StatelessWidget {
         break;
     }
 
-    return HugeIcon(
-      icon: iconData,
-      color: color,
-      size: 20,
+    return Container(
+      padding: EdgeInsets.all(6.w),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: HugeIcon(
+        icon: iconData,
+        color: color,
+        size: 16.w,
+      ),
     );
   }
 
@@ -811,11 +693,11 @@ class ChatAnalyticsView extends StatelessWidget {
       case 'Text':
         return const Color(0xFF4F42FF);
       case 'Image':
-        return const Color(0xFF34D399);
+        return const Color(0xFF10B981);
       case 'Voice':
-        return const Color(0xFFFBBF24);
+        return const Color(0xFFF59E0B);
       case 'Video':
-        return const Color(0xFFF87171);
+        return const Color(0xFFEF4444);
       case 'File':
         return const Color(0xFFA78BFA);
       default:
@@ -828,9 +710,9 @@ class ChatAnalyticsView extends StatelessWidget {
       case 1:
         return const Color(0xFFFFD700); // Gold
       case 2:
-        return const Color(0xFFC0C0C0); // Silver
+        return const Color(0xFF9CA3AF); // Silver
       case 3:
-        return const Color(0xFFCD7F32); // Bronze
+        return const Color(0xFFB45309); // Bronze
       default:
         return const Color(0xFF6B7280); // Gray
     }

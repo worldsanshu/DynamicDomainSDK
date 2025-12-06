@@ -36,6 +36,8 @@ class _ContactsPageState extends State<ContactsPage>
   late TabController _tabController;
   final GlobalKey _newButtonKey = GlobalKey();
   GroupFilterType _selectedGroupFilter = GroupFilterType.all;
+  final TextEditingController _friendSearchController = TextEditingController();
+  final TextEditingController _groupSearchController = TextEditingController();
 
   @override
   void initState() {
@@ -48,6 +50,8 @@ class _ContactsPageState extends State<ContactsPage>
   @override
   void dispose() {
     _tabController.dispose();
+    _friendSearchController.dispose();
+    _groupSearchController.dispose();
     super.dispose();
   }
 
@@ -187,7 +191,21 @@ class _ContactsPageState extends State<ContactsPage>
       final friendList = logic.friendListLogic.friendList
           .map((u) => FriendListItem(type: FriendItemType.friend, user: u))
           .toList();
-      SuspensionUtil.setShowSuspensionStatus(friendList);
+      
+      // Filter by search
+      final searchQuery = _friendSearchController.text.toLowerCase().trim();
+      final filteredList = searchQuery.isEmpty
+          ? friendList
+          : friendList.where((item) {
+              if (item.type != FriendItemType.friend) return false;
+              final user = item.user;
+              final name = user?.nickname ?? '';
+              final remark = user?.remark ?? '';
+              return name.toLowerCase().contains(searchQuery) ||
+                  remark.toLowerCase().contains(searchQuery);
+            }).toList();
+      
+      SuspensionUtil.setShowSuspensionStatus(filteredList);
 
       return Column(
         children: [
@@ -198,12 +216,18 @@ class _ContactsPageState extends State<ContactsPage>
             count: logic.friendApplicationCount,
             onTap: logic.newFriend,
           ),
+          // Search box
+          _buildSearchBox(
+            controller: _friendSearchController,
+            hintText: 'Search friends...',
+            onChanged: (value) => setState(() {}),
+          ),
           Container(
             width: double.infinity,
             height: 5.h,
             color: const Color(0xFFF3F4F6),
           ),
-          friendList.isEmpty
+          filteredList.isEmpty
               ? Expanded(
                   child: Center(
                     child: Column(
@@ -217,7 +241,9 @@ class _ContactsPageState extends State<ContactsPage>
                         ),
                         12.verticalSpace,
                         Text(
-                          StrRes.noFriendsYet,
+                          searchQuery.isEmpty
+                              ? StrRes.noFriendsYet
+                              : 'No friends found',
                           style: TextStyle(
                             fontFamily: 'FilsonPro',
                             fontSize: 16.sp,
@@ -231,12 +257,12 @@ class _ContactsPageState extends State<ContactsPage>
                 )
               : Expanded(
                   child: WrapAzListView<FriendListItem>(
-                    data: friendList,
-                    itemCount: friendList.length,
+                    data: filteredList,
+                    itemCount: filteredList.length,
                     itemBuilder: (_, data, index) {
                       return FriendItemView(
                         info: data.user!,
-                        showDivider: !_isLastFriendInGroup(index, friendList),
+                        showDivider: !_isLastFriendInGroup(index, filteredList),
                         onTap: () =>
                             logic.friendListLogic.viewFriendInfo(data.user!),
                       );
@@ -256,6 +282,12 @@ class _ContactsPageState extends State<ContactsPage>
           label: StrRes.groupJoinRequests,
           count: logic.groupApplicationCount,
           onTap: logic.newGroup,
+        ),
+        // Search box
+        _buildSearchBox(
+          controller: _groupSearchController,
+          hintText: 'Search groups...',
+          onChanged: (value) => setState(() {}),
         ),
         Container(
           width: double.infinity,
@@ -302,10 +334,19 @@ class _ContactsPageState extends State<ContactsPage>
                 _selectedGroupFilter == GroupFilterType.all ||
                     _selectedGroupFilter == GroupFilterType.joinedGroup;
 
-            // Check if filtered list is empty
-            final filteredMyGroups = showMyGroups ? myGroups : <GroupInfo>[];
-            final filteredJoinedGroups =
-                showJoinedGroups ? joinedGroups : <GroupInfo>[];
+            // Search filter
+            final searchQuery = _groupSearchController.text.toLowerCase().trim();
+            final filteredMyGroups = (showMyGroups ? myGroups : <GroupInfo>[])
+                .where((group) {
+              if (searchQuery.isEmpty) return true;
+              return (group.groupName ?? '').toLowerCase().contains(searchQuery);
+            }).toList();
+            
+            final filteredJoinedGroups = (showJoinedGroups ? joinedGroups : <GroupInfo>[])
+                .where((group) {
+              if (searchQuery.isEmpty) return true;
+              return (group.groupName ?? '').toLowerCase().contains(searchQuery);
+            }).toList();
 
             if (filteredMyGroups.isEmpty && filteredJoinedGroups.isEmpty) {
               return Center(
@@ -321,7 +362,9 @@ class _ContactsPageState extends State<ContactsPage>
                     Text(
                       _selectedGroupFilter == GroupFilterType.myGroup
                           ? StrRes.noCreatedGroupsYet
-                          : StrRes.noJoinedGroupsYet,
+                          : _selectedGroupFilter == GroupFilterType.joinedGroup
+                              ? StrRes.noJoinedGroupsYet
+                              : 'No groups found',
                       style: TextStyle(
                         fontFamily: 'FilsonPro',
                         fontSize: 16.sp,
@@ -455,6 +498,78 @@ class _ContactsPageState extends State<ContactsPage>
                 () => _selectedGroupFilter = GroupFilterType.joinedGroup),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBox({
+    required TextEditingController controller,
+    required String hintText,
+    required ValueChanged<String> onChanged,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      color: Colors.white,
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,
+        style: TextStyle(
+          fontFamily: 'FilsonPro',
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF374151),
+        ),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: TextStyle(
+            fontFamily: 'FilsonPro',
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+            color: const Color(0xFF9CA3AF),
+          ),
+          prefixIcon: Icon(
+            CupertinoIcons.search,
+            size: 20.w,
+            color: const Color(0xFF9CA3AF),
+          ),
+          suffixIcon: controller.text.isNotEmpty
+              ? GestureDetector(
+                  onTap: () {
+                    controller.clear();
+                    onChanged('');
+                  },
+                  child: Icon(
+                    CupertinoIcons.xmark_circle_fill,
+                    size: 18.w,
+                    color: const Color(0xFF9CA3AF),
+                  ),
+                )
+              : null,
+          filled: true,
+          fillColor: const Color(0xFFF9FAFB),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.r),
+            borderSide: const BorderSide(
+              color: Color(0xFFE5E7EB),
+              width: 1,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.r),
+            borderSide: const BorderSide(
+              color: Color(0xFFE5E7EB),
+              width: 1,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.r),
+            borderSide: BorderSide(
+              color: Theme.of(context).primaryColor,
+              width: 1.5,
+            ),
+          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 10.h),
+        ),
       ),
     );
   }

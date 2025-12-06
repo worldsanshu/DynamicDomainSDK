@@ -36,7 +36,7 @@ class SplashLogic extends GetxController {
           _ClayProtocolDialog(
             title: StrRes.warmTips,
             content: buildContent(),
-            leftText: StrRes.disagreeAndExit,
+            leftText: StrRes.rejectAndExit,
             rightText: StrRes.agree,
             onTapLeft: () => Get.back(result: false),
             onTapRight: () => Get.back(result: true),

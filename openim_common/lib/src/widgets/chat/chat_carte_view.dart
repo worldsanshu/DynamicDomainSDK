@@ -166,7 +166,7 @@ class ChatCarteView extends StatelessWidget {
                     width: 18.w,
                     height: 18.h,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF3B82F6).withOpacity(0.2),
+                      color: Theme.of(context).primaryColor.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(6.r),
                       boxShadow: [
                         BoxShadow(
@@ -184,7 +184,7 @@ class ChatCarteView extends StatelessWidget {
                     child: Icon(
                       Icons.person_rounded,
                       size: 12.w,
-                      color: const Color(0xFF3B82F6),
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                   6.horizontalSpace,

@@ -147,9 +147,6 @@ class MinePage extends StatelessWidget {
             onTap: logic.clearCache,
             textColor: const Color(0xFFEF4444),
           ),
-
-          24.verticalSpace,
-
           MenuItemWidget(
             icon: Icons.logout,
             label: StrRes.logout,

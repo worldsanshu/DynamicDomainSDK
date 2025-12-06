@@ -1065,4 +1065,6 @@ const Map<String, String> en_US = {
   "maxAtUserHint": "Cannot @ more than 10 users.",
   "cannotSelectEveryoneWithOthers":
       "Cannot select @everyone when other members are already selected. Please clear selection first.",
+  "addMeAsFriend": "Let's be friends!", 
+  "acceptMeJoin": "Please accept me to join"
 };
