@@ -5,11 +5,13 @@ import 'package:openim_common/openim_common.dart';
 class PhoneField extends StatelessWidget {
   final FocusNode focusNode;
   final TextEditingController controller;
+  final bool isRequired;
 
   const PhoneField({
     super.key,
     required this.focusNode,
     required this.controller,
+    this.isRequired = false,
   });
 
   @override
@@ -18,6 +20,7 @@ class PhoneField extends StatelessWidget {
       label: StrRes.phoneNumber,
       keyboardType: TextInputType.phone,
       focusNode: focusNode,
+      isRequired: isRequired,
       onChanged: (value) {
         // Field validation handled by validator
       },

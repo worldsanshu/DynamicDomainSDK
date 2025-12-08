@@ -52,6 +52,7 @@ class ResetPasswordPage extends StatelessWidget {
                         PhoneField(
                           focusNode: logic.phoneFocusNode,
                           controller: logic.phoneNumberCtrl,
+                          isRequired: true,
                         ),
                         20.verticalSpace,
 
@@ -60,14 +61,16 @@ class ResetPasswordPage extends StatelessWidget {
                           focusNode: logic.passwordFocusNode,
                           controller: logic.passwordCtrl,
                           validateFormat: true,
+                          isRequired: true,
                         ),
                         20.verticalSpace,
 
                         // Confirm password field with comparison
-                                               PasswordField(
+                        PasswordField(
                           focusNode: logic.passwordConfirmationFocusNode,
                           controller: logic.confirmPasswordCtrl,
                           compareController: logic.passwordCtrl,
+                          isRequired: true,
                         ),
                         20.verticalSpace,
 
@@ -75,6 +78,7 @@ class ResetPasswordPage extends StatelessWidget {
                         PhoneCodeField(
                           controller: logic.smsCodeCtrl,
                           onSendCode: logic.onSendVerificationCode,
+                          isRequired: true,
                         ),
 
                         30.verticalSpace,

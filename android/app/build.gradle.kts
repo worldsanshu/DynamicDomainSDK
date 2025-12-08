@@ -54,7 +54,7 @@ android {
         multiDexEnabled = true
 
         ndk {
-            abiFilters += listOf("arm64-v8a") // "armeabi-v7a", "armeabi", "x86", "x86_64", "mips", "mips64"
+            // abiFilters += listOf("arm64-v8a") // "armeabi-v7a", "armeabi", "x86", "x86_64", "mips", "mips64"
         }
 
         lint {

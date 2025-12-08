@@ -522,28 +522,33 @@ class AuthView extends StatelessWidget {
             NicknameField(
               controller: logic.registerNameController,
               focusNode: logic.registerNameFocusNode,
+              isRequired: true,
             ),
             Gap(14.h),
             PhoneField(
               focusNode: logic.registerPhoneFocusNode,
               controller: logic.registerPhoneController,
+              isRequired: true,
             ),
             Gap(14.h),
             PasswordField(
               focusNode: logic.registerPasswordFocusNode,
               controller: logic.registerPasswordController,
               validateFormat: true,
+              isRequired: true,
             ),
             Gap(14.h),
             PasswordField(
               focusNode: logic.registerPasswordConfirmationFocusNode,
               controller: logic.registerPasswordConfirmationController,
               compareController: logic.registerPasswordController,
+              isRequired: true,
             ),
             Gap(14.h),
             PhoneCodeField(
               controller: logic.registerVerificationCodeController,
               onSendCode: logic.onSendVerificationCode,
+              isRequired: true,
             ),
             // Register Button
             Gap(16.h), 

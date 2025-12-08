@@ -9,6 +9,7 @@ class PasswordField extends StatefulWidget {
   final TextEditingController controller;
   final TextEditingController? compareController;
   final bool validateFormat;
+  final bool isRequired;
 
   const PasswordField({
     super.key,
@@ -16,6 +17,7 @@ class PasswordField extends StatefulWidget {
     required this.controller,
     this.compareController,
     this.validateFormat = false,
+    this.isRequired = false,
   });
 
   @override
@@ -34,6 +36,7 @@ class _PasswordFieldState extends State<PasswordField> {
         controller: widget.controller,
         // helperText: widget.validateFormat ? StrRes.wrongPasswordFormat : null,
         isObscureText: isObscureText,
+        isRequired: widget.isRequired,
         onChanged: (value) {
           // Field validation handled by validator
         },

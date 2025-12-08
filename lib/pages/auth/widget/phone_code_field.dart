@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
 import 'package:openim/pages/auth/widget/app_text_form_field.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -12,12 +11,14 @@ class PhoneCodeField extends StatefulWidget {
   final TextEditingController controller;
   final Future<bool> Function()? onSendCode;
   final int seconds;
+  final bool isRequired;
 
   const PhoneCodeField({
     super.key,
     required this.controller,
     required this.onSendCode,
     this.seconds = 60,
+    this.isRequired = false,
   });
 
   @override
@@ -74,6 +75,7 @@ class _PhoneCodeFieldState extends State<PhoneCodeField> {
             label: StrRes.verificationCode,
             keyboardType: TextInputType.number,
             controller: widget.controller,
+            isRequired: widget.isRequired,
             validator: (value) {
               final code = (value ?? '').trim();
               if (code.isEmpty) {

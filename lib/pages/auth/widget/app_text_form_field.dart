@@ -16,6 +16,7 @@ class AppTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType keyboardType;
   final Function(String?) validator;
+  final bool isRequired;
 
   const AppTextFormField({
     super.key,
@@ -30,6 +31,7 @@ class AppTextFormField extends StatelessWidget {
     this.focusNode,
     this.keyboardType = TextInputType.text,
     required this.validator,
+    this.isRequired = false,
   });
 
   @override
@@ -54,23 +56,39 @@ class AppTextFormField extends StatelessWidget {
         keyboardType: keyboardType,
         focusNode: focusNode,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        validator: (value) {
-          return validator(value);
-        },
+        validator: (value) => validator(value),
         onChanged: onChanged,
         controller: controller,
         decoration: InputDecoration(
-          label: label != null
-              ? Text(
-                  label!,
+          label: AnimatedBuilder(
+            animation: Listenable.merge([focusNode, controller]),
+            builder: (context, _) {
+              final isFloating =
+                  focusNode?.hasFocus == true || (controller?.text.isNotEmpty ?? false);
+
+              return RichText(
+                text: TextSpan(
+                  text: label ?? '',
                   style: TextStyle(
                     fontFamily: 'FilsonPro',
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF374151),
+                    fontSize: isFloating ? 16.sp : 14.sp,
+                    fontWeight: isFloating ? FontWeight.w600 : FontWeight.w400,
+                    color: isFloating
+                        ? const Color(0xFF37417F)
+                        : const Color(0xFF6B7280),
                   ),
-                )
-              : null,
+                  children: [
+                    if (isRequired)
+                    TextSpan(
+                      text: ' *',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+
           hintText: hint,
           hintStyle: TextStyle(
             fontFamily: 'FilsonPro',
@@ -89,8 +107,8 @@ class AppTextFormField extends StatelessWidget {
           isDense: isDense ?? true,
           filled: true,
           fillColor: Colors.transparent,
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+          contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(14),

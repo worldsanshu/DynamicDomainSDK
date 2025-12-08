@@ -5,11 +5,13 @@ import 'app_text_form_field.dart';
 class NicknameField extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode? focusNode;
+  final bool isRequired;
 
   const NicknameField({
     super.key,
     required this.controller,
     this.focusNode,
+    this.isRequired = false,
   });
 
   @override
@@ -51,6 +53,7 @@ class _NicknameFieldState extends State<NicknameField> {
     return AppTextFormField(
       label: StrRes.nickname,
       focusNode: effectiveFocusNode,
+      isRequired: widget.isRequired,
       validator: (value) {
         // Don't modify controller.text inside validator - it causes setState during build
         String name = (value ?? '').trim();
