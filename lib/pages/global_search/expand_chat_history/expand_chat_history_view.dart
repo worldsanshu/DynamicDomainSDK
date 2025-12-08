@@ -32,7 +32,6 @@ class ExpandChatHistoryPage extends StatelessWidget {
           onCleared: () => logic.focusNode.requestFocus(),
           margin: EdgeInsets.zero,
           backgroundColor: const Color(0xFFF8FAFC),
-          searchIconColor: const Color(0xFF6B7280),
         ),
         body: Column(
           children: [

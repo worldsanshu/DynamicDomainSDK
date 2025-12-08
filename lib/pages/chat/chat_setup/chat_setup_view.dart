@@ -182,7 +182,7 @@ class ChatSetupPage extends StatelessWidget {
               textStyle:
                   TextStyle(fontSize: 32.sp, color: Colors.white),
               isCircle: true,
-              enabledPreview: true,
+              enabledPreview: false,
             ),
           ),
         ));

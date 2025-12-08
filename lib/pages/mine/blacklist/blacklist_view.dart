@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-import '../../../widgets/base_page.dart';
 import 'blacklist_logic.dart';
 
 class BlacklistPage extends StatelessWidget {
@@ -18,56 +18,12 @@ class BlacklistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-      showAppBar: true,
-      centerTitle: false,
-      showLeading: true,
-      customAppBar: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            StrRes.blacklist,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w500,
-              fontSize: 23,
-              color: Colors.black,
-            ).copyWith(fontSize: 23.sp),
-          ),
-          Text(
-            StrRes.blockedContacts,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w400,
-              color: Color(0xFFBDBDBD),
-            ).copyWith(fontSize: 12.sp),
-          ),
-        ],
-      ),
-      body: _buildContentContainer(),
-    );
-  }
-
-  Widget _buildContentContainer() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Obx(() =>
+    
+    return GradientScaffold(
+      title: StrRes.blacklist,
+      subtitle: StrRes.blockedContacts,
+      showBackButton: true,
+      body: Obx(() =>
           logic.blacklist.isEmpty ? _buildEmptyView() : _buildBlacklistView()),
     );
   }
@@ -75,7 +31,7 @@ class BlacklistPage extends StatelessWidget {
   Widget _buildBlacklistView() {
     return AnimationLimiter(
       child: ListView.builder(
-        padding: EdgeInsets.only(top: 18.h, left: 16.w, right: 16.w),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
         itemCount: logic.blacklist.length,
         itemBuilder: (context, index) {
           return AnimationConfiguration.staggeredList(
@@ -85,10 +41,9 @@ class BlacklistPage extends StatelessWidget {
               curve: Curves.easeOutCubic,
               verticalOffset: 40.0,
               child: FadeInAnimation(
-                child: _buildBlacklistItem(
-                  logic.blacklist[index],
-                  index: index,
-                  isLast: index == logic.blacklist.length - 1,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  child: _buildBlacklistItem(logic.blacklist[index]),
                 ),
               ),
             ),
@@ -98,84 +53,47 @@ class BlacklistPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBlacklistItem(
-    BlacklistInfo info, {
-    required int index,
-    bool isLast = false,
-  }) {
+  Widget _buildBlacklistItem(BlacklistInfo info) {
+
     return Container(
-      margin: EdgeInsets.only(bottom: isLast ? 24.h : 12.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(
+          color: const Color(0xFFE5E7EB),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            offset: const Offset(2, 2),
-            blurRadius: 4,
-          ),
-          BoxShadow(
-            color: Colors.white.withOpacity(0.8),
-            offset: const Offset(-1, -1),
-            blurRadius: 4,
+            color: const Color(0xFF9CA3AF).withOpacity(0.06),
+            offset: const Offset(0, 2),
+            blurRadius: 8,
           ),
         ],
-        border: Border.all(
-          color: Colors.white,
-          width: 1.5,
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withOpacity(0.9),
-            const Color(0xFFF8FAFC),
-          ],
-          stops: const [0.05, 0.3],
-        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _showRemoveDialog(info),
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(14.r),
           child: Padding(
-            padding: EdgeInsets.all(10.w),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Avatar
-                Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFFE5E7EB),
-                          width: 1.5.w,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF9CA3AF).withOpacity(0.1),
-                            blurRadius: 8.r,
-                          ),
-                        ],
-                      ),
-                      child: AvatarView(
-                        url: info.faceURL,
-                        text: info.nickname,
-                        width: 68.w,
-                        height: 68.h,
-                        textStyle: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                        isCircle: true,
-                      ),
-                    ),
-                  ],
+                AvatarView(
+                  url: info.faceURL,
+                  text: info.nickname,
+                  width: 56.w,
+                  height: 56.h,
+                  textStyle: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                  isCircle: true,
                 ),
                 16.horizontalSpace,
 
@@ -183,69 +101,68 @@ class BlacklistPage extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         info.nickname ?? '',
                         style: TextStyle(
                           fontFamily: 'FilsonPro',
-                          fontSize: 18.sp,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF374151),
+                          color: const Color(0xFF1F2937),
                         ),
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      5.verticalSpace,
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 0.w,
-                          vertical: 8.h,
+                      6.verticalSpace,
+                      Text(
+                        'ID: ${info.userID ?? ''}',
+                        style: TextStyle(
+                          fontFamily: 'FilsonPro',
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFF6B7280),
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Text(
-                          'ID: ${info.userID ?? ''}',
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF6B7280),
-                            letterSpacing: 0.3,
-                          ),
-                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
 
                 // Remove button
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF87171).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedDelete03,
-                        color: const Color(0xFFF87171),
-                        size: 16.w,
+                GestureDetector(
+                  onTap: () => _showRemoveDialog(info),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEE2E2),
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(
+                        color: const Color(0xFFDC2626).withOpacity(0.2),
+                        width: 1,
                       ),
-                      6.horizontalSpace,
-                      Text(
-                        StrRes.remove,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFFF87171),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        HugeIcon(
+                          icon: HugeIcons.strokeRoundedDelete03,
+                          color: const Color(0xFFDC2626),
+                          size: 16.w,
                         ),
-                      ),
-                    ],
+                        6.horizontalSpace,
+                        Text(
+                          StrRes.remove,
+                          style: TextStyle(
+                            fontFamily: 'FilsonPro',
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFFDC2626),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -257,67 +174,41 @@ class BlacklistPage extends StatelessWidget {
   }
 
   Widget _buildEmptyView() {
-    return AnimationLimiter(
+    return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: AnimationConfiguration.staggeredList(
-              position: 0,
-              duration: const Duration(milliseconds: 400),
-              child: SlideAnimation(
-                curve: Curves.easeOutCubic,
-                verticalOffset: 40.0,
-                child: FadeInAnimation(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Empty illustration
-                      Container(
-                        width: 120.w,
-                        height: 120.h,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF9FAFB),
-                          borderRadius: BorderRadius.circular(60.r),
-                          border: Border.all(
-                            color: const Color(0xFFE5E7EB),
-                            width: 1,
-                          ),
-                        ),
-                        child: Center(
-                          child: Container(
-                            width: 60.w,
-                            height: 60.h,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF6B7280).withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(30.r),
-                            ),
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(2.w),
-                            child: HugeIcon(
-                              icon: HugeIcons.strokeRoundedUserBlock01,
-                              size: 40.w,
-                              color: const Color(0xFF6B7280),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      24.verticalSpace,
-
-                      // Empty message
-                      Text(
-                        StrRes.blacklistEmpty,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF6B7280),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+          // Empty illustration
+          Container(
+            width: 120.w,
+            height: 120.h,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF9FAFB),
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: const Color(0xFFE5E7EB),
+                width: 1,
               ),
+            ),
+            child: Center(
+              child: HugeIcon(
+                icon: HugeIcons.strokeRoundedUserBlock01,
+                size: 60.w,
+                color: const Color(0xFF9CA3AF),
+              ),
+            ),
+          ),
+
+          24.verticalSpace,
+
+          // Empty message
+          Text(
+            StrRes.blacklistEmpty,
+            style: TextStyle(
+              fontFamily: 'FilsonPro',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF6B7280),
             ),
           ),
         ],
@@ -326,28 +217,16 @@ class BlacklistPage extends StatelessWidget {
   }
 
   void _showRemoveDialog(BlacklistInfo info) {
+
     Get.dialog(
-      barrierColor: Colors.transparent,
       Dialog(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 20.w),
           padding: EdgeInsets.all(24.w),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFFFFF),
-            borderRadius: BorderRadius.circular(20.r),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                offset: const Offset(0, 4),
-                blurRadius: 12,
-              ),
-            ],
-            border: Border.all(
-              color: const Color(0xFFF3F4F6),
-              width: 1,
-            ),
-          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -356,15 +235,14 @@ class BlacklistPage extends StatelessWidget {
                 width: 70.w,
                 height: 70.h,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF87171).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(30.r),
+                  color: const Color(0xFFFEE2E2),
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
                 alignment: Alignment.center,
-                padding: EdgeInsets.all(5.w),
                 child: HugeIcon(
                   icon: HugeIcons.strokeRoundedUserBlock01,
                   size: 40.w,
-                  color: const Color(0xFFF87171),
+                  color: const Color(0xFFDC2626),
                 ),
               ),
 
@@ -377,7 +255,7 @@ class BlacklistPage extends StatelessWidget {
                   fontFamily: 'FilsonPro',
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF374151),
+                  color: const Color(0xFF1F2937),
                 ),
               ),
 
@@ -393,6 +271,7 @@ class BlacklistPage extends StatelessWidget {
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
                   color: const Color(0xFF6B7280),
+                  height: 1.5,
                 ),
               ),
 
@@ -408,8 +287,8 @@ class BlacklistPage extends StatelessWidget {
                       child: Container(
                         height: 44.h,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF9FAFB),
-                          borderRadius: BorderRadius.circular(16.r),
+                          color: const Color(0xFFF3F4F6),
+                          borderRadius: BorderRadius.circular(12.r),
                           border: Border.all(
                             color: const Color(0xFFE5E7EB),
                             width: 1,
@@ -421,7 +300,7 @@ class BlacklistPage extends StatelessWidget {
                             style: TextStyle(
                               fontFamily: 'FilsonPro',
                               fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
                               color: const Color(0xFF6B7280),
                             ),
                           ),
@@ -442,8 +321,15 @@ class BlacklistPage extends StatelessWidget {
                       child: Container(
                         height: 44.h,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF87171),
-                          borderRadius: BorderRadius.circular(16.r),
+                          color: const Color(0xFFDC2626),
+                          borderRadius: BorderRadius.circular(12.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFDC2626).withOpacity(0.3),
+                              offset: const Offset(0, 2),
+                              blurRadius: 6,
+                            ),
+                          ],
                         ),
                         child: Center(
                           child: Text(
@@ -451,7 +337,7 @@ class BlacklistPage extends StatelessWidget {
                             style: TextStyle(
                               fontFamily: 'FilsonPro',
                               fontSize: 16.sp,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),
                           ),

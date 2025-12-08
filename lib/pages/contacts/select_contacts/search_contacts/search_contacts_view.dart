@@ -34,7 +34,6 @@ class SelectContactsFromSearchPage extends StatelessWidget {
           onCleared: () => logic.focusNode.requestFocus(),
           margin: EdgeInsets.zero,
           backgroundColor: const Color(0xFFFFFFFF),
-          searchIconColor: AppColor.iconColor,
         ),
         body: Column(
           children: [

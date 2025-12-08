@@ -57,7 +57,7 @@ class UserProfilePanelPage extends StatelessWidget {
                       Icon(
                         CupertinoIcons.doc_on_doc,
                         size: 14.sp,
-                        color: const Color(0xFF6B7280),
+                        color: Theme.of(context).primaryColor,
                       ),
                     ],
                   ),

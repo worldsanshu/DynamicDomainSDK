@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 
 class MerchantItemCupertino extends StatelessWidget {
@@ -62,17 +63,16 @@ class MerchantItemCupertino extends StatelessWidget {
 
   Widget _buildAvatar() {
     return Container(
-      width: 48.w,
-      height: 48.w,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF3F4F6),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12.r),
-        child: ImageRes.loginLogo.toImage,
-      )
-    );
+        width: 48.w,
+        height: 48.w,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF3F4F6),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12.r),
+          child: ImageRes.loginLogo.toImage,
+        ));
   }
 
   Widget _buildCompanyInfo() {
@@ -94,11 +94,10 @@ class MerchantItemCupertino extends StatelessWidget {
         Text(
           '${StrRes.companyId}: ${merchant.id}',
           style: TextStyle(
-      fontFamily: 'FilsonPro',
-      fontSize: 13.sp,
+            fontFamily: 'FilsonPro',
+            fontSize: 13.sp,
             fontWeight: FontWeight.w400,
-            color: const Color(0xFF6B7280
-    ),
+            color: const Color(0xFF6B7280),
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -108,10 +107,11 @@ class MerchantItemCupertino extends StatelessWidget {
   }
 
   Widget _buildCurrentBadge() {
+    final primaryColor = Theme.of(Get.context!).primaryColor;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: const Color(0xFF4F42FF).withOpacity(0.1),
+        color: primaryColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
@@ -120,17 +120,16 @@ class MerchantItemCupertino extends StatelessWidget {
           Icon(
             CupertinoIcons.star_fill,
             size: 12.w,
-            color: const Color(0xFF4F42FF),
+            color: primaryColor,
           ),
           4.horizontalSpace,
           Text(
             StrRes.currentCompany,
             style: TextStyle(
-      fontFamily: 'FilsonPro',
-      fontSize: 12.sp,
+              fontFamily: 'FilsonPro',
+              fontSize: 12.sp,
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF4F42FF
-    ),
+              color: primaryColor,
             ),
           ),
         ],
@@ -145,18 +144,18 @@ class MerchantItemCupertino extends StatelessWidget {
         height: 36.h,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         decoration: BoxDecoration(
-          color: const Color(0xFF4F42FF),
+          color: Theme.of(Get.context!).primaryColor,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Center(
           child: Text(
             title,
             style: TextStyle(
-      fontFamily: 'FilsonPro',
-      fontSize: 14.sp,
+              fontFamily: 'FilsonPro',
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: Colors.white,
-    ),
+            ),
           ),
         ),
       ),

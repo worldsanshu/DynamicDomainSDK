@@ -19,6 +19,7 @@ class MerchantListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final merchantList = logic.merchantList;
+    final primaryColor = Theme.of(context).primaryColor;
     return BasePage(
       showAppBar: true,
       title: StrRes.myCompany,
@@ -85,14 +86,13 @@ class MerchantListView extends StatelessWidget {
                                   width: 72.w,
                                   height: 72.h,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF4F42FF)
-                                        .withOpacity(0.1),
+                                    color: primaryColor.withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(16.r),
                                   ),
                                   child: Icon(
                                     CupertinoIcons.building_2_fill,
                                     size: 32.w,
-                                    color: const Color(0xFF4F42FF),
+                                    color: primaryColor,
                                   ),
                                 ),
                                 20.verticalSpace,
@@ -195,12 +195,13 @@ class MerchantListView extends StatelessWidget {
     required VoidCallback onTap,
     required String label,
   }) {
+    final primaryColor = Theme.of(Get.context!).primaryColor;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color: const Color(0xFF4F42FF),
+          color: primaryColor,
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Text(

@@ -81,7 +81,6 @@ class WechatSearchAppBar extends StatelessWidget
                   onCleared: onCleared,
                   margin: EdgeInsets.zero,
                   backgroundColor: const Color(0xFFFFFFFF),
-                  searchIconColor: AppColors.iconColor,
                 ),
               ),
             ],

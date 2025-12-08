@@ -13,7 +13,6 @@ class WechatStyleSearchBox extends StatefulWidget {
     this.textStyle,
     this.hintStyle,
     this.hintText = '搜索',
-    this.searchIconColor,
     this.backgroundColor,
     this.searchIconWidth,
     this.searchIconHeight,
@@ -34,7 +33,6 @@ class WechatStyleSearchBox extends StatefulWidget {
   final TextStyle? hintStyle;
   final TextStyle? textStyle;
   final String? hintText;
-  final Color? searchIconColor;
   final Color? backgroundColor;
   final double? searchIconWidth;
   final double? searchIconHeight;
@@ -107,7 +105,7 @@ class _WechatStyleSearchBoxState extends State<WechatStyleSearchBox> {
                 Icon(
                   CupertinoIcons.search,
                   size: widget.searchIconWidth ?? 20.w,
-                  color: widget.searchIconColor ?? const Color(0xFF4F42FF),
+                  color: Theme.of(context).primaryColor,
                 ),
                 12.horizontalSpace,
                 widget.enabled
@@ -180,7 +178,7 @@ class _WechatStyleSearchBoxState extends State<WechatStyleSearchBox> {
             child: Icon(
               CupertinoIcons.clear,
               size: widget.searchIconWidth ?? 18.w,
-              color: widget.searchIconColor ?? const Color(0xFF6B7280),
+              color:const Color(0xFF6B7280),
             ),
           ),
         ),
