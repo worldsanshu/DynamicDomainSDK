@@ -285,7 +285,7 @@ mixin IMCallback {
       ConversationInfo conversation =
           result.where((conv) => info.groupID == conv.groupID).toList().first;
       IMViews.showToast('${StrRes.groupDisbanded}: ${info.groupName}',
-          duration: const Duration(seconds: 3));
+      );
       await OpenIM.iMManager.conversationManager
           .deleteConversationAndDeleteAllMsg(
         conversationID: conversation.conversationID,
@@ -315,8 +315,7 @@ mixin IMCallback {
           await OpenIM.iMManager.conversationManager.getAllConversationList();
       ConversationInfo conversation =
           result.where((conv) => info.groupID == conv.groupID).toList().first;
-      IMViews.showToast('${StrRes.removedFromGroupHint}: ${info.groupName}',
-          duration: const Duration(seconds: 3));
+      IMViews.showToast('${StrRes.removedFromGroupHint}: ${info.groupName}');
       await OpenIM.iMManager.conversationManager
           .deleteConversationAndDeleteAllMsg(
         conversationID: conversation.conversationID,

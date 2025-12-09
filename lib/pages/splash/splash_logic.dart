@@ -36,7 +36,7 @@ class SplashLogic extends GetxController {
           _ClayProtocolDialog(
             title: StrRes.warmTips,
             content: buildContent(),
-            leftText: StrRes.rejectAndExit,
+            leftText: StrRes.cancel,
             rightText: StrRes.agree,
             onTapLeft: () => Get.back(result: false),
             onTapRight: () => Get.back(result: true),
@@ -167,8 +167,9 @@ class _ClayProtocolDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
     return Material(
-      color: Colors.transparent,
+      color: Colors.black.withOpacity(0.4),
       child: Center(
         child: AnimationConfiguration.synchronized(
           duration: const Duration(milliseconds: 450),
@@ -177,182 +178,193 @@ class _ClayProtocolDialog extends StatelessWidget {
             verticalOffset: 50.0,
             child: FadeInAnimation(
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.85,
-                constraints: BoxConstraints(
-                  maxWidth: 375.w,
-                  minWidth: MediaQuery.of(context).size.width * 0.6,
-                ),
-                margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
+                width: MediaQuery.of(context).size.width * 0.95,
+                height: MediaQuery.of(context).size.height * 0.9,
+                // constraints: BoxConstraints(
+                //   maxHeight: 600.h,
+                // ),
+                margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 30.h),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFAFBFC),
-                  borderRadius: BorderRadius.circular(32.r),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.8),
-                    width: 1.5,
+                    color: const Color(0xFFE5E7EB),
+                    width: 1,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.12),
+                      offset: const Offset(0, 8),
+                      blurRadius: 24,
+                      spreadRadius: 0,
+                    ),
+                  ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(32.r),
+                  borderRadius: BorderRadius.circular(20.r),
                   child: IntrinsicHeight(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Header section
+                        // Header section with gradient
                         Container(
                           width: double.infinity,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                Color(0xFFF8FAFC),
-                                Color(0xFFFAFBFC),
+                                primaryColor.withOpacity(0.08),
+                                primaryColor.withOpacity(0.04),
                               ],
                             ),
                           ),
                           padding: EdgeInsets.symmetric(
-                            horizontal: 24.w,
-                            vertical: 24.h,
+                            horizontal: 20.w,
                           ),
                           child: Column(
                             children: [
-                              // Icon container với clay effect
+                              // Icon container
                               Container(
-                                width: 60.w,
-                                height: 60.w,
-                                margin: EdgeInsets.only(bottom: 16.h),
+                                width: 50.w,
+                                height: 50.w,
+                                margin: EdgeInsets.symmetric(vertical: 12.h),
                                 decoration: BoxDecoration(
-                                  color:
-                                      const Color(0xFF3B82F6).withOpacity(0.2),
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    // Inner shadow hiệu ứng lõm
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.04),
-                                      offset: const Offset(3, 3),
-                                      blurRadius: 6,
-                                      spreadRadius: -2,
-                                    ),
-                                    BoxShadow(
-                                      color: Colors.white.withOpacity(0.8),
-                                      offset: const Offset(-3, -3),
-                                      blurRadius: 6,
-                                      spreadRadius: -2,
-                                    ),
-                                  ],
+                                  color: primaryColor.withOpacity(0.12),
+                                  borderRadius: BorderRadius.circular(16.r),
+                                  border: Border.all(
+                                    color: primaryColor.withOpacity(0.2),
+                                    width: 1,
+                                  ),
                                 ),
                                 child: Icon(
                                   Icons.info_outline_rounded,
-                                  size: 32.w,
-                                  color: const Color(0xFF3B82F6),
+                                  size: 36.w,
+                                  color: primaryColor,
                                 ),
                               ),
+                              SizedBox(width: 8.w),
                               Text(
                                 title,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'FilsonPro',
                                   fontSize: 20.sp,
-                                  fontWeight: FontWeight.w800,
-                                  color: const Color(0xFF374151),
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFF1F2937),
                                   height: 1.3,
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.white.withOpacity(0.9),
-                                      offset: const Offset(0.5, 0.5),
-                                    ),
-                                  ],
                                 ),
                               ),
                             ],
                           ),
+                        ),
+
+                        // Divider
+                        Container(
+                          height: 1,
+                          color: const Color(0xFFF3F4F6),
                         ),
 
                         // Content section
                         Expanded(
                           child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF7F8FA),
-                              borderRadius: BorderRadius.circular(24.r),
-                              boxShadow: [
-                                // Inner shadow effect
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.03),
-                                  offset: const Offset(4, 4),
-                                  blurRadius: 8,
-                                  spreadRadius: -2,
-                                ),
-                                BoxShadow(
-                                  color: Colors.white.withOpacity(0.8),
-                                  offset: const Offset(-4, -4),
-                                  blurRadius: 8,
-                                  spreadRadius: -2,
-                                ),
-                              ],
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 24.w,
+                              vertical: 12.h,
                             ),
-                            margin: EdgeInsets.symmetric(horizontal: 20.w),
-                            padding: EdgeInsets.all(20.w),
-                            child: SingleChildScrollView(child: content),
+                            child: SingleChildScrollView(
+                              child: DefaultTextStyle(
+                                style: TextStyle(
+                                  fontFamily: 'FilsonPro',
+                                  fontSize: 14.sp,
+                                  color: const Color(0xFF6B7280),
+                                  height: 1.6,
+                                ),
+                                child: content,
+                              ),
+                            ),
                           ),
                         ),
 
-                        SizedBox(height: 20.h),
+                        // Divider
+                        Container(
+                          height: 1,
+                          color: const Color(0xFFF3F4F6),
+                        ),
 
                         // Buttons section
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF7F8FA),
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(32.r),
-                              bottomRight: Radius.circular(32.r),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
-                                offset: const Offset(2, 7),
-                                blurRadius: 10,
-                                spreadRadius: 5,
-                              ),
-                              BoxShadow(
-                                color: Colors.white.withOpacity(0.8),
-                                offset: const Offset(-2, -2),
-                                blurRadius: 4,
-                                spreadRadius: -1,
-                              ),
-                            ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 12.h,
                           ),
                           child: Row(
                             children: [
+                              // Cancel button
                               Expanded(
-                                child: _clayButton(
-                                  text: leftText,
-                                  textColor: const Color(0xFF6B7280),
-                                  isLeft: true,
+                                child: GestureDetector(
                                   onTap: onTapLeft,
-                                ),
-                              ),
-                              Container(
-                                width: 1.w,
-                                height: 56.h,
-                                margin: EdgeInsets.symmetric(vertical: 12.h),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.02),
-                                      Colors.black.withOpacity(0.05),
-                                      Colors.black.withOpacity(0.02),
-                                    ],
+                                  child: Container(
+                                    height: 48.h,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF3F4F6),
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      border: Border.all(
+                                        color: const Color(0xFFE5E7EB),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        leftText,
+                                        style: TextStyle(
+                                          fontFamily: 'FilsonPro',
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color(0xFF6B7280),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
+                              12.horizontalSpace,
+                              // Agree button with gradient
                               Expanded(
-                                child: _clayButton(
-                                  text: rightText,
-                                  textColor: const Color(0xFF3B82F6),
-                                  isLeft: false,
+                                child: GestureDetector(
                                   onTap: onTapRight,
+                                  child: Container(
+                                    height: 48.h,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          primaryColor,
+                                          primaryColor.withOpacity(0.8),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: primaryColor.withOpacity(0.3),
+                                          offset: const Offset(0, 4),
+                                          blurRadius: 12,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        rightText,
+                                        style: TextStyle(
+                                          fontFamily: 'FilsonPro',
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -370,45 +382,4 @@ class _ClayProtocolDialog extends StatelessWidget {
     );
   }
 
-  Widget _clayButton({
-    required String text,
-    required Color textColor,
-    required bool isLeft,
-    required VoidCallback onTap,
-  }) =>
-      GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: 80.h,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.only(
-              bottomLeft: isLeft ? Radius.circular(32.r) : Radius.zero,
-              bottomRight: !isLeft ? Radius.circular(32.r) : Radius.zero,
-            ),
-          ),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Text(
-              text,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: textColor,
-                shadows: [
-                  Shadow(
-                    color: Colors.white.withOpacity(0.9),
-                    offset: const Offset(0.5, 0.5),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
 }

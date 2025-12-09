@@ -17,6 +17,7 @@ class AppTextFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final Function(String?) validator;
   final bool isRequired;
+  final int? maxLength;
 
   const AppTextFormField({
     super.key,
@@ -32,6 +33,7 @@ class AppTextFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     required this.validator,
     this.isRequired = false,
+    this.maxLength,
   });
 
   @override
@@ -55,11 +57,13 @@ class AppTextFormField extends StatelessWidget {
       child: TextFormField(
         keyboardType: keyboardType,
         focusNode: focusNode,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        autovalidateMode: AutovalidateMode.onUnfocus,
         validator: (value) => validator(value),
         onChanged: onChanged,
+        maxLength: maxLength,
         controller: controller,
         decoration: InputDecoration(
+           counterText: '', 
           label: AnimatedBuilder(
             animation: Listenable.merge([focusNode, controller]),
             builder: (context, _) {

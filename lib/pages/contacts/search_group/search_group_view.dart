@@ -5,7 +5,6 @@ import 'package:openim/widgets/group_item.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:openim/widgets/base_page.dart';
 
-import '../../../constants/app_color.dart';
 import 'search_group_logic.dart';
 
 class SearchGroupPage extends StatelessWidget {

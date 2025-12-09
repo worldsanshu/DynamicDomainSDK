@@ -21,7 +21,7 @@ class TermsAndConditionsText extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           content,
@@ -31,7 +31,7 @@ class TermsAndConditionsText extends StatelessWidget {
                 text: StrRes.termsAgree,
                 style: TextStyle(
                   fontFamily: 'FilsonPro',
-                  fontSize: 13.sp,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   color: const Color(0xFF6B7280),
                 ),
@@ -40,7 +40,7 @@ class TermsAndConditionsText extends StatelessWidget {
                     text: StrRes.userAgreementDoc,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 13.sp,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                       color: primaryColor,
                     ),
@@ -53,7 +53,7 @@ class TermsAndConditionsText extends StatelessWidget {
                     text: StrRes.and,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 13.sp,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
                       color: const Color(0xFF6B7280),
                     ),
@@ -62,7 +62,7 @@ class TermsAndConditionsText extends StatelessWidget {
                     text: StrRes.privacyPolicyDoc,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 13.sp,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                       color: primaryColor,
                     ),

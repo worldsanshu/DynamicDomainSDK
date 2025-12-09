@@ -35,7 +35,7 @@ class ResetPasswordPage extends StatelessWidget {
               children: AnimationConfiguration.toStaggeredList(
                 duration: const Duration(milliseconds: 500),
                 childAnimationBuilder: (widget) => SlideAnimation(
-                  verticalOffset: 40,
+                  verticalOffset: 0,
                   curve: Curves.easeOutCubic,
                   child: FadeInAnimation(
                     child: widget,

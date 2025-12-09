@@ -287,13 +287,22 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
         return true;
       }
 
-      showCupertinoSMSCodeDialog(
-        message: smsMsg ?? StrRes.yourVerificationCodeIs.trArgs([smsCode]),
-        onConfirm: () {
+      // showCupertinoSMSCodeDialog(
+      //   message: smsMsg ?? StrRes.yourVerificationCodeIs.trArgs([smsCode]),
+      //   onConfirm: () {
+      //     registerVerificationCodeController.text = smsCode;
+      //     FocusScope.of(Get.context!).unfocus();
+      //   },
+      // );
+      ///Custom dialog has some issues on Android, temporarily use toast
+     await Get.dialog( CustomDialog(
+        title: StrRes.yourVerificationCodeIs.trArgs([smsCode]),
+        showCancel: true,
+        onTapRight: () {
           registerVerificationCodeController.text = smsCode;
           FocusScope.of(Get.context!).unfocus();
         },
-      );
+      ));
       return true;
     } catch (error) {
       Logger.print('Failed to send verification code: $error');

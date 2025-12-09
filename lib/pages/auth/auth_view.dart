@@ -38,7 +38,7 @@ class AuthView extends StatelessWidget {
                   Expanded(
                     child: Center(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
                         child: AnimationLimiter(
                           child: _buildFloatingForm(context, primaryColor),
                         ),
@@ -92,7 +92,7 @@ class AuthView extends StatelessWidget {
       position: 0,
       duration: const Duration(milliseconds: 600),
       child: SlideAnimation(
-        verticalOffset: 50,
+        verticalOffset: 40,
         child: FadeInAnimation(
           child: Container(
             width: double.infinity,
@@ -118,7 +118,8 @@ class AuthView extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(24.r),
               child: Column(
-                mainAxisSize: MainAxisSize.max, // Chiếm toàn bộ chiều cao cố định
+                mainAxisSize:
+                    MainAxisSize.max, // Chiếm toàn bộ chiều cao cố định
                 children: [
                   // Header với logo (fixed, không scroll)
                   _buildFormHeader(primaryColor),
@@ -159,8 +160,8 @@ class AuthView extends StatelessWidget {
                 GestureDetector(
                   onDoubleTap: logic.toggleVersionInfoShow,
                   child: Container(
-                    width: 80.w,
-                    height: 80.h,
+                    width: 72.w,
+                    height: 72.h,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
@@ -172,16 +173,15 @@ class AuthView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child:  ClipRRect(
+                    child: ClipRRect(
                       borderRadius: BorderRadius.circular(90),
                       child: Image.asset(
                         "assets/images/app-icon.png",
-                        width: 74.w,
+                        width: 72.w,
                       ),
                     ),
                   ),
                 ),
-                Gap(12.h),
                 GestureDetector(
                   onTap: logic.requestDomainReveal,
                   child: Text(
@@ -200,7 +200,7 @@ class AuthView extends StatelessWidget {
           // Back button ở top left
           Positioned(
             left: 0,
-            top: 0,
+            top: 10,
             child: GestureDetector(
               onTap: () => Get.back(),
               child: Container(
@@ -281,10 +281,9 @@ class AuthView extends StatelessWidget {
                             logic.currentFormMode.value == AuthFormMode.login
                                 ? FontWeight.w600
                                 : FontWeight.w500,
-                        color:
-                            logic.currentFormMode.value == AuthFormMode.login
-                                ? primaryColor
-                                : const Color(0xFF6B7280),
+                        color: logic.currentFormMode.value == AuthFormMode.login
+                            ? primaryColor
+                            : const Color(0xFF6B7280),
                       ),
                     ),
                   ),
@@ -303,16 +302,16 @@ class AuthView extends StatelessWidget {
                               ? Colors.white
                               : Colors.transparent,
                       borderRadius: BorderRadius.circular(10.r),
-                      boxShadow: logic.currentFormMode.value ==
-                              AuthFormMode.register
-                          ? [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ]
-                          : null,
+                      boxShadow:
+                          logic.currentFormMode.value == AuthFormMode.register
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
                     ),
                     child: Text(
                       StrRes.register,
@@ -340,7 +339,7 @@ class AuthView extends StatelessWidget {
 
   Widget _buildLoginFields(Color primaryColor) {
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
+      padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 20.h),
       child: Form(
         key: logic.loginFormKey,
         child: Column(
@@ -351,20 +350,21 @@ class AuthView extends StatelessWidget {
               controller: logic.loginPhoneController,
               isRequired: true,
             ),
-            Gap(14.h),
+            Gap(20.h),
             PasswordField(
               focusNode: logic.loginPasswordFocusNode,
               controller: logic.loginPasswordController,
               isRequired: true,
             ),
-            Gap(12.h),
+            Gap(20.h),
             // Remember Password - Left aligned
             Obx(
               () => Align(
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
                   onTap: () {
-                    logic.rememberPassword.value = !logic.rememberPassword.value;
+                    logic.rememberPassword.value =
+                        !logic.rememberPassword.value;
                   },
                   behavior: HitTestBehavior.opaque,
                   child: Row(
@@ -373,7 +373,8 @@ class AuthView extends StatelessWidget {
                       Checkbox(
                         value: logic.rememberPassword.value,
                         onChanged: (bool? value) {
-                          logic.rememberPassword.value = value ?? !logic.rememberPassword.value;
+                          logic.rememberPassword.value =
+                              value ?? !logic.rememberPassword.value;
                         },
                         fillColor: WidgetStateProperty.resolveWith<Color>(
                           (Set<WidgetState> states) {
@@ -406,7 +407,7 @@ class AuthView extends StatelessWidget {
                 ),
               ),
             ),
-            Gap(16.h),
+            Gap(20.h),
             // Login Button - Centered
             SizedBox(
               width: double.infinity,
@@ -430,7 +431,7 @@ class AuthView extends StatelessWidget {
                     },
                   )),
             ),
-            Gap(16.h),
+            Gap(20.h),
             // Forgot Password - Centered
             Center(
               child: GestureDetector(
@@ -448,7 +449,7 @@ class AuthView extends StatelessWidget {
                 ),
               ),
             ),
-            Gap(4.h),
+            Gap(8.h),
             // Agree Terms and Conditions - Left aligned
             Align(
               alignment: Alignment.centerLeft,
@@ -479,32 +480,6 @@ class AuthView extends StatelessWidget {
                 ),
               ),
             ),
-            Gap(16.h),
-            // Switch to Register
-            Center(
-              child: GestureDetector(
-                onTap: () => logic.switchFormMode(AuthFormMode.register),
-                child: RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontSize: 13.sp,
-                      color: const Color(0xFF6B7280),
-                    ),
-                    children: [
-                      TextSpan(text: StrRes.noAccountYetQuestion),
-                      TextSpan(
-                        text: ' ${StrRes.registerNow}',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
             // Version info
             _buildVersionInfo(primaryColor),
           ],
@@ -515,7 +490,7 @@ class AuthView extends StatelessWidget {
 
   Widget _buildRegisterFields(Color primaryColor) {
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
+      padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 20.h),
       child: Form(
         key: logic.registerFormKey,
         child: Column(
@@ -526,34 +501,36 @@ class AuthView extends StatelessWidget {
               focusNode: logic.registerNameFocusNode,
               isRequired: true,
             ),
-            Gap(14.h),
+            Gap(20.h),
             PhoneField(
               focusNode: logic.registerPhoneFocusNode,
               controller: logic.registerPhoneController,
               isRequired: true,
             ),
-            Gap(14.h),
+            Gap(20.h),
             PasswordField(
               focusNode: logic.registerPasswordFocusNode,
               controller: logic.registerPasswordController,
               validateFormat: true,
               isRequired: true,
             ),
-            Gap(14.h),
+            Gap(20.h),
             PasswordField(
               focusNode: logic.registerPasswordConfirmationFocusNode,
               controller: logic.registerPasswordConfirmationController,
               compareController: logic.registerPasswordController,
               isRequired: true,
             ),
-            Gap(14.h),
+            Gap(20.h),
             PhoneCodeField(
               controller: logic.registerVerificationCodeController,
+              phoneController: logic.registerPhoneController,
+              validatePhone: logic.registerPhoneController.text,
               onSendCode: logic.onSendVerificationCode,
               isRequired: true,
             ),
             // Register Button
-            Gap(16.h), 
+            Gap(20.h),
             SizedBox(
               width: double.infinity,
               child: Obx(() => AppTextButton(
@@ -577,7 +554,7 @@ class AuthView extends StatelessWidget {
                     },
                   )),
             ),
-                       TermsAndConditionsText(
+            TermsAndConditionsText(
               content: Obx(
                 () => Checkbox(
                   value: logic.isRegisterAgree.value,
@@ -604,33 +581,6 @@ class AuthView extends StatelessWidget {
               ),
             ),
             Gap(6.h),
-           
-            // // Switch to Login
-            // Center(
-            //   child: GestureDetector(
-            //     onTap: () => logic.switchFormMode(AuthFormMode.login),
-            //     child: RichText(
-            //       text: TextSpan(
-            //         style: TextStyle(
-            //           fontFamily: 'FilsonPro',
-            //           fontSize: 13.sp,
-            //           color: const Color(0xFF6B7280),
-            //         ),
-            //         children: [
-            //           TextSpan(text: StrRes.accountYet),
-            //           TextSpan(
-            //             text: ' ${StrRes.loginNow}',
-            //             style: const TextStyle(
-            //               color: Color(0xFF3B82F6),
-            //               fontWeight: FontWeight.w600,
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // Version info
             _buildVersionInfo(primaryColor),
           ],
         ),
@@ -663,7 +613,7 @@ class AuthView extends StatelessWidget {
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
                       fontSize: 11.sp,
-                      color: const Color(0xFF6B7280),
+                      color:  Colors.red,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

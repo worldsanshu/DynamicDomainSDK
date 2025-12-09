@@ -435,10 +435,16 @@ class GatewayApi {
           'code': inviteCode,
         },
         baseURLType: BaseURLType.gateway,
-        showErrorToast: true,
+        showErrorToast: false,
       ).catchApiError();
       return result['valid'] == true || result['status'] == true;
     } catch (e) {
+      if (e is (int, String, Map)) {
+        if (e.$1 == 500) {
+          IMViews.showToast(StrRes.tooMuchRequestValidationCode);
+        }
+      }
+
       rethrow;
     }
   }

@@ -32,6 +32,8 @@ class StrRes {
 
   static String get plsEnterPassword => 'plsEnterPassword'.tr;
 
+  static String get passwordMustLength => 'passwordMustLength'.tr;
+
   static String get account => 'account'.tr;
 
   static String get plsEnterAccount => 'plsEnterAccount'.tr;
@@ -192,8 +194,20 @@ class StrRes {
 
   static String get setInfo => 'setInfo'.tr;
 
+  static String get savedInviteCode => 'savedInviteCode'.tr;
+
   static String get loginPwdFormat => 'loginPwdFormat'.tr;
 
+  static String get loginFailed => 'loginFailed'.tr;
+
+  static String get tooMuchRequestValidationCode => 'tooMuchRequestValidationCode'.tr;
+
+  static String get notFoundAccount => 'notFoundAccount'.tr;
+
+  static String get loginIncorrectPwd => 'loginIncorrectPwd'.tr;
+
+  static String get loginSuccess => 'loginSuccess'.tr;
+  
   static String get passwordLogin => 'passwordLogin'.tr;
 
   static String get through => 'through'.tr;
@@ -1296,6 +1310,7 @@ class StrRes {
   static String get pleaseEnterValidPhoneNumber =>
       'pleaseEnterValidPhoneNumber'.tr;
   static String get pleaseEnterValidName => 'pleaseEnterValidName'.tr;
+  static String get nicknameIsLimited => 'nicknameIsLimited'.tr;
   static String get pleaseEnterValidPassword => 'pleaseEnterValidPassword'.tr;
   static String get pleaseEnterVerificationCode =>
       'pleaseEnterVerificationCode'.tr;

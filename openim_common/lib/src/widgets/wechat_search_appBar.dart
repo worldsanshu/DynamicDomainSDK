@@ -6,8 +6,6 @@ import 'package:openim_common/openim_common.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../res/styles/app_colors.dart';
-
 class WechatSearchAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   final TextEditingController? controller;

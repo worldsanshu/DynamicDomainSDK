@@ -10,6 +10,8 @@ import 'package:openim_common/openim_common.dart';
 class PhoneCodeField extends StatefulWidget {
   final TextEditingController controller;
   final Future<bool> Function()? onSendCode;
+  final TextEditingController? phoneController;
+  final String? validatePhone;
   final int seconds;
   final bool isRequired;
 
@@ -17,6 +19,8 @@ class PhoneCodeField extends StatefulWidget {
     super.key,
     required this.controller,
     required this.onSendCode,
+    this.phoneController,
+    this.validatePhone,
     this.seconds = 60,
     this.isRequired = false,
   });
@@ -30,11 +34,58 @@ class _PhoneCodeFieldState extends State<PhoneCodeField> {
   int _left = 0; // remaining seconds, 0 => can send
   bool _isSending = false;
 
-  bool get _canSend => _left == 0 && !_isSending;
+  @override
+  void initState() {
+    super.initState();
+    // Listen to phone field changes to rebuild UI
+    widget.phoneController?.addListener(_onPhoneChanged);
+  }
+
+  void _onPhoneChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  bool _validatePhone(String phone) {
+    String cleanPhone = phone.trim().replaceAll(RegExp(r'[\s\-]'), '');
+
+    // Remove country code if present
+    if (cleanPhone.startsWith('+86')) {
+      cleanPhone = cleanPhone.substring(3);
+    } else if (cleanPhone.startsWith('86')) {
+      cleanPhone = cleanPhone.substring(2);
+    }
+
+    // Validate Chinese phone number using shared utility
+    return IMUtils.isChinaMobile(cleanPhone);
+  }
+
+  bool _canSend() {
+    if (_isSending) {
+      return false;
+    }
+    
+    // Only allow sending if countdown is not active
+    if (_left > 0) {
+      return false;
+    }
+
+    // Get phone from controller if available, otherwise from validatePhone
+    String phone = (widget.phoneController?.text ?? widget.validatePhone ?? '').trim();
+
+    if (phone.isEmpty) {
+      return false;
+    }
+
+    // Validate the phone using the same logic as PhoneField
+    return _validatePhone(phone);
+  }
 
   @override
   void dispose() {
     _timer?.cancel();
+    widget.phoneController?.removeListener(_onPhoneChanged);
     super.dispose();
   }
 
@@ -53,7 +104,7 @@ class _PhoneCodeFieldState extends State<PhoneCodeField> {
   }
 
   Future<void> _handleSend() async {
-    if (!_canSend) return;
+    if (!_canSend()) return;
     setState(() => _isSending = true);
     try {
       final ok = await widget.onSendCode?.call();
@@ -84,7 +135,7 @@ class _PhoneCodeFieldState extends State<PhoneCodeField> {
               return null;
             },
             suffixIcon: _CodeSendButton(
-              canSend: _canSend,
+              canSend: _canSend(),
               secondsLeft: _left,
               isSending: _isSending,
               onTap: _handleSend,

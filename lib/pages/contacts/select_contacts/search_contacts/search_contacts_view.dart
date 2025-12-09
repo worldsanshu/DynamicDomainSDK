@@ -6,7 +6,6 @@ import 'package:openim_common/openim_common.dart';
 import 'package:openim/widgets/base_page.dart';
 import 'package:search_keyword_text/search_keyword_text.dart';
 
-import '../../../../constants/app_color.dart';
 import '../select_contacts_logic.dart';
 import 'search_contacts_logic.dart';
 

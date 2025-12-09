@@ -7,7 +7,6 @@ import 'package:openim/widgets/base_page.dart';
 import 'package:search_keyword_text/search_keyword_text.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../../../../../constants/app_color.dart';
 import '../../select_contacts_logic.dart';
 import 'search_group_logic.dart';
 

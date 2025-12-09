@@ -54,10 +54,9 @@ class _NicknameFieldState extends State<NicknameField> {
       label: StrRes.nickname,
       focusNode: effectiveFocusNode,
       isRequired: widget.isRequired,
+      maxLength: 20,
       validator: (value) {
-        // Don't modify controller.text inside validator - it causes setState during build
-        String name = (value ?? '').trim();
-        if (name.isEmpty) {
+        if (value == null || value.trim().isEmpty) {
           return StrRes.pleaseEnterValidName;
         }
         return null;

@@ -7,7 +7,6 @@ import 'package:openim/pages/merchantList/merchant_list_logic.dart';
 import 'package:openim/pages/merchant_search/merchant_serarch_logic.dart';
 import 'package:openim/widgets/merchant_item.dart';
 import 'package:openim_common/openim_common.dart';
-import '../../constants/app_color.dart';
 import '../../widgets/base_page.dart';
 
 class MerchantSearchPage extends StatelessWidget {

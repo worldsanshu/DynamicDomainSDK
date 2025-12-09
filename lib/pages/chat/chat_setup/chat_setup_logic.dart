@@ -8,7 +8,6 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:openim/constants/app_color.dart';
 import 'package:openim/core/controller/client_config_controller.dart';
 import 'package:openim/pages/chat/chat_setup/search_chat_history/multimedia/multimedia_logic.dart';
 import 'package:openim_common/openim_common.dart';

@@ -38,7 +38,7 @@ class FriendItemView extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 8.h),
               child: Row(
                 children: [
                   Container(

@@ -41,7 +41,7 @@ class InviteCodeLogic extends GetxController {
           IMViews.showToast(StrRes.enterpriseCodeNotExist);
           return;
         }
-        _validInviteCodesCache.add(inviteCode);
+          _validInviteCodesCache.add(inviteCode);
       } catch (_) {
         return;
       }
@@ -49,6 +49,7 @@ class InviteCodeLogic extends GetxController {
     DataSp.putSavedInviteCode(inviteCode);
     authController.inviteCode = inviteCode;
     AppNavigator.startAuth();
+    IMViews.showToast(StrRes.savedInviteCode, type: 1);
   }
 
   @override
@@ -98,4 +99,3 @@ class InviteCodeLogic extends GetxController {
     super.onClose();
   }
 }
-

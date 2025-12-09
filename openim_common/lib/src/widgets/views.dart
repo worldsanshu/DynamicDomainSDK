@@ -9,7 +9,6 @@ import 'package:common_utils/common_utils.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_picker_plus/flutter_picker_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,6 +17,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:openim_common/src/widgets/app_toast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pull_to_refresh_new/pull_to_refresh.dart';
 import 'package:uuid/uuid.dart';
@@ -30,9 +30,17 @@ class IMViews {
   // ignore: unused_field
   static final ImagePicker _picker = ImagePicker();
 
-  static Future showToast(String msg, {Duration? duration}) {
+  static Future showToast(String msg, {int type = 0}) {
+    /// type: 0 - error, 1 - success, 2 - warning
+    ToastType toastType = type == 1
+        ? ToastType.success
+        : type == 2
+            ? ToastType.warning
+            : ToastType.error;
+
     if (msg.trim().isNotEmpty) {
-      return EasyLoading.showToast(msg, duration: duration);
+      return AppToast.showToast(msg, type: toastType);
+      // return EasyLoading.showToast(msg, duration: duration);
     } else {
       return Future.value();
     }
@@ -444,8 +452,7 @@ class IMViews {
       if (null != cropFile) {
         Logger.print('-----------crop path: ${cropFile.path}');
         if (showLoading) LoadingView.singleton.show();
-        final image = await IMUtils.compressImageAndGetFile(
-            File(cropFile.path),
+        final image = await IMUtils.compressImageAndGetFile(File(cropFile.path),
             quality: quality);
 
         result = await OpenIM.iMManager.uploadFile(

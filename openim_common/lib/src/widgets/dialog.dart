@@ -25,9 +25,11 @@ class CustomDialog extends StatelessWidget {
     this.scrollable = false,
     this.onTapLeft,
     this.onTapRight,
+    this.primaryColor, // Thêm tùy chọn màu chủ đạo
   });
+
   final String? title;
-  final String? url;
+  final String? url; // URL hình ảnh minh họa (nếu có)
   final String? content;
   final String? rightText;
   final String? leftText;
@@ -35,171 +37,163 @@ class CustomDialog extends StatelessWidget {
   final bool scrollable;
   final Function()? onTapLeft;
   final Function()? onTapRight;
+  final Color? primaryColor;
 
   @override
   Widget build(BuildContext context) {
+    final btnColor=primaryColor ?? Theme.of(context).primaryColor;
     return Material(
       color: Colors.transparent,
       child: Stack(
         children: [
+          // 1. Lớp nền mờ (Blur Background)
           Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              child: Container(
-                color: Colors.transparent,
+            child: GestureDetector(
+              onTap: () {
+                if (showCancel) Get.back(result: false);
+              },
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                  color: Colors.black.withOpacity(0.25), // Làm tối nền một chút để nổi bật dialog
+                ),
               ),
             ),
           ),
+          
+          // 2. Nội dung Dialog
           Center(
             child: AnimationConfiguration.synchronized(
               duration: const Duration(milliseconds: 400),
               child: SlideAnimation(
-                curve: Curves.easeOutCubic,
+                curve: Curves.easeOutBack, // Hiệu ứng nảy nhẹ hiện đại hơn
                 verticalOffset: 40.0,
                 child: FadeInAnimation(
                   child: Container(
-                    width: 300.w,
-                    margin: EdgeInsets.symmetric(horizontal: 20.w),
+                    width: 320.w, // Tăng độ rộng một chút cho thoáng
+                    margin: EdgeInsets.symmetric(horizontal: 24.w),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.r),
+                      borderRadius: BorderRadius.circular(24.r), // Bo tròn mềm mại hơn
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                          offset: const Offset(0, 2),
-                          blurRadius: 12.r,
+                          color: const Color(0xFF111827).withOpacity(0.15),
+                          offset: const Offset(0, 10),
+                          blurRadius: 30.r,
                           spreadRadius: 0,
                         ),
                       ],
-                      border: Border.all(
-                        color: const Color(0xFFF3F4F6),
-                        width: 1,
-                      ),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.r),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Header section
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 24.h),
+
+                        // --- Image / Icon Section ---
+                        if (url != null && url!.isNotEmpty)
                           Container(
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 16.h,
-                            ),
-                            child: Column(
-                              children: [
-                                if (title != null && title!.isNotEmpty)
-                                  Text(
-                                    title!,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'FilsonPro',
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.w700,
-                                      color: const Color(0xFF374151),
-                                    ),
-                                  ),
-                                if (title != null &&
-                                    title!.isNotEmpty &&
-                                    content != null &&
-                                    content!.isNotEmpty)
-                                  SizedBox(height: 16.h),
-                                if (content != null &&
-                                    content!.isNotEmpty &&
-                                    !scrollable)
-                                  Text(
-                                    content!,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'FilsonPro',
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: const Color(0xFF6B7280),
-                                      height: 1.5,
-                                    ),
-                                  ),
-                                if (content != null &&
-                                    content!.isNotEmpty &&
-                                    scrollable)
-                                  Container(
-                                    constraints:
-                                        BoxConstraints(maxHeight: 280.h),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFF9FAFB),
-                                      borderRadius: BorderRadius.circular(16.r),
-                                      border: Border.all(
-                                        color: const Color(0xFFE5E7EB),
-                                        width: 1,
-                                      ),
-                                    ),
-                                    margin: EdgeInsets.only(top: 12.h),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 16.w,
-                                      vertical: 16.h,
-                                    ),
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        content!,
-                                        style: TextStyle(
-                                          fontFamily: 'FilsonPro',
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: const Color(0xFF6B7280),
-                                          height: 1.6,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          // Buttons section
-                          Container(
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                  color: Color(0xFFF0F4F8),
-                                  width: 1.5,
-                                ),
+                            height: 80.h,
+                            width: 80.w,
+                            margin: EdgeInsets.only(bottom: 16.h),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: btnColor.withOpacity(0.1),
+                              image: DecorationImage(
+                                image: NetworkImage(url!),
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            child: Row(
-                              children: [
-                                if (showCancel)
-                                  Expanded(
-                                    child: _actionButton(
-                                      text: leftText ?? StrRes.cancel,
-                                      textColor: const Color(0xFF6B7280),
-                                      isLeft: true,
-                                      onTap: onTapLeft ??
-                                          () => Get.back(result: false),
-                                    ),
-                                  ),
-                                if (showCancel)
-                                  Container(
-                                    width: 1.w,
-                                    height: 56.h,
-                                    color: const Color(0xFFF0F4F8),
-                                  ),
-                                Expanded(
-                                  child: _actionButton(
-                                    text: rightText ?? StrRes.determine,
-                                    textColor: const Color(0xFF4F42FF),
-                                    isLeft: false,
-                                    onTap: onTapRight ??
-                                        () => Get.back(result: true),
-                                  ),
-                                ),
-                              ],
+                          )
+                        else
+                          // Icon mặc định nếu không có url
+                          Container(
+                            padding: EdgeInsets.all(16.r),
+                            margin: EdgeInsets.only(bottom: 16.h),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: btnColor.withOpacity(0.08),
+                            ),
+                            child: HugeIcon(
+                              icon: HugeIcons.strokeRoundedNotification03,
+                              color: btnColor,
+                              size: 32.w,
                             ),
                           ),
+
+                        // --- Title Section ---
+                        if (title != null && title!.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w),
+                            child: Text(
+                              title!,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'FilsonPro',
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF1F2937),
+                                height: 1.2,
+                              ),
+                            ),
+                          ),
+
+                        // --- Content Section ---
+                        if (content != null && content!.isNotEmpty) ...[
+                          SizedBox(height: 12.h),
+                          scrollable
+                              ? Container(
+                                  constraints: BoxConstraints(maxHeight: 200.h),
+                                  margin: EdgeInsets.symmetric(horizontal: 20.w),
+                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF9FAFB),
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      content!,
+                                      textAlign: TextAlign.center,
+                                      style: _contentStyle(),
+                                    ),
+                                  ),
+                                )
+                              : Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                  child: Text(
+                                    content!,
+                                    textAlign: TextAlign.center,
+                                    style: _contentStyle(),
+                                  ),
+                                ),
                         ],
-                      ),
+
+                        SizedBox(height: 32.h),
+
+                        // --- Buttons Section ---
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 24.h),
+                          child: Row(
+                            children: [
+                              if (showCancel) ...[
+                                Expanded(
+                                  child: _buildSecondaryButton(
+                                    text: leftText ?? StrRes.cancel,
+                                    onTap: onTapLeft ?? () => Get.back(result: false),
+                                  ),
+                                ),
+                                SizedBox(width: 12.w), // Khoảng cách giữa 2 nút
+                              ],
+                              Expanded(
+                                child: _buildPrimaryButton(
+                                  text: rightText ?? StrRes.agree,
+                                  color: btnColor,
+                                  onTap: onTapRight ?? () => Get.back(result: true),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -211,29 +205,80 @@ class CustomDialog extends StatelessWidget {
     );
   }
 
-  Widget _actionButton({
+  TextStyle _contentStyle() {
+    return TextStyle(
+      fontFamily: 'FilsonPro',
+      fontSize: 15.sp,
+      fontWeight: FontWeight.w400,
+      color: const Color(0xFF6B7280),
+      height: 1.5,
+    );
+  }
+
+  // Nút chính (Filled)
+  Widget _buildPrimaryButton({
     required String text,
-    required Color textColor,
-    required bool isLeft,
-    Function()? onTap,
-  }) =>
-      InkWell(
-        onTap: onTap,
-        child: Container(
-          height: 56.h,
-          width: 56.w,
-          alignment: Alignment.center,
-          child: HugeIcon(
-            icon: isLeft
-                ? HugeIcons.strokeRoundedCancel01
-                : HugeIcons.strokeRoundedCheckmarkCircle02,
-            color: textColor,
-            size: 24.w,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.r),
+      child: Container(
+        height: 48.h,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.3),
+              blurRadius: 12.r,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontFamily: 'FilsonPro',
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
           ),
         ),
-      );
-}
+      ),
+    );
+  }
 
+  // Nút phụ (Outlined/Text)
+  Widget _buildSecondaryButton({
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.r),
+      child: Container(
+        height: 48.h,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF3F4F6), // Màu nền xám nhẹ
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontFamily: 'FilsonPro',
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF4B5563),
+          ),
+        ),
+      ),
+    );
+  }
+}
 class ForwardHintDialog extends StatelessWidget {
   const ForwardHintDialog({
     super.key,

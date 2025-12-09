@@ -143,7 +143,7 @@ class AuthController extends SuperController {
         // 解析 merchant 列表
         final merchantList = _parseMerchantList(result['organization']);
         if (merchantList.isEmpty) {
-          _handleRegisterError('账号异常！请重新绑定企业');
+          _handleRegisterError(StrRes.noCompanyBound);
           return;
         }
 
@@ -156,7 +156,7 @@ class AuthController extends SuperController {
         // 解析登录凭证
         final loginCertificate = _parseLoginCertificate(result['imCurrent']);
         if (loginCertificate == null) {
-          _handleRegisterError('请选择企业登录！');
+          _handleRegisterError(StrRes.enterVerificationCode);
           return;
         }
         await DataSp.putLoginCertificate(loginCertificate);
@@ -180,7 +180,17 @@ class AuthController extends SuperController {
               merchant: merchantList.firstOrNull,
             );
           } else {
-            IMViews.showToast(errMsg ?? '登录失败');
+            print('---- login error: $errCode, $errMsg');
+            String msg=StrRes.loginFailed;
+            switch(errCode){
+              case 51:
+                msg=StrRes.notFoundAccount;
+              case 53:
+                msg=StrRes.loginIncorrectPwd;
+              default:
+                msg=StrRes.loginFailed;
+            }
+            IMViews.showToast(msg);
           }
         } else if (isNetworkError(e)) {
           handleErrorWithRetry(
@@ -364,9 +374,10 @@ class AuthController extends SuperController {
 
       if (jumpToMain) {
         AppNavigator.startMain();
+        IMViews.showToast(StrRes.loginSuccess, type: 1);
       }
     } catch (_) {
-      IMViews.showToast('登录失败，请重试');
+      IMViews.showToast(StrRes.loginFailed);
     }
   }
 

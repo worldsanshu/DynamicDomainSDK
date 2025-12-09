@@ -119,7 +119,7 @@ android {
     applicationVariants.all {
         outputs.all {
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = 
-                "CNL_${versionName}(${versionCode})_${buildType.name}_${buildTime()}.apk"
+                "CNL_${versionName}(${versionCode-2000})_${buildType.name}_justin_${buildTime()}.apk"
         }
     }
 

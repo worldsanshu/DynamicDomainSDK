@@ -5,7 +5,6 @@ import 'package:openim/widgets/friend_item_view.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:openim/widgets/base_page.dart';
 
-import '../../../../../constants/app_color.dart';
 import '../../select_contacts_logic.dart';
 import 'search_friend_logic.dart';
 

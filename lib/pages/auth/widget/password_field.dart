@@ -67,6 +67,7 @@ class _PasswordFieldState extends State<PasswordField> {
           ),
         ),
         validator: (value) {
+          print('PasswordField validator called with value: $value');
           if (value == null || value.isEmpty) {
             return StrRes.plsEnterPwd;
           }
@@ -77,8 +78,11 @@ class _PasswordFieldState extends State<PasswordField> {
           }
 
           if (widget.validateFormat == true) {
-            if (!IMUtils.isValidPassword(value)) {
-              return StrRes.wrongPasswordFormat;
+            // if (!IMUtils.isValidPassword(value)) {
+            //   return StrRes.wrongPasswordFormat;
+            // }
+            if (value.length < 8 || value.length > 20) {
+              return StrRes.passwordMustLength;
             }
           }
 

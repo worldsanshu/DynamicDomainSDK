@@ -265,8 +265,9 @@ class HttpUtil {
           intervalDo.drop(
               fun: () async {
                 await ImageGallerySaverPlus.saveFile(cachePath);
-                IMViews.showToast("${StrRes.saveSuccessfully}($cachePath)",
-                    duration: const Duration(milliseconds: 3000));
+                IMViews.showToast(
+                  "${StrRes.saveSuccessfully}($cachePath)",
+                );
               },
               milliseconds: 1500);
         }
