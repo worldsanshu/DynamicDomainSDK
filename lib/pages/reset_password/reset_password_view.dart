@@ -28,7 +28,7 @@ class ResetPasswordPage extends StatelessWidget {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
           child: AnimationLimiter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,11 +71,18 @@ class ResetPasswordPage extends StatelessWidget {
                           controller: logic.confirmPasswordCtrl,
                           compareController: logic.passwordCtrl,
                           isRequired: true,
+                          onFieldSubmitted: (_) {
+                            // Smoothly transition to SMS code field with a small delay
+                            Future.delayed(const Duration(milliseconds: 100), () {
+                              FocusScope.of(context).requestFocus(logic.smsCodeFocusNode);
+                            });
+                          },
                         ),
                         20.verticalSpace,
 
                         // Verification code field
                         PhoneCodeField(
+                          focusNode: logic.smsCodeFocusNode,
                           controller: logic.smsCodeCtrl,
                           onSendCode: logic.onSendVerificationCode,
                           isRequired: true,
@@ -107,6 +114,7 @@ class ResetPasswordPage extends StatelessWidget {
                                 },
                               )),
                         ),
+                        150.verticalSpace,
                       ],
                     ),
                   ),

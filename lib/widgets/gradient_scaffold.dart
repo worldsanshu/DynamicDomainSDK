@@ -43,7 +43,7 @@ class GradientScaffold extends StatelessWidget {
   static const double titleFontSize = 20;
   static const double subtitleFontSize = 14;
   static const double bodyTopMargin = 130;
-  static const double bodyTopPadding = 20;
+  static const double bodyTopPadding = 30;
 
   const GradientScaffold({
     super.key,
@@ -71,7 +71,7 @@ class GradientScaffold extends StatelessWidget {
         
         // 2. Main Content Card
         Container(
-          margin: EdgeInsets.only(top: bodyTopMargin.h),          
+          margin: EdgeInsets.only(top: searchBox != null ? bodyTopMargin.h + 5.h : bodyTopMargin.h),          
           decoration: BoxDecoration(
             color: bodyColor,
             borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
@@ -107,7 +107,7 @@ class GradientScaffold extends StatelessWidget {
         // 4. Search Box (Overlapping) - optional
         if (searchBox != null)
           Positioned(
-            top: (headerHeight - 70).h,
+            top: (headerHeight - 60).h,
             left: 20.w,
             right: 20.w,
             child: searchBox!,

@@ -310,7 +310,15 @@ class SelectContactsLogic
     if (checkedList.isEmpty) return '';
 
     final names = checkedList.values
-        .map(parseName)
+        .map((item) {
+          // Display remark if available, otherwise display nickname
+          if (item is ISUserInfo) {
+            return (item.remark != null && item.remark!.isNotEmpty) 
+                ? item.remark 
+                : item.nickname;
+          }
+          return parseName(item);
+        })
         .where((name) => name != null)
         .cast<String>()
         .toList();
@@ -409,9 +417,26 @@ class SelectContactsLogic
 
     final lowerQuery = query.toLowerCase();
 
-    // Search in friend list
+    // Search in friend list - search by nickname, remark, and userID
     for (var friend in friendList) {
+      bool match = false;
+      
+      // Search by nickname
       if (friend.nickname?.toLowerCase().contains(lowerQuery) ?? false) {
+        match = true;
+      }
+      
+      // Search by remark (if available)
+      if (!match && (friend.remark?.toLowerCase().contains(lowerQuery) ?? false)) {
+        match = true;
+      }
+      
+      // Search by userID
+      if (!match && (friend.userID?.toLowerCase().contains(lowerQuery) ?? false)) {
+        match = true;
+      }
+      
+      if (match) {
         searchResults.putIfAbsent(friend.userID ?? '', () => friend);
       }
     }

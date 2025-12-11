@@ -1,4 +1,4 @@
-package com.tingjunge.cnl
+package com.cnl.chat
 
 import android.app.DownloadManager
 import android.content.Context

@@ -4,17 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim/pages/auth/theming/colors.dart';
 
-class AppTextFormField extends StatelessWidget {
+class AppTextFormField extends StatefulWidget {
   final String? hint;
   final String? label;
   final String? helperText;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
   final FocusNode? focusNode;
   final Function(String)? onChanged;
+  final Function(String)? onFieldSubmitted;
   final bool? isObscureText;
   final bool? isDense;
   final TextEditingController? controller;
   final TextInputType keyboardType;
+  final TextInputAction textInputAction;
   final Function(String?) validator;
   final bool isRequired;
   final int? maxLength;
@@ -25,19 +28,46 @@ class AppTextFormField extends StatelessWidget {
     this.label,
     this.helperText,
     this.suffixIcon,
+    this.prefixIcon,
     this.isObscureText,
     this.isDense,
     this.controller,
     this.onChanged,
+    this.onFieldSubmitted,
     this.focusNode,
     this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.done,
     required this.validator,
     this.isRequired = false,
     this.maxLength,
   });
 
   @override
+  State<AppTextFormField> createState() => _AppTextFormFieldState();
+}
+
+class _AppTextFormFieldState extends State<AppTextFormField> {
+  late FocusNode _internalFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _internalFocusNode = widget.focusNode ?? FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // Only dispose if we created the FocusNode (not passed from parent)
+    if (widget.focusNode == null) {
+      _internalFocusNode.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final focusNode = widget.focusNode ?? _internalFocusNode;
+    
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -55,24 +85,26 @@ class AppTextFormField extends StatelessWidget {
         ),
       ),
       child: TextFormField(
-        keyboardType: keyboardType,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
         focusNode: focusNode,
         autovalidateMode: AutovalidateMode.onUnfocus,
-        validator: (value) => validator(value),
-        onChanged: onChanged,
-        maxLength: maxLength,
-        controller: controller,
+        validator: (value) => widget.validator(value),
+        onChanged: widget.onChanged,
+        onFieldSubmitted: widget.onFieldSubmitted,
+        maxLength: widget.maxLength,
+        controller: widget.controller,
         decoration: InputDecoration(
            counterText: '', 
           label: AnimatedBuilder(
-            animation: Listenable.merge([focusNode, controller]),
+            animation: Listenable.merge([focusNode, widget.controller ?? FocusNode()]),
             builder: (context, _) {
               final isFloating =
-                  focusNode?.hasFocus == true || (controller?.text.isNotEmpty ?? false);
+                  focusNode.hasFocus == true || (widget.controller?.text.isNotEmpty ?? false);
 
               return RichText(
                 text: TextSpan(
-                  text: label ?? '',
+                  text: widget.label ?? '',
                   style: TextStyle(
                     fontFamily: 'FilsonPro',
                     fontSize: isFloating ? 16.sp : 14.sp,
@@ -82,7 +114,7 @@ class AppTextFormField extends StatelessWidget {
                         : const Color(0xFF6B7280),
                   ),
                   children: [
-                    if (isRequired)
+                    if (widget.isRequired)
                     TextSpan(
                       text: ' *',
                       style: TextStyle(color: Colors.red),
@@ -93,14 +125,14 @@ class AppTextFormField extends StatelessWidget {
             },
           ),
 
-          hintText: hint,
+          hintText: widget.hint,
           hintStyle: TextStyle(
             fontFamily: 'FilsonPro',
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
             color: const Color(0xFF9CA3AF),
           ),
-          helperText: helperText,
+          helperText: widget.helperText,
           helperStyle: const TextStyle(
             fontFamily: 'FilsonPro',
             fontSize: 12,
@@ -108,7 +140,7 @@ class AppTextFormField extends StatelessWidget {
             height: 1.2,
             fontStyle: FontStyle.italic,
           ),
-          isDense: isDense ?? true,
+          isDense: widget.isDense ?? true,
           filled: true,
           fillColor: Colors.transparent,
           contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
@@ -144,9 +176,10 @@ class AppTextFormField extends StatelessWidget {
             color: const Color(0xFFF87171),
             fontWeight: FontWeight.w500,
           ),
-          suffixIcon: suffixIcon,
+          prefixIcon: widget.prefixIcon,
+          suffixIcon: widget.suffixIcon,
         ),
-        obscureText: isObscureText ?? false,
+        obscureText: widget.isObscureText ?? false,
         style: TextStyle(
           fontFamily: 'FilsonPro',
           fontSize: 16.sp,

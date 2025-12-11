@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/constants/app_color.dart';
+import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -60,13 +61,13 @@ class SelectContactsPage extends StatelessWidget {
                 data: logic.friendList,
                 itemCount: logic.friendList.length,
                 itemBuilder: (_, friend, index) => Obx(() => FriendItemView(
-                  info: friend,
-                  showDivider: index != logic.friendList.length - 1,
-                  checked: logic.isChecked(friend),
-                  enabled: !logic.isDefaultChecked(friend),
-                  onTap: () => logic.toggleChecked(friend),
-                  showRadioButton: logic.showRadioButton,
-                )),
+                      info: friend,
+                      showDivider: index != logic.friendList.length - 1,
+                      checked: logic.isChecked(friend),
+                      enabled: !logic.isDefaultChecked(friend),
+                      onTap: () => logic.toggleChecked(friend),
+                      showRadioButton: logic.showRadioButton,
+                    )),
               );
             }
 
@@ -134,7 +135,9 @@ class SelectContactsPage extends StatelessWidget {
         logic.checkedConfirmView,
       ],
     );
-  }  Widget _buildNoDataView() {
+  }
+
+  Widget _buildNoDataView() {
     return Center(
       child: Text(
         StrRes.noData,
@@ -156,15 +159,16 @@ class SelectContactsPage extends StatelessWidget {
         final info = results.values.elementAt(index);
         if (info is ISUserInfo) {
           return Obx(() => FriendItemView(
-            info: info,
-            showDivider: index != results.length - 1,
-            checked: logic.isChecked(info),
-            enabled: !logic.isDefaultChecked(info),
-            onTap: () => logic.toggleChecked(info),
-            showRadioButton: logic.showRadioButton,
-          ));
+                info: info,
+                showDivider: index != results.length - 1,
+                checked: logic.isChecked(info),
+                enabled: !logic.isDefaultChecked(info),
+                onTap: () => logic.toggleChecked(info),
+                showRadioButton: logic.showRadioButton,
+              ));
         } else if (info is ConversationInfo) {
-          return _buildConversationItemView(info, index == 0, index == results.length - 1);
+          return _buildConversationItemView(
+              info, index == 0, index == results.length - 1);
         }
         return const SizedBox.shrink();
       },
@@ -471,6 +475,7 @@ class SelectedContactsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
     return Container(
       constraints: BoxConstraints(maxHeight: 548.h),
       decoration: BoxDecoration(
@@ -509,19 +514,16 @@ class SelectedContactsListView extends StatelessWidget {
                         fontFamily: 'FilsonPro',
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFF374151),
+                        color: primaryColor,
                       ),
                     ),
                     const Spacer(),
                     GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: () => Get.back(),
-                      child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.w, vertical: 8.h),
-                          child: const HugeIcon(
-                              icon: HugeIcons.strokeRoundedTickDouble03,
-                              color: Colors.blue)),
+                      child: CustomButton(
+                          icon: CupertinoIcons.xmark,
+                          iconSize: 12, color: Colors.blueGrey),
                     ),
                   ],
                 ),

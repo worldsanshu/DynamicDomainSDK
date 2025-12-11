@@ -563,7 +563,7 @@ const Map<String, String> en_US = {
   'selectAssetsFirst': "Please select or take at least one picture.",
   "selectVideoLimit": "Duration cannot exceed %s",
   "selectContactsLimit": "Select contact or conversation",
-  "selectContacts": "Select contacts",
+  "selectContacts": "Select Contacts",
   "selectContactsMinimum": "Select at least %s contacts",
   "chooseFriendsAndGroups": "Choose Friends & Groups",
   "message": "Message",

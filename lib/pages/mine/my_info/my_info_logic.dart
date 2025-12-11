@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/pages/mine/edit_my_info/edit_my_info_logic.dart';
 import 'package:openim/routes/app_navigator.dart';
 import 'package:openim/widgets/qr_code_bottom_sheet.dart';
@@ -29,239 +28,153 @@ class MyInfoLogic extends GetxController {
     nameController.text = imLogic.userInfo.value.nickname ?? '';
 
     Get.bottomSheet(
-      barrierColor: Colors.transparent,
-      Stack(
-        children: [
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              child: Container(
-                color: Colors.transparent,
-              ),
-            ),
+      barrierColor: Colors.black.withOpacity(0.25),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24.r),
+            topRight: Radius.circular(24.r),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.r),
-                topRight: Radius.circular(32.r),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                  offset: const Offset(0, -3),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Handle bar
-                Container(
-                  margin: EdgeInsets.only(top: 12.h),
-                  width: 40.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE5E7EB),
-                    borderRadius: BorderRadius.circular(2.r),
-                  ),
-                ),
-
-                // Title Section
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                  child: Row(
-                    children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedUser,
-                        size: 24.w,
-                        color: const Color(0xFF374151),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      StrRes.nickname,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF111827),
                       ),
-                      12.horizontalSpace,
-                      Text(
-                        StrRes.nickname,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF374151),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Input Container
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                        offset: const Offset(0, 2),
-                        blurRadius: 6,
-                      ),
-                    ],
-                    border: Border.all(
-                      color: const Color(0xFFF3F4F6),
-                      width: 1,
                     ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(16.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          StrRes.enterYourNickname,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF6B7280),
-                          ),
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        padding: EdgeInsets.all(6.w),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF3F4F6),
+                          shape: BoxShape.circle,
                         ),
-                        12.verticalSpace,
-                        TextField(
-                          controller: nameController,
-                          autofocus: true,
-                          maxLength: 20,
-                          decoration: InputDecoration(
-                            hintText: StrRes.plsEnterYourNickname,
-                            hintStyle: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF9CA3AF),
+                        child: Icon(
+                          Icons.close,
+                          size: 20.w,
+                          color: const Color(0xFF6B7280),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1, color: Color(0xFFE5E7EB)),
+              Padding(
+                padding: EdgeInsets.all(20.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      StrRes.enterYourNickname,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF6B7280),
+                      ),
+                    ),
+                    12.verticalSpace,
+                    TextField(
+                      controller: nameController,
+                      autofocus: true,
+                      maxLength: 20,
+                      decoration: InputDecoration(
+                        hintText: StrRes.plsEnterYourNickname,
+                        hintStyle: TextStyle(
+                          fontFamily: 'FilsonPro',
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF9CA3AF),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide:
+                              const BorderSide(color: Color(0xFFE5E7EB)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide:
+                              const BorderSide(color: Color(0xFFE5E7EB)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: const BorderSide(
+                              color: Color(0xFF3B82F6), width: 2),
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xFFF9FAFB),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.w, vertical: 14.h),
+                        counterText: '',
+                      ),
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF111827),
+                      ),
+                    ),
+                    24.verticalSpace,
+                    GestureDetector(
+                      onTap: () {
+                        final newName = nameController.text.trim();
+                        if (newName.isNotEmpty &&
+                            newName != imLogic.userInfo.value.nickname) {
+                          Get.back();
+                          _updateNickname(newName);
+                        } else {
+                          Get.back();
+                        }
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF3B82F6),
+                          borderRadius: BorderRadius.circular(12.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF3B82F6).withOpacity(0.2),
+                              offset: const Offset(0, 4),
+                              blurRadius: 12,
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFE5E7EB),
-                                width: 1,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                              borderSide: const BorderSide(
-                                color: Color(0xFF4F42FF),
-                                width: 2,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFE5E7EB),
-                                width: 1,
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: const Color(0xFFF9FAFB),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 12.h,
-                            ),
-                            counterText: '',
-                          ),
+                          ],
+                        ),
+                        child: Text(
+                          StrRes.confirm,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'FilsonPro',
                             fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF374151),
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-
-                SizedBox(height: 24.h),
-
-                // Action Buttons
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () => Get.back(),
-                            borderRadius: BorderRadius.circular(12.r),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 12.h),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF3F4F6),
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              child: Text(
-                                StrRes.cancel,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'FilsonPro',
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF6B7280),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      12.horizontalSpace,
-                      Expanded(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              final newName = nameController.text.trim();
-                              if (newName.isNotEmpty &&
-                                  newName != imLogic.userInfo.value.nickname) {
-                                Get.back();
-                                _updateNickname(newName);
-                              } else {
-                                Get.back();
-                              }
-                            },
-                            borderRadius: BorderRadius.circular(12.r),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 12.h),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF3B82F6),
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              child: Text(
-                                StrRes.confirm,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'FilsonPro',
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 30.h),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
     );
   }
 
@@ -335,331 +248,193 @@ class MyInfoLogic extends GetxController {
     DateTime selectedDate = initialDate;
 
     Get.bottomSheet(
-      barrierColor: Colors.transparent,
-      Stack(
-        children: [
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              child: Container(
-                color: Colors.transparent,
-              ),
-            ),
+      barrierColor: Colors.black.withOpacity(0.25),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24.r),
+            topRight: Radius.circular(24.r),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.r),
-                topRight: Radius.circular(32.r),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                  offset: const Offset(0, -3),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Handle bar
-                Container(
-                  margin: EdgeInsets.only(top: 12.h),
-                  width: 40.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE5E7EB),
-                    borderRadius: BorderRadius.circular(2.r),
-                  ),
-                ),
-
-                // Title Section
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                  child: Row(
-                    children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedCalendar03,
-                        size: 24.w,
-                        color: const Color(0xFF374151),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      StrRes.birthDay,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF111827),
                       ),
-                      12.horizontalSpace,
-                      Text(
-                        StrRes.birthDay,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF374151),
+                    ),
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        padding: EdgeInsets.all(6.w),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF3F4F6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          size: 20.w,
+                          color: const Color(0xFF6B7280),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-
-                // Date Picker Container
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                        offset: const Offset(0, 2),
-                        blurRadius: 6,
+              ),
+              const Divider(height: 1, color: Color(0xFFE5E7EB)),
+              SizedBox(
+                height: 200.h,
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  initialDateTime: initialDate,
+                  maximumDate: DateTime.now(),
+                  minimumDate: DateTime(1900, 1, 1),
+                  onDateTimeChanged: (DateTime dateTime) {
+                    selectedDate = dateTime;
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(20.w),
+                child: GestureDetector(
+                  onTap: () {
+                    Get.back();
+                    _updateBirthday(
+                        selectedDate.millisecondsSinceEpoch ~/ 1000);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF3B82F6),
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF3B82F6).withOpacity(0.2),
+                          offset: const Offset(0, 4),
+                          blurRadius: 12,
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      StrRes.confirm,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
-                    ],
-                    border: Border.all(
-                      color: const Color(0xFFF3F4F6),
-                      width: 1,
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 200.h,
-                        child: CupertinoDatePicker(
-                          mode: CupertinoDatePickerMode.date,
-                          initialDateTime: initialDate,
-                          maximumDate: DateTime.now(),
-                          minimumDate: DateTime(1900, 1, 1),
-                          onDateTimeChanged: (DateTime dateTime) {
-                            selectedDate = dateTime;
-                          },
-                        ),
-                      ),
-
-                      // Action Buttons
-                      Container(
-                        padding: EdgeInsets.all(16.w),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () => Get.back(),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  child: Container(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 12.h),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFF3F4F6),
-                                      borderRadius: BorderRadius.circular(12.r),
-                                    ),
-                                    child: Text(
-                                      StrRes.cancel,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'FilsonPro',
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: const Color(0xFF6B7280),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            12.horizontalSpace,
-                            Expanded(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () {
-                                    Get.back();
-                                    _updateBirthday(
-                                        selectedDate.millisecondsSinceEpoch ~/
-                                            1000);
-                                  },
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  child: Container(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 12.h),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF3B82F6),
-                                      borderRadius: BorderRadius.circular(12.r),
-                                    ),
-                                    child: Text(
-                                      StrRes.confirm,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'FilsonPro',
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-
-                // SizedBox(height: 30.h),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
     );
   }
 
   void selectGender() {
     Get.bottomSheet(
-      barrierColor: Colors.transparent,
-      Stack(
-        children: [
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              child: Container(
-                color: Colors.transparent,
-              ),
-            ),
+      barrierColor: Colors.black.withOpacity(0.25),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24.r),
+            topRight: Radius.circular(24.r),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.r),
-                topRight: Radius.circular(32.r),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                  offset: const Offset(0, -3),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Handle bar
-                Container(
-                  margin: EdgeInsets.only(top: 12.h),
-                  width: 40.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE5E7EB),
-                    borderRadius: BorderRadius.circular(2.r),
-                  ),
-                ),
-
-                // Title Section
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                  child: Row(
-                    children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedUserMultiple,
-                        size: 24.w,
-                        color: const Color(0xFF374151),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      StrRes.gender,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF111827),
                       ),
-                      12.horizontalSpace,
-                      Text(
-                        StrRes.gender,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF374151),
+                    ),
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        padding: EdgeInsets.all(6.w),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF3F4F6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          size: 20.w,
+                          color: const Color(0xFF6B7280),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-
-                // Gender Options Container
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                        offset: const Offset(0, 2),
-                        blurRadius: 6,
-                      ),
-                    ],
-                    border: Border.all(
-                      color: const Color(0xFFF3F4F6),
-                      width: 1,
                     ),
-                  ),
-                  child: Column(
-                    children: [
-                      _buildGenderActionItem(
-                        icon: HugeIcons.strokeRoundedUser,
-                        title: StrRes.man,
-                        iconColor: const Color(0xFF4F42FF),
-                        onTap: () {
-                          Get.back();
-                          _updateGender(1);
-                        },
-                        index: 0,
-                      ),
-                      _buildGenderDivider(),
-                      _buildGenderActionItem(
-                        icon: HugeIcons.strokeRoundedUser,
-                        title: StrRes.woman,
-                        iconColor: const Color(0xFFF9A8D4),
-                        onTap: () {
-                          Get.back();
-                          _updateGender(2);
-                        },
-                        index: 1,
-                        isLast: true,
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
-
-                SizedBox(height: 30.h),
-
-                GestureDetector(
-                  onTap: () => Get.back(),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 12.h),
-                    width: Get.width / 3 + 4,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.horizontal(
-                        right: Radius.circular(50),
-                        left: Radius.circular(50),
-                      ),
+              ),
+              const Divider(height: 1, color: Color(0xFFE5E7EB)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Column(
+                  children: [
+                    _buildGenderActionItem(
+                      icon: CupertinoIcons.person,
+                      title: StrRes.man,
+                      iconColor: const Color(0xFF4F42FF),
+                      onTap: () {
+                        Get.back();
+                        _updateGender(1);
+                      },
+                      index: 0,
                     ),
-                    child: Text(StrRes.cancel,
-                        style: const TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontWeight: FontWeight.w500)),
-                  ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 52.w),
+                      child: const Divider(height: 1, color: Color(0xFFF3F4F6)),
+                    ),
+                    _buildGenderActionItem(
+                      icon: CupertinoIcons.person,
+                      title: StrRes.woman,
+                      iconColor: const Color(0xFFF9A8D4),
+                      onTap: () {
+                        Get.back();
+                        _updateGender(2);
+                      },
+                      index: 1,
+                      isLast: true,
+                    ),
+                  ],
                 ),
-                SizedBox(height: 15.h),
-              ],
-            ),
+              ),
+              SizedBox(height: 20.h),
+            ],
           ),
-        ],
+        ),
       ),
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
     );
   }
 
@@ -675,7 +450,7 @@ class MyInfoLogic extends GetxController {
   }
 
   Widget _buildGenderActionItem({
-    required List<List<dynamic>> icon,
+    required IconData icon,
     required String title,
     required Color iconColor,
     required VoidCallback onTap,
@@ -698,8 +473,8 @@ class MyInfoLogic extends GetxController {
               : null,
           child: Row(
             children: [
-              HugeIcon(
-                icon: icon,
+              Icon(
+                icon,
                 size: 20.w,
                 color: iconColor,
               ),

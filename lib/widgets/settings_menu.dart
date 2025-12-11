@@ -63,8 +63,7 @@ class SettingsMenuItem extends StatelessWidget {
   final ValueChanged<bool>? onSwitchChanged;
   final bool isWarning;
   final bool showDivider;
-  final Color? iconColor;
-  final Color? iconBackgroundColor;
+  final Color? color;
   final EdgeInsetsGeometry? padding;
 
   const SettingsMenuItem({
@@ -81,8 +80,7 @@ class SettingsMenuItem extends StatelessWidget {
     this.onSwitchChanged,
     this.isWarning = false,
     this.showDivider = true,
-    this.iconColor,
-    this.iconBackgroundColor,
+    this.color,
     this.padding,
   });
 
@@ -104,8 +102,8 @@ class SettingsMenuItem extends StatelessWidget {
                         width: 36.w,
                         height: 36.w,
                         decoration: BoxDecoration(
-                          color: iconBackgroundColor ??
-                              (isWarning
+                          color: color!=null ? color!.withOpacity(0.1)
+                              : (isWarning
                                   ? const Color(0xFFEF4444).withOpacity(0.1)
                                   : const Color(0xFFF3F4F6)),
                           borderRadius: BorderRadius.circular(10.r),
@@ -113,7 +111,7 @@ class SettingsMenuItem extends StatelessWidget {
                         child: Icon(
                           icon,
                           size: 20.w,
-                          color: iconColor ??
+                          color: color ??
                               (isWarning
                                   ? const Color(0xFFEF4444)
                                   : const Color(0xFF424242)),

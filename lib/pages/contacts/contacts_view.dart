@@ -8,8 +8,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
 import 'package:hugeicons/hugeicons.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:openim/widgets/friend_item_view.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
+import 'package:openim/pages/auth/widget/app_text_form_field.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
@@ -38,6 +40,8 @@ class _ContactsPageState extends State<ContactsPage>
   GroupFilterType _selectedGroupFilter = GroupFilterType.all;
   final TextEditingController _friendSearchController = TextEditingController();
   final TextEditingController _groupSearchController = TextEditingController();
+  late final FocusNode _friendSearchFocusNode;
+  late final FocusNode _groupSearchFocusNode;
 
   @override
   void initState() {
@@ -45,6 +49,14 @@ class _ContactsPageState extends State<ContactsPage>
     logic = Get.find<ContactsLogic>();
     groupListLogic = Get.find<GroupListLogic>();
     _tabController = TabController(length: 2, vsync: this);
+    _friendSearchFocusNode = FocusNode();
+    _groupSearchFocusNode = FocusNode();
+    
+    // Close keyboard when tab changes
+    _tabController.addListener(() {
+      _friendSearchFocusNode.unfocus();
+      _groupSearchFocusNode.unfocus();
+    });
   }
 
   @override
@@ -52,6 +64,8 @@ class _ContactsPageState extends State<ContactsPage>
     _tabController.dispose();
     _friendSearchController.dispose();
     _groupSearchController.dispose();
+    _friendSearchFocusNode.dispose();
+    _groupSearchFocusNode.dispose();
     super.dispose();
   }
 
@@ -217,11 +231,12 @@ class _ContactsPageState extends State<ContactsPage>
             onTap: logic.newFriend,
           ),
           // Search box
-          _buildSearchBox(
-            controller: _friendSearchController,
-            hintText: 'Search friends...',
-            onChanged: (value) => setState(() {}),
-          ),
+          // _buildSearchBox(
+          //   focusNode: _friendSearchFocusNode,
+          //   controller: _friendSearchController,
+          //   hintText: 'Search friends...',
+          //   onChanged: (value) => setState(() {}),
+          // ),
           Container(
             width: double.infinity,
             height: 5.h,
@@ -285,6 +300,7 @@ class _ContactsPageState extends State<ContactsPage>
         ),
         // Search box
         // _buildSearchBox(
+        //   focusNode: _groupSearchFocusNode,
         //   controller: _groupSearchController,
         //   hintText: 'Search groups...',
         //   onChanged: (value) => setState(() {}),
@@ -506,69 +522,29 @@ class _ContactsPageState extends State<ContactsPage>
     required TextEditingController controller,
     required String hintText,
     required ValueChanged<String> onChanged,
+    required FocusNode focusNode,
   }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       color: Colors.white,
-      child: TextField(
+      child: AppTextFormField(
+        focusNode: focusNode,
         controller: controller,
+        label: hintText,
+        keyboardType: TextInputType.text,
         onChanged: onChanged,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w500,
-          color: const Color(0xFF374151),
-        ),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(
-            fontFamily: 'FilsonPro',
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
+        validator: (value) => null,
+        prefixIcon: Icon(CupertinoIcons.search),
+        suffixIcon: GestureDetector(
+          onTap: () {
+            controller.clear();
+            onChanged('');
+          },
+          child: Icon(
+            CupertinoIcons.xmark_circle_fill,
+            size: 18.w,
             color: const Color(0xFF9CA3AF),
           ),
-          prefixIcon: Icon(
-            CupertinoIcons.search,
-            size: 20.w,
-            color: const Color(0xFF9CA3AF),
-          ),
-          suffixIcon: controller.text.isNotEmpty
-              ? GestureDetector(
-                  onTap: () {
-                    controller.clear();
-                    onChanged('');
-                  },
-                  child: Icon(
-                    CupertinoIcons.xmark_circle_fill,
-                    size: 18.w,
-                    color: const Color(0xFF9CA3AF),
-                  ),
-                )
-              : null,
-          filled: true,
-          fillColor: const Color(0xFFF9FAFB),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: const BorderSide(
-              color: Color(0xFFE5E7EB),
-              width: 1,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: const BorderSide(
-              color: Color(0xFFE5E7EB),
-              width: 1,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(
-              color: Theme.of(context).primaryColor,
-              width: 1.5,
-            ),
-          ),
-          contentPadding: EdgeInsets.symmetric(vertical: 10.h),
         ),
       ),
     );

@@ -12,6 +12,7 @@ class PhoneCodeField extends StatefulWidget {
   final Future<bool> Function()? onSendCode;
   final TextEditingController? phoneController;
   final String? validatePhone;
+  final FocusNode? focusNode;
   final int seconds;
   final bool isRequired;
 
@@ -21,6 +22,7 @@ class PhoneCodeField extends StatefulWidget {
     required this.onSendCode,
     this.phoneController,
     this.validatePhone,
+    this.focusNode,
     this.seconds = 60,
     this.isRequired = false,
   });
@@ -126,6 +128,7 @@ class _PhoneCodeFieldState extends State<PhoneCodeField> {
             label: StrRes.verificationCode,
             keyboardType: TextInputType.number,
             controller: widget.controller,
+            focusNode: widget.focusNode,
             isRequired: widget.isRequired,
             validator: (value) {
               final code = (value ?? '').trim();

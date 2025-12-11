@@ -2,6 +2,8 @@ buildscript {
     val kotlinVersion = "2.1.0"
     extra["kotlin_version"] = kotlinVersion
     repositories {
+        google()
+        mavenCentral()
         maven { url = uri("https://maven.aliyun.com/nexus/content/groups/public/") }
         maven { url = uri("https://maven.aliyun.com/nexus/content/repositories/jcenter") }
         maven { url = uri("https://maven.aliyun.com/nexus/content/repositories/google") }
@@ -19,8 +21,6 @@ buildscript {
                 password = "c0b08da17e3ec36c3870fed674a0bcb36abc2e23"
             }
         }
-        google()
-        mavenCentral()
     }
 
     dependencies {
@@ -34,6 +34,8 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
+        mavenCentral()
         maven { url = uri("https://maven.aliyun.com/nexus/content/groups/public/") }
         maven { url = uri("https://maven.aliyun.com/nexus/content/repositories/jcenter") }
         maven { url = uri("https://maven.aliyun.com/nexus/content/repositories/google") }

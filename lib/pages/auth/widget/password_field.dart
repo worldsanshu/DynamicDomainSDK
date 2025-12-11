@@ -10,6 +10,7 @@ class PasswordField extends StatefulWidget {
   final TextEditingController? compareController;
   final bool validateFormat;
   final bool isRequired;
+  final Function(String)? onFieldSubmitted;
 
   const PasswordField({
     super.key,
@@ -18,6 +19,7 @@ class PasswordField extends StatefulWidget {
     this.compareController,
     this.validateFormat = false,
     this.isRequired = false,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -34,12 +36,14 @@ class _PasswordFieldState extends State<PasswordField> {
         label: isConfirmPassword ? StrRes.confirmPassword : StrRes.password,
         focusNode: widget.focusNode,
         controller: widget.controller,
+        textInputAction: isConfirmPassword ? TextInputAction.next : TextInputAction.done,
         // helperText: widget.validateFormat ? StrRes.wrongPasswordFormat : null,
         isObscureText: isObscureText,
         isRequired: widget.isRequired,
         onChanged: (value) {
           // Field validation handled by validator
         },
+        onFieldSubmitted: widget.onFieldSubmitted,
         suffixIcon: GestureDetector(
           onTap: () {
             setState(() {

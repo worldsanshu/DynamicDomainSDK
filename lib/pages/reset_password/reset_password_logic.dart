@@ -18,6 +18,7 @@ class ResetPasswordLogic extends GetxController {
   final phoneFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
   final passwordConfirmationFocusNode = FocusNode();
+  final smsCodeFocusNode = FocusNode();
 
   // Observable state for button
   var isButtonEnabled = false.obs;
@@ -61,6 +62,7 @@ class ResetPasswordLogic extends GetxController {
     phoneFocusNode.dispose();
     passwordFocusNode.dispose();
     passwordConfirmationFocusNode.dispose();
+    smsCodeFocusNode.dispose();
 
     super.onClose();
   }

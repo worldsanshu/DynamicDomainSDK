@@ -10,6 +10,7 @@ import 'package:openim/constants/app_color.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';
 import '../../../widgets/custom_buttom.dart';
+import '../../../widgets/gradient_scaffold.dart';
 
 import 'create_group_logic.dart';
 
@@ -20,127 +21,37 @@ class CreateGroupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return TouchCloseSoftKeyboard(
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF4F5F9),
-        body: Stack(
-          children: [
-            _buildHeader(context, theme),
-            _buildContent(context),
-          ],
+      child: GradientScaffold(
+        title: StrRes.createGroup,
+        subtitle: StrRes.createGroupHint,
+        showBackButton: true,
+        trailing: CustomButton(
+          onTap: logic.completeCreation,
+          icon: CupertinoIcons.checkmark,
+          color: Colors.white,
+          padding: EdgeInsets.all(10.w),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, ThemeData theme) {
-    return Container(
-      height: 200.h,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            theme.primaryColor.withOpacity(0.7),
-            theme.primaryColor.withOpacity(0.9),
-          ],
-        ),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        scrollable: true,
+        bodyColor: const Color(0xFFF4F5F9),
+        body: AnimationLimiter(
           child: Column(
-            children: [
-              Row(
-                children: [
-                  CustomButton(
-                    onTap: () => Get.back(),
-                    icon: Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
-                    padding: EdgeInsets.all(10.w),
-                  ),
-                  16.horizontalSpace,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          StrRes.createGroup,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                        4.verticalSpace,
-                        Text(
-                          StrRes.createGroupHint,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white.withOpacity(0.8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  CustomButton(
-                    onTap: logic.completeCreation,
-                    icon: CupertinoIcons.checkmark,
-                    color: Colors.white,
-                    padding: EdgeInsets.all(10.w),
-                  ),
-                ],
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: AnimationConfiguration.toStaggeredList(
+              duration: const Duration(milliseconds: 450),
+              childAnimationBuilder: (widget) => SlideAnimation(
+                verticalOffset: 50.0,
+                curve: Curves.easeOutQuart,
+                child: FadeInAnimation(child: widget),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContent(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 130.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF4F5F9),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.r),
-          topRight: Radius.circular(30.r),
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.r),
-          topRight: Radius.circular(30.r),
-        ),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.only(bottom: 20.h),
-          child: AnimationLimiter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: AnimationConfiguration.toStaggeredList(
-                duration: const Duration(milliseconds: 450),
-                childAnimationBuilder: (widget) => SlideAnimation(
-                  verticalOffset: 50.0,
-                  curve: Curves.easeOutQuart,
-                  child: FadeInAnimation(child: widget),
-                ),
-                children: [
-                  20.verticalSpace,
-                  _buildSectionTitle(StrRes.groupInformation),
-                  _buildGroupBaseInfoView(),
-                  18.verticalSpace,
-                  _buildSectionTitle(StrRes.groupMembers),
-                  _buildGroupMemberView(),
-                  24.verticalSpace,
-                ],
-              ),
+              children: [
+                _buildSectionTitle(StrRes.groupInformation),
+                _buildGroupBaseInfoView(),
+                18.verticalSpace,
+                _buildSectionTitle(StrRes.groupMembers),
+                _buildGroupMemberView(),
+                24.verticalSpace,
+              ],
             ),
           ),
         ),

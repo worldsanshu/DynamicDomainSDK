@@ -27,7 +27,7 @@ plugins {
 }
 
 android {
-    namespace = "com.tingjunge.cnl"
+    namespace = "com.cnl.chat"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
@@ -43,7 +43,8 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.tingjunge.cnl"
+        // applicationId = "com.tingjunge.cnl"
+        applicationId = "com.cnl.chat"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdk = 24
@@ -118,8 +119,11 @@ android {
 
     applicationVariants.all {
         outputs.all {
-            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = 
-                "CNL_${versionName}(${versionCode-2000})_${buildType.name}_justin_${buildTime()}.apk"
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            val abi = output.filters.find { it.filterType == com.android.build.OutputFile.ABI }?.identifier
+            val abiSuffix = if (abi != null) "_$abi" else ""
+            output.outputFileName = 
+                "CNL_${versionName}_${versionCode}_${buildType.name}_${buildTime()}.apk"
         }
     }
 
@@ -217,6 +221,13 @@ dependencies {
     implementation("com.getui.opt:ups:3.0.3")
 
     implementation("com.android.support:multidex:1.0.3")
+}
+
+// Fix for datastore dependency issues
+configurations.all {
+    resolutionStrategy {
+        force("androidx.datastore:datastore-preferences:1.0.0")
+    }
 }
 
 fun buildTime(): String {

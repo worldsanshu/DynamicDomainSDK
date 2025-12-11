@@ -127,6 +127,7 @@ class IMViews {
   }
 
   static void openPhotoSheet({
+    String? title,
     Function(dynamic path, dynamic url)? onData,
     bool crop = true,
     bool toUrl = true,
@@ -152,215 +153,177 @@ class IMViews {
     }
 
     Get.bottomSheet(
-      barrierColor: Colors.transparent,
-      Stack(
-        children: [
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              child: Container(
-                color: Colors.transparent,
-              ),
-            ),
+      barrierColor: Colors.black.withOpacity(0.25),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24.r),
+            topRight: Radius.circular(24.r),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.r),
-                topRight: Radius.circular(32.r),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                  offset: const Offset(0, -3),
-                  blurRadius: 12,
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Handle bar
-                Container(
-                  margin: EdgeInsets.only(top: 12.h),
-                  width: 40.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE5E7EB),
-                    borderRadius: BorderRadius.circular(2.r),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                        offset: const Offset(0, 2),
-                        blurRadius: 6,
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title ?? StrRes.avatar,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF111827),
                       ),
-                    ],
-                    border: Border.all(
-                      color: const Color(0xFFF3F4F6),
-                      width: 1,
                     ),
-                  ),
-                  child: Column(
-                    children: [
-                      ...items
-                          .asMap()
-                          .entries
-                          .map((entry) => _buildPhotoActionItem(
-                                icon: const [[]],
-                                customIcon: entry.value.customIcon,
-                                title: entry.value.label,
-                                onTap: entry.value.onTap!,
-                                index: entry.key,
-                              )),
-                      if (fromCamera)
-                        _buildPhotoActionItem(
-                          icon: HugeIcons.strokeRoundedCamera01,
-                          title: StrRes.camera,
-                          onTap: () async {
-                            Get.back();
-                            PermissionStatus result = PermissionStatus.denied;
-                            if (!onlyImage) {
-                              result = await Permission.microphone.request();
-                            }
-                            Permissions.camera(() async {
-                              await CameraPicker.pickFromCamera(
-                                Get.context!,
-                                locale: Get.locale,
-                                pickerConfig: CameraPickerConfig(
-                                  enableAudio: onlyImage
-                                      ? false
-                                      : result == PermissionStatus.granted,
-                                  enableRecording: false,
-                                  enableScaledPreview: false,
-                                  maximumRecordingDuration: 60.seconds,
-                                  shouldDeletePreviewFile: true,
-                                  onEntitySaving:
-                                      (context, viewType, file) async {
-                                    final map = await uCropPic(
-                                      file.path,
-                                      crop: crop,
-                                      toUrl: toUrl,
-                                      quality: quality,
-                                      showLoading: false,
-                                    );
-                                    onData?.call(map['path'], map['url']);
-                                    Get.back();
-                                    Get.back();
-                                  },
-                                  onMinimumRecordDurationNotMet: () {
-                                    IMViews.showToast(StrRes.tapTooShort);
-                                  },
-                                ),
-                              );
-                            });
-                          },
-                          index: 0,
+                    GestureDetector(
+                      onTap: () => Get.back(),
+                      child: Container(
+                        padding: EdgeInsets.all(6.w),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF3F4F6),
+                          shape: BoxShape.circle,
                         ),
-                      _buildPhotoDivider(),
-                      if (fromGallery)
-                        _buildPhotoActionItem(
-                          icon: HugeIcons.strokeRoundedImage01,
-                          title: StrRes.toolboxAlbum,
-                          onTap: () {
-                            Get.back();
-                            Permissions.photos(
-                              () async {
-                                final List<AssetEntity>? assets =
-                                    await AssetPicker.pickAssets(Get.context!,
-                                        pickerConfig: AssetPickerConfig(
-                                            requestType: RequestType.image,
-                                            maxAssets: 1,
-                                            selectPredicate:
-                                                (_, entity, isSelected) async {
-                                              if (await allowSendImageType(
-                                                  entity)) {
-                                                return true;
-                                              }
-
-                                              IMViews.showToast(
-                                                  StrRes.supportsTypeHint);
-
-                                              return false;
-                                            }));
-                                final file = await assets?.firstOrNull?.file;
-
-                                if (file?.path != null) {
-                                  final map = await uCropPic(file!.path,
-                                      crop: crop,
-                                      toUrl: toUrl,
-                                      quality: quality);
+                        child: Icon(
+                          Icons.close,
+                          size: 20.w,
+                          color: const Color(0xFF6B7280),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1, color: Color(0xFFE5E7EB)),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                child: Column(
+                  children: [
+                    ...items.asMap().entries.map((entry) => Padding(
+                          padding: EdgeInsets.only(bottom: 12.h),
+                          child: _buildPhotoActionItem(
+                            icon: const [[]],
+                            customIcon: entry.value.customIcon,
+                            title: entry.value.label,
+                            onTap: entry.value.onTap!,
+                          ),
+                        )),
+                    if (fromCamera)
+                      _buildPhotoActionItem(
+                        icon: HugeIcons.strokeRoundedCamera01,
+                        title: StrRes.camera,
+                        onTap: () async {
+                          Get.back();
+                          PermissionStatus result = PermissionStatus.denied;
+                          if (!onlyImage) {
+                            result = await Permission.microphone.request();
+                          }
+                          Permissions.camera(() async {
+                            await CameraPicker.pickFromCamera(
+                              Get.context!,
+                              locale: Get.locale,
+                              pickerConfig: CameraPickerConfig(
+                                enableAudio: onlyImage
+                                    ? false
+                                    : result == PermissionStatus.granted,
+                                enableRecording: false,
+                                enableScaledPreview: false,
+                                maximumRecordingDuration: 60.seconds,
+                                shouldDeletePreviewFile: true,
+                                onEntitySaving:
+                                    (context, viewType, file) async {
+                                  final map = await uCropPic(
+                                    file.path,
+                                    crop: crop,
+                                    toUrl: toUrl,
+                                    quality: quality,
+                                    showLoading: false,
+                                  );
                                   onData?.call(map['path'], map['url']);
-                                }
-                              },
+                                  Get.back();
+                                  Get.back();
+                                },
+                                onMinimumRecordDurationNotMet: () {
+                                  IMViews.showToast(StrRes.tapTooShort);
+                                },
+                              ),
                             );
-                          },
-                          index: 1,
-                          isLast: !useNicknameAsAvatarEnabled,
-                        ),
-                      if (useNicknameAsAvatarEnabled) ...[
-                        _buildPhotoDivider(),
-                        _buildPhotoActionItem(
-                          icon: HugeIcons.strokeRoundedUser,
-                          title: isGroup
-                              ? StrRes.useDefaultGroupAvatar
-                              : StrRes.useNicknameAsAvatar,
-                          onTap: () async {
-                            Get.back();
-                            var confirm = await Get.dialog(CustomDialog(
-                              title: isGroup
-                                  ? StrRes.confirmUseDefaultGroupAvatar
-                                  : StrRes.confirmUseNicknameAsAvatar,
-                            ));
-                            if (confirm) {
-                              onData?.call('', 'NICKNAME');
-                            }
-                          },
-                          index: 2,
-                          isLast: true,
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 30.h),
-
-                GestureDetector(
-                  onTap: () => Get.back(),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 12.h),
-                    width: Get.width / 3 + 4,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.horizontal(
-                        right: Radius.circular(50),
-                        left: Radius.circular(50),
+                          });
+                        },
                       ),
-                    ),
-                    child: Text(StrRes.cancel,
-                        style: const TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontWeight: FontWeight.w500)),
-                  ),
+                    if (fromGallery) ...[
+                      SizedBox(height: 12.h),
+                      _buildPhotoActionItem(
+                        icon: HugeIcons.strokeRoundedImage01,
+                        title: StrRes.toolboxAlbum,
+                        onTap: () {
+                          Get.back();
+                          Permissions.photos(
+                            () async {
+                              final List<AssetEntity>? assets =
+                                  await AssetPicker.pickAssets(Get.context!,
+                                      pickerConfig: AssetPickerConfig(
+                                          requestType: RequestType.image,
+                                          maxAssets: 1,
+                                          selectPredicate:
+                                              (_, entity, isSelected) async {
+                                            if (await allowSendImageType(
+                                                entity)) {
+                                              return true;
+                                            }
+
+                                            IMViews.showToast(
+                                                StrRes.supportsTypeHint);
+
+                                            return false;
+                                          }));
+                              final file = await assets?.firstOrNull?.file;
+
+                              if (file?.path != null) {
+                                final map = await uCropPic(file!.path,
+                                    crop: crop,
+                                    toUrl: toUrl,
+                                    quality: quality);
+                                onData?.call(map['path'], map['url']);
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                    if (useNicknameAsAvatarEnabled) ...[
+                      SizedBox(height: 12.h),
+                      _buildPhotoActionItem(
+                        icon: HugeIcons.strokeRoundedUser,
+                        title: isGroup
+                            ? StrRes.useDefaultGroupAvatar
+                            : StrRes.useNicknameAsAvatar,
+                        onTap: () async {
+                          Get.back();
+                          var confirm = await Get.dialog(CustomDialog(
+                            title: isGroup
+                                ? StrRes.confirmUseDefaultGroupAvatar
+                                : StrRes.confirmUseNicknameAsAvatar,
+                          ));
+                          if (confirm) {
+                            onData?.call('', 'NICKNAME');
+                          }
+                        },
+                      ),
+                    ],
+                  ],
                 ),
-                SizedBox(height: 15.h),
-              ],
-            ),
+              ),
+              SizedBox(height: 20.h),
+            ],
           ),
-        ],
+        ),
       ),
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
     );
   }
 
@@ -369,36 +332,40 @@ class IMViews {
     IconData? customIcon,
     required String title,
     required VoidCallback onTap,
-    required int index,
-    bool isLast = false,
   }) {
+    final color=Theme.of(Get.context!).primaryColor;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(16.r),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-          decoration: isLast
-              ? BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(16.r),
-                    bottomRight: Radius.circular(16.r),
-                  ),
-                )
-              : null,
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF9FAFB),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: const Color(0xFFF3F4F6)),
+          ),
           child: Row(
             children: [
-              customIcon != null
-                  ? Icon(
-                      customIcon,
-                      size: 20.w,
-                      color: const Color(0xFF424242),
-                    )
-                  : HugeIcon(
-                      icon: icon,
-                      size: 20.w,
-                      color: const Color(0xFF424242),
-                    ),
+              Container(
+                padding: EdgeInsets.all(8.w),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: customIcon != null
+                    ? Icon(
+                        customIcon,
+                        size: 20.w,
+                        color: color,
+                      )
+                    : HugeIcon(
+                        icon: icon,
+                        size: 20.w,
+                        color: color,
+                      ),
+              ),
               16.horizontalSpace,
               Expanded(
                 child: Text(
@@ -406,25 +373,19 @@ class IMViews {
                   style: TextStyle(
                     fontFamily: 'FilsonPro',
                     fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF374151),
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF111827),
                   ),
                 ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16.w,
+                color: color,
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  static Widget _buildPhotoDivider() {
-    return Padding(
-      padding: EdgeInsets.only(left: 70.w),
-      child: const Divider(
-        height: 1,
-        thickness: 1,
-        color: Color(0xFFF3F4F6),
       ),
     );
   }
