@@ -123,7 +123,6 @@ const Map<String, String> zh_CN = {
   "notFoundAccount": "未找到该账号",
   "loginIncorrectPwd": "账号或密码错误",
   "tooMuchRequestValidationCode": "请求验证码次数过多，请稍后再试",
-  "loginSuccess": "登录成功",
   'through': '通过%s',
   "home": "对话",
   "contacts": "通讯录",

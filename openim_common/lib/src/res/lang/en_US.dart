@@ -129,7 +129,6 @@ const Map<String, String> en_US = {
   "notFoundAccount": "Account not found",
   "tooMuchRequestValidationCode":"Too many invalid enterprise codes. Please wait and try again later.",
   "loginIncorrectPwd": "Incorrect account or password",
-  "loginSuccess": "Login Successful",
   "passwordLogin": "Password Login",
   'through': 'Through %s',
   "home": "Chat",

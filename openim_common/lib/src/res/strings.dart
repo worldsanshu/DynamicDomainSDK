@@ -205,8 +205,6 @@ class StrRes {
   static String get notFoundAccount => 'notFoundAccount'.tr;
 
   static String get loginIncorrectPwd => 'loginIncorrectPwd'.tr;
-
-  static String get loginSuccess => 'loginSuccess'.tr;
   
   static String get passwordLogin => 'passwordLogin'.tr;
 

@@ -374,7 +374,6 @@ class AuthController extends SuperController {
 
       if (jumpToMain) {
         AppNavigator.startMain();
-        IMViews.showToast(StrRes.loginSuccess, type: 1);
       }
     } catch (_) {
       IMViews.showToast(StrRes.loginFailed);

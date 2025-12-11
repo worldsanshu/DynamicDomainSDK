@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -100,6 +101,10 @@ class _CustomPopupMenuState extends State<CopyCustomPopupMenu> {
 
     var keyboardHeight = viewInsets.bottom;
 
+    // Calculate child position for highlighting
+    final Offset childOffset = _childBox!.localToGlobal(Offset.zero);
+    final Size childSize = _childBox!.size;
+
     _overlayEntry = OverlayEntry(
       builder: (context) {
         Widget menu = Center(
@@ -149,31 +154,57 @@ class _CustomPopupMenuState extends State<CopyCustomPopupMenu> {
             ),
           ),
         );
-        return Listener(
-          behavior: widget.enablePassEvent
-              ? HitTestBehavior.translucent
-              : HitTestBehavior.opaque,
-          onPointerDown: (PointerDownEvent event) {
-            Offset offset = event.localPosition;
-            // If tap position in menu
-            if (_menuRect.contains(
-                Offset(offset.dx - widget.horizontalMargin, offset.dy))) {
-              return;
-            }
-            _controller?.hideMenu();
-            // When [enablePassEvent] works and we tap the [child] to [hideMenu],
-            // but the passed event would trigger [showMenu] again.
-            // So, we use time threshold to solve this bug.
-            _canResponse = false;
-            Future.delayed(const Duration(milliseconds: 300))
-                .then((_) => _canResponse = true);
-          },
-          child: widget.barrierColor == Colors.transparent
-              ? menu
-              : Container(
-                  color: widget.barrierColor,
-                  child: menu,
+
+        return Stack(
+          children: [
+            // 1. Blur Background
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  _controller?.hideMenu();
+                },
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    color: Colors.black.withOpacity(0.3),
+                  ),
                 ),
+              ),
+            ),
+            // 2. Highlighted Child
+            Positioned(
+              left: childOffset.dx,
+              top: childOffset.dy,
+              width: childSize.width,
+              height: childSize.height,
+              child: Transform.scale(
+                scale: 0.95,
+                child: IgnorePointer(
+                  child: widget.child,
+                ),
+              ),
+            ),
+            // 3. Menu
+            Positioned.fill(
+              child: Listener(
+                behavior: widget.enablePassEvent
+                    ? HitTestBehavior.translucent
+                    : HitTestBehavior.opaque,
+                onPointerDown: (PointerDownEvent event) {
+                  Offset offset = event.localPosition;
+                  if (_menuRect.contains(
+                      Offset(offset.dx - widget.horizontalMargin, offset.dy))) {
+                    return;
+                  }
+                  _controller?.hideMenu();
+                  _canResponse = false;
+                  Future.delayed(const Duration(milliseconds: 300))
+                      .then((_) => _canResponse = true);
+                },
+                child: menu,
+              ),
+            ),
+          ],
         );
       },
     );
@@ -332,8 +363,16 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
 
     if (position == null) {
       // auto calculate position
-      // 修正弹起键盘菜单显示问题
-      isTop = anchorBottomY > (size.height - keyboardHeight) / 2;
+      // Prefer bottom, only switch to top if there is not enough space at the bottom
+      double bottomSpace = size.height - anchorBottomY - keyboardHeight;
+      double requiredHeight =
+          contentSize.height + arrowSize.height + verticalMargin;
+
+      if (bottomSpace >= requiredHeight) {
+        isTop = false;
+      } else {
+        isTop = true;
+      }
     } else {
       isTop = position == PreferredPosition.top;
     }

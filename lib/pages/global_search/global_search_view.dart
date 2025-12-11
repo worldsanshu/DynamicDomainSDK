@@ -82,23 +82,48 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
               unselectedLabelColor: const Color(0xFF9CA3AF),
               labelStyle: TextStyle(
                 fontFamily: 'FilsonPro',
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w800,
               ),
               unselectedLabelStyle: TextStyle(
                 fontFamily: 'FilsonPro',
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
               ),
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              labelPadding: EdgeInsets.zero,
+              isScrollable: false,
+              padding: EdgeInsets.symmetric(horizontal: 0.w),
               tabs: [
-                Tab(text: StrRes.globalSearchAll),
-                Tab(text: StrRes.globalSearchContacts),
-                Tab(text: StrRes.globalSearchGroup),
-                Tab(text: StrRes.messages),
-                Tab(text: StrRes.globalSearchChatFile),
+                Tab(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(StrRes.globalSearchAll),
+                  ),
+                ),
+                Tab(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(StrRes.globalSearchContacts),
+                  ),
+                ),
+                Tab(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(StrRes.globalSearchGroup),
+                  ),
+                ),
+                Tab(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(StrRes.messages),
+                  ),
+                ),
+                Tab(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(StrRes.globalSearchChatFile),
+                  ),
+                ),
               ],
             ),
             

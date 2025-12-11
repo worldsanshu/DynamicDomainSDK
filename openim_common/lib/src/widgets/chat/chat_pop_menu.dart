@@ -34,22 +34,37 @@ class ChatLongPressMenu extends StatelessWidget {
         maxWidth: 240.w,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFFF2F2F7),
+        color: const Color(0xFFFAFAFA),
         borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF000000).withOpacity(0.08),
+            offset: Offset(0, 4.h),
+            blurRadius: 12.r,
+            spreadRadius: 0,
+          ),
+        ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: menus.asMap().entries.map((entry) {
-          final index = entry.key;
-          final menu = entry.value;
-          final isLast = index == menus.length - 1;
-          return _menuItem(
-            icon: menu.icon,
-            label: menu.text,
-            onTap: menu.onTap,
-            isLast: isLast,
-          );
-        }).toList(),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12.r),
+        child: Material(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: menus.asMap().entries.map((entry) {
+              final index = entry.key;
+              final menu = entry.value;
+              final isLast = index == menus.length - 1;
+              return _menuItem(
+                icon: menu.icon,
+                label: menu.text,
+                onTap: menu.onTap,
+                isLast: isLast,
+                enabled: menu.enabled,
+              );
+            }).toList(),
+          ),
+        ),
       ),
     );
   }
@@ -59,44 +74,50 @@ class ChatLongPressMenu extends StatelessWidget {
     required String label,
     Function()? onTap,
     bool isLast = false,
+    bool enabled = true,
   }) =>
-      GestureDetector(
-        onTap: () {
-          popupMenuController?.hideMenu();
-          onTap?.call();
-        },
-        behavior: HitTestBehavior.translucent,
+      InkWell(
+        onTap: enabled
+            ? () {
+                popupMenuController?.hideMenu();
+                onTap?.call();
+              }
+            : null,
         child: Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           decoration: BoxDecoration(
             border: isLast
                 ? null
-                : const Border(
+                : Border(
                     bottom: BorderSide(
-                      color: Color(0xFFE5E5EA),
+                      color: const Color(0xFFE5E5EA),
                       width: 0.5,
                     ),
                   ),
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: label.toText
                   ..style = TextStyle(
-                    color: Colors.black,
-                    fontSize: 14.sp,
-                    fontFamily: 'FilsonPro',
-                    fontWeight: FontWeight.w400,
+                    color: enabled
+                        ? const Color(0xFF0C1C33)
+                        : const Color(0xFF0C1C33).withOpacity(0.4),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
                   )
                   ..maxLines = 1
                   ..overflow = TextOverflow.ellipsis,
               ),
-              12.horizontalSpace,
+              SizedBox(width: 12.w),
               icon.toImage
-                ..width = 25.w
-                ..height = 25.h
-                ..color = Colors.black,
+                ..width = 20.w
+                ..height = 20.h
+                ..color =
+                    enabled ? null : const Color(0xFF0C1C33).withOpacity(0.4)
+                ..fit = BoxFit.contain,
             ],
           ),
         ),

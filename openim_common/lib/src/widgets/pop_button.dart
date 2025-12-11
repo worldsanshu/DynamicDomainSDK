@@ -117,15 +117,20 @@ class PopButton extends StatelessWidget {
             )
           ],
         ),
-        child: child,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(bgRadius ?? 8.r),
+          child: Material(
+            color: Colors.transparent,
+            child: child,
+          ),
+        ),
       );
 
-  Widget _buildPopItemView(PopMenuInfo info, {bool showLine = true}) => GestureDetector(
+  Widget _buildPopItemView(PopMenuInfo info, {bool showLine = true}) => InkWell(
         onTap: () {
           popCtrl?.hideMenu();
           info.onTap?.call();
         },
-        behavior: HitTestBehavior.translucent,
         child: Container(
           height: menuItemHeight ?? 48.h,
           width: menuItemWidth,

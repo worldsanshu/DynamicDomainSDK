@@ -71,7 +71,7 @@ class GradientScaffold extends StatelessWidget {
         
         // 2. Main Content Card
         Container(
-          margin: EdgeInsets.only(top: searchBox != null ? bodyTopMargin.h + 5.h : bodyTopMargin.h),          
+          margin: EdgeInsets.only(top: searchBox != null ? bodyTopMargin.h + 12.h : bodyTopMargin.h),          
           decoration: BoxDecoration(
             color: bodyColor,
             borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
