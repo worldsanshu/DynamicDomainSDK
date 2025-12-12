@@ -117,10 +117,10 @@ class _ChatVoiceRecordBarState extends State<ChatVoiceRecordBar> {
         child: Text(
           _pressing
               ? (_canCancel
-                  ? StrRes.liftFingerToCancelSend
+                  ? StrRes.liftFingerToCancel
                   : StrRes.releaseToSend)
               : StrRes.holdTalk,
-          style: widget.speakTextStyle ?? Styles.ts_0C1C33_14sp_medium,
+          style: widget.speakTextStyle ?? Styles.ts_0C1C33_14sp,
         ),
       ),
     );

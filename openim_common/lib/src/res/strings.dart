@@ -396,7 +396,7 @@ class StrRes {
   static String get releaseToSendSwipeUpToCancel =>
       'releaseToSendSwipeUpToCancel'.tr;
 
-  static String get liftFingerToCancelSend => 'liftFingerToCancelSend'.tr;
+  static String get liftFingerToCancel => 'liftFingerToCancel'.tr;
 
   static String get callDuration => 'callDuration'.tr;
 

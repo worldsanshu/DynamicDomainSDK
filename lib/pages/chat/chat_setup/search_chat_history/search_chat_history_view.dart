@@ -2,6 +2,7 @@
 
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -462,59 +463,21 @@ class SearchChatHistoryPage extends StatelessWidget {
 
   Future<void> datePicker(BuildContext ctx) async {
     logic.clearDateTime();
-    final DateTime? picked = await showDialog<DateTime>(
+    final DateTime? picked = await showModalBottomSheet<DateTime>(
       context: ctx,
-      barrierColor: Colors.transparent,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return Stack(
-          children: [
-            Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-                child: Container(
-                  color: Colors.transparent,
-                ),
-              ),
-            ),
-            Dialog(
-              backgroundColor: Colors.transparent,
-              child: Container(
-                height: MediaQuery.of(context).size.height / 1.5,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      offset: const Offset(0, 4),
-                      blurRadius: 20,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.r),
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      colorScheme: const ColorScheme.light(
-                        primary: Color(0xFF4F42FF),
-                        onPrimary: Colors.white,
-                        surface: Colors.white,
-                        onSurface: Colors.black,
-                      ),
-                    ),
-                    child: DatePickerDialog(
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                      helpText: StrRes.selectSearchDate,
-                      cancelText: StrRes.cancel,
-                      confirmText: StrRes.confirm,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+        return ClaymorphismDatePicker(
+          title: StrRes.selectSearchDate,
+          initialDate: DateTime.now(),
+          minDate: DateTime(2000),
+          maxDate: DateTime.now(),
+          icon: CupertinoIcons.calendar,
+          onConfirm: (DateTime date) {
+            Get.back(result: date);
+          },
+          onCancel: () => Get.back(),
         );
       },
     );

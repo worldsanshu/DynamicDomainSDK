@@ -123,7 +123,7 @@ class _ChatVoiceRecordLayoutState extends State<ChatVoiceRecordLayout> {
                         ..style = Styles.ts_FFFFFF_12sp,
                       Expanded(child: _lottieAnimWidget),
                       (_isCancelSend
-                              ? StrRes.liftFingerToCancelSend
+                              ? StrRes.liftFingerToCancel
                               : StrRes.releaseToSendSwipeUpToCancel)
                           .toText
                         ..style = Styles.ts_FFFFFF_12sp,

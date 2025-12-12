@@ -216,7 +216,7 @@ const Map<String, String> zh_CN = {
   "holdTalk": "按住 说话",
   "releaseToSend": "松开 发送",
   "releaseToSendSwipeUpToCancel": "松开发送，上滑取消",
-  "liftFingerToCancelSend": "松开手指，取消发送",
+  "liftFingerToCancel": "抬起手指 取消发送",
   "callDuration": "通话时长 %s",
   "cancelled": "已取消",
   "cancelledByCaller": "对方已取消",

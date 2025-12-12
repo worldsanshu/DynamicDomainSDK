@@ -98,9 +98,8 @@ class SelectContactsPage extends StatelessWidget {
                   if (logic.conversationList.isNotEmpty) ...[
                     Container(
                       margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
-                      child: Row(
-                        children: [
-                          Text(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
                             StrRes.recentConversations,
                             style: TextStyle(
                               fontFamily: 'FilsonPro',
@@ -109,12 +108,6 @@ class SelectContactsPage extends StatelessWidget {
                               color: const Color(0xFF64748B),
                             ),
                           ),
-                          const Spacer(),
-                          Obx(() => logic.checkedList.isNotEmpty
-                              ? _buildSendButton()
-                              : const SizedBox.shrink()),
-                        ],
-                      ),
                     ),
                     ...List.generate(
                       logic.conversationList.length,

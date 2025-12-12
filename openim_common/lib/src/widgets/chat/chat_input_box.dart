@@ -1,7 +1,5 @@
 // ignore_for_file: deprecated_member_use, unused_field, library_private_types_in_public_api
 
-import 'dart:io';
-
 import 'package:chat_bottom_container/panel_container.dart';
 import 'package:chat_bottom_container/typedef.dart';
 import 'package:flutter/material.dart';
@@ -103,6 +101,9 @@ class _ChatInputBoxState extends State<ChatInputBox>
 
   final panelController = ChatBottomPanelContainerController<PanelType>();
   PanelType currentPanelType = PanelType.none;
+  
+  // GlobalKey for More button to get its position
+  final GlobalKey _moreButtonKey = GlobalKey();
 
   @override
   void initState() {
@@ -261,6 +262,39 @@ class _ChatInputBoxState extends State<ChatInputBox>
     );
   }
 
+  // Claymorphism more (options) button for suffix
+  Widget _buildMoreButton() {
+    return GestureDetector(
+      onTap: _showOptionsMenu,
+      child: Container(
+        key: _moreButtonKey,
+        width: 30.w,
+        height: 30.h,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF9FAFB),
+          borderRadius: BorderRadius.circular(8.r),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF9CA3AF).withOpacity(0.06),
+              offset: const Offset(0, 2),
+              blurRadius: 6,
+            ),
+          ],
+          border: Border.all(
+            color: const Color(0xFFF3F4F6),
+            width: 1,
+          ),
+        ),
+        child: HugeIcon(
+          icon: HugeIcons.strokeRoundedMore,
+          size: 25.w,
+          color: const Color(0xFF6B7280),
+        ),
+      ),
+    );
+  }
+
   // Arrow toggle button for expanding/collapsing action buttons
   Widget _buildArrowToggleButton() {
     return GestureDetector(
@@ -323,12 +357,12 @@ class _ChatInputBoxState extends State<ChatInputBox>
             // Arrow toggle button (visible when collapsed or has text)
             if (!_actionButtonsExpanded || _sendButtonVisible)
               _buildArrowToggleButton(),
-            // Animated container for the 3 action buttons + options
+            // Animated container for the action buttons (voice only)
             ClipRect(
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOutCubic,
-                width: _actionButtonsExpanded ? (30.w * 4 + 8.w * 3) : 0,
+                width: _actionButtonsExpanded ? (30.w) : 0,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   physics: const NeverScrollableScrollPhysics(),
@@ -342,28 +376,6 @@ class _ChatInputBoxState extends State<ChatInputBox>
                         _buildClaymorphismButton(
                           icon: HugeIcons.strokeRoundedMic01,
                           onTap: onTapSpeak,
-                        ),
-                        6.horizontalSpace,
-                        // Gallery button
-                        _buildClaymorphismButton(
-                          icon: HugeIcons.strokeRoundedImage02,
-                          onTap: () => Permissions.photos(widget.onTapAlbum),
-                        ),
-                        6.horizontalSpace,
-                        // Camera button
-                        _buildClaymorphismButton(
-                          icon: HugeIcons.strokeRoundedCamera01,
-                          onTap: () => Platform.isIOS
-                              ? Permissions.cameraAndMicrophone(
-                                  widget.onTapCamera)
-                              : Permissions.cameraAndMicrophoneAndPhotos(
-                                  widget.onTapCamera),
-                        ),
-                        6.horizontalSpace,
-                        // Options button (more)
-                        _buildClaymorphismButton(
-                          icon: HugeIcons.strokeRoundedMore,
-                          onTap: _showOptionsMenu,
                         ),
                       ],
                     ),
@@ -409,7 +421,10 @@ class _ChatInputBoxState extends State<ChatInputBox>
                           ),
                           child: Row(
                             children: [
-                              _buildActionButtons(),
+                              // _buildActionButtons(),
+                              // 8.horizontalSpace,
+                              _buildMoreButton(),
+                              8.horizontalSpace,
                               Expanded(
                                 child: Stack(
                                   children: [
@@ -520,22 +535,172 @@ class _ChatInputBoxState extends State<ChatInputBox>
   void _showOptionsMenu() {
     if (!widget.enabled) return;
 
-    // Unfocus text field and show toolbox menu with voice, emoji, etc.
+    // Unfocus text field completely
     if (widget.focusNode.hasFocus) {
       widget.focusNode.unfocus();
     }
+    
+    // Dismiss keyboard and wait for it to close completely
+    FocusScope.of(context).unfocus();
 
-    setState(() {
-      _toolsVisible = true;
-      _emojiVisible = false;
-      _leftKeyboardButton = false;
-      _rightKeyboardButton = false;
+    // Show the toolbox popup after keyboard is fully closed
+    _showToolboxPopup();
+  }
+
+  void _showToolboxPopup() {
+    // Wait for keyboard to close completely before showing popup
+    Future.delayed(const Duration(milliseconds: 300), () {
+      // Get the position of the More button
+      final renderBox = _moreButtonKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox == null) return;
+
+      final Offset offset = renderBox.localToGlobal(Offset.zero);
+
+      // Extract callbacks from the widget.toolbox if it's ChatToolBox
+      final albumCallback = (widget.toolbox as ChatToolBox?)?.onTapAlbum;
+      final cameraCallback = (widget.toolbox as ChatToolBox?)?.onTapCamera;
+      final fileCallback = (widget.toolbox as ChatToolBox?)?.onTapFile;
+      final cardCallback = (widget.toolbox as ChatToolBox?)?.onTapCard;
+      final callCallback = (widget.toolbox as ChatToolBox?)?.onTapCall;
+
+      final items = [
+        {
+          'label': StrRes.voice,
+          'icon': Icons.mic_outlined,
+          'onTap': onTapSpeak,
+        },
+        {
+          'label': StrRes.toolboxAlbum,
+          'icon': Icons.photo_library_outlined,
+          'onTap': () => Permissions.photos(albumCallback),
+        },
+        {
+          'label': StrRes.toolboxCamera,
+          'icon': Icons.camera_alt_outlined,
+          'onTap': () => Permissions.cameraAndMicrophoneAndPhotos(cameraCallback),
+        },
+        {
+          'label': StrRes.toolboxCard,
+          'icon': Icons.person_outline,
+          'onTap': cardCallback,
+        },
+        {
+          'label': StrRes.toolboxFile,
+          'icon': Icons.insert_drive_file_outlined,
+          'onTap': () => Permissions.storage(fileCallback),
+        },
+        if (callCallback != null)
+          {
+            'label': StrRes.toolboxCall,
+            'icon': Icons.call_outlined,
+            'onTap': callCallback,
+          },
+      ];
+
+      if (!mounted) return; // Check if widget is still mounted
+      
+      showDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.3),
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return Stack(
+            children: [
+              // Popup menu positioned relative to button
+              Positioned(
+                left: offset.dx - 20.w,
+                top: offset.dy - 50.h - (items.length * 56.h),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    width: 200.w,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF9CA3AF).withOpacity(0.2),
+                          offset: const Offset(0, 8),
+                          blurRadius: 16,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.r),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(items.length, (index) {
+                            final item = items[index];
+                            final isLast = index == items.length - 1;
+                            return InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                                Future.delayed(const Duration(milliseconds: 100), () {
+                                  final callback = item['onTap'] as Function?;
+                                  callback?.call();
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: !isLast
+                                      ? Border(
+                                          bottom: BorderSide(
+                                            color: const Color(0xFFF3F4F6),
+                                            width: 1,
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w,
+                                  vertical: 10.h,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 32.w,
+                                      height: 32.h,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF4F42FF).withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(8.r),
+                                      ),
+                                      child: Icon(
+                                        item['icon'] as IconData,
+                                        size: 16.w,
+                                        color: const Color(0xFF4F42FF),
+                                      ),
+                                    ),
+                                    8.horizontalSpace,
+                                    Expanded(
+                                      child: Text(
+                                        item['label'] as String,
+                                        style: TextStyle(
+                                          fontFamily: 'FilsonPro',
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: const Color(0xFF374151),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
     });
-
-    panelController.updatePanelType(
-      ChatBottomPanelType.other,
-      data: PanelType.tool,
-    );
   }
 
   Widget _buildOptionsToolbox() {
@@ -589,6 +754,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
           enabled: widget.enabled,
           hintText: widget.hintText,
           textAlign: widget.enabled ? TextAlign.start : TextAlign.center,
+        
         ),
       );
 

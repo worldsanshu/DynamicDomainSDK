@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:openim_common/src/widgets/chat/chat_quote_view.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:sprintf/sprintf.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 double maxWidth = 247.w;
@@ -477,7 +478,7 @@ class _ChatItemViewState extends State<ChatItemView> {
       showLeftNickname: widget.showLeftNickname,
       showRightNickname: widget.showRightNickname,
       timelineStr: widget.timelineStr,
-      timeStr: null, // hide time beside name for group-left messages
+      timeStr: null, // hide time beside name
       hasRead: _message.isRead!,
       isSending: _message.isVideoType
           ? false
@@ -500,18 +501,10 @@ class _ChatItemViewState extends State<ChatItemView> {
       onTapLeftAvatar: widget.onTapLeftAvatar,
       onTapRightAvatar: widget.onTapRightAvatar,
       quoteView: _quoteMsgView,
-      readStatusView: _readStatusView,
+      readStatusView: null, // Status is now shown in bottomInfoView
       voiceReadStatusView: _voiceReadStatusView,
       shouldShowNickname: _shouldShowLeftNickname(),
-      bottomInfoView: _showBottomTime
-          ? Text(
-              DateUtil.formatDate(
-                DateTime.fromMillisecondsSinceEpoch(_message.sendTime!),
-                format: 'yyyy/MM/dd HH:mm:ss',
-              ),
-              style: Styles.ts_8E9AB0_12sp,
-            )
-          : null,
+      bottomInfoView: _buildBottomInfoView(),
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
@@ -539,12 +532,46 @@ class _ChatItemViewState extends State<ChatItemView> {
         senderNickname: senderNickname);
   }
 
-  Widget? get _readStatusView => (_isISend &&
-          _message.status == MessageStatus.succeeded &&
-          !_message.isRead!)
-      ? ChatReadTagView(
-          message: _message, onTap: widget.onViewMessageReadStatus)
-      : null;
+  String? get _statusString {
+    if (!_isISend || _message.status != MessageStatus.succeeded) {
+      return null;
+    }
+    // Chỉ hiển thị 'Seen' nếu đã đọc, còn lại là 'Sent' cho cả cá nhân và nhóm
+    if (_message.isSingleChat) {
+      return _message.isRead == true ? StrRes.hasRead : StrRes.unread;
+    } else {
+      final unreadCount = _message.attachedInfoElem?.groupHasReadInfo?.unreadCount;
+      if (unreadCount == null) return null;
+      return unreadCount == 0 ? StrRes.hasRead : StrRes.unread;
+    }
+  }
+
+  Widget? _buildBottomInfoView() {
+    // Show time if tapped
+    if (_showBottomTime) {
+      return Text(
+        DateUtil.formatDate(
+          DateTime.fromMillisecondsSinceEpoch(_message.sendTime!),
+          format: 'yyyy/MM/dd HH:mm:ss',
+        ),
+        style: Styles.ts_8E9AB0_12sp,
+      );
+    }
+    
+    // For sent messages, show status (always visible when not showing time)
+    if (_isISend && _message.status == MessageStatus.succeeded) {
+      final statusText = _statusString;
+      if (statusText != null) {
+        // Make status text tappable to view read details (for group messages)
+        return GestureDetector(
+          onTap: () => widget.onViewMessageReadStatus?.call(),
+          child: Text(statusText, style: Styles.ts_0089FF_12sp),
+        );
+      }
+    }
+    
+    return null;
+  }
 
   Widget? get _voiceReadStatusView => _message.isVoiceType && !_message.isRead!
       ? const ChatVoiceReadStatusView()

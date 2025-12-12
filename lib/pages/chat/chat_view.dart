@@ -46,28 +46,7 @@ class ChatPage extends StatelessWidget {
         userRemarkMap: logic.imLogic.userRemarkMap,
         quoteMsgSenderNickname: logic.getQuoteMsgSenderNickname(message),
         allAtMap: logic.getAtMapping(message),
-        patterns: <MatchPattern>[
-          MatchPattern(
-            type: PatternType.at,
-            onTap: logic.clickLinkText,
-          ),
-          MatchPattern(
-            type: PatternType.email,
-            onTap: logic.clickLinkText,
-          ),
-          MatchPattern(
-            type: PatternType.url,
-            onTap: logic.clickLinkText,
-          ),
-          MatchPattern(
-            type: PatternType.mobile,
-            onTap: logic.clickLinkText,
-          ),
-          MatchPattern(
-            type: PatternType.tel,
-            onTap: logic.clickLinkText,
-          ),
-        ],
+        patterns: _buildLinkPatterns(message),
         onTapAddEmojiMenu: () => logic.addEmoji(message),
         onTapCopyMenu: () => logic.copy(message),
         onTapDelMenu: () => logic.deleteMsg(message),
@@ -132,6 +111,57 @@ class ChatPage extends StatelessWidget {
         nickname: userProfile.name,
         faceURL: userProfile.faceURL);
     logic.viewUserInfo(userInfo);
+  }
+
+  /// Build link patterns with appropriate styling based on message direction
+  List<MatchPattern> _buildLinkPatterns(Message message) {
+    // Check if the current user sent this message
+    final isSentByMe = message.sendID == OpenIM.iMManager.userInfo.userID;
+    // Use white color for sent messages, purple for received messages
+    final linkColor = isSentByMe ? Colors.white : const Color(0xFF4F42FF);
+
+    return <MatchPattern>[
+      MatchPattern(
+        type: PatternType.at,
+        onTap: logic.clickLinkText,
+      ),
+      MatchPattern(
+        type: PatternType.email,
+        style: TextStyle(
+          color: linkColor,
+          decoration: TextDecoration.underline,
+          decorationColor: linkColor,
+        ),
+        onTap: logic.clickLinkText,
+      ),
+      MatchPattern(
+        type: PatternType.url,
+        style: TextStyle(
+          color: linkColor,
+          decoration: TextDecoration.underline,
+          decorationColor: linkColor,
+        ),
+        onTap: logic.clickLinkText,
+      ),
+      MatchPattern(
+        type: PatternType.mobile,
+        style: TextStyle(
+          color: linkColor,
+          decoration: TextDecoration.underline,
+          decorationColor: linkColor,
+        ),
+        onTap: logic.clickLinkText,
+      ),
+      MatchPattern(
+        type: PatternType.tel,
+        style: TextStyle(
+          color: linkColor,
+          decoration: TextDecoration.underline,
+          decorationColor: linkColor,
+        ),
+        onTap: logic.clickLinkText,
+      ),
+    ];
   }
 
   Widget? _buildMediaItem(BuildContext context, Message message) {
