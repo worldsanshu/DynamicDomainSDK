@@ -492,7 +492,9 @@ class SelectContactsLogic
                 .map((e) => UserInfo.fromJson(e.toJson()))
                 .toList());
       } else if (action == SelAction.crateGroup) {
-        if (checkedList.values.length <= 1) {
+        // Include defaultCheckedIDList in the total count
+        final totalSelected = defaultCheckedIDList.length + checkedList.length;
+        if (totalSelected < 3) {
           IMViews.showToast(StrRes.selectContactsMinimum.trArgs(["2"]));
           return;
         }
@@ -516,12 +518,12 @@ class SelectContactsLogic
     }
   }
 
-  bool get enabledConfirmButton =>
-      (checkedList.isNotEmpty &&
-          checkedList.length <= 999 &&
-          action != SelAction.crateGroup) ||
-      action == SelAction.remindWhoToWatch ||
-      (action == SelAction.crateGroup && checkedList.length >= 2);
+  bool get enabledConfirmButton {
+    // Ensure the confirm button is enabled when at least 1 additional user is selected,
+    // considering the private chat user and the current user.
+    final totalSelected = defaultCheckedIDList.length + checkedList.length;
+    return totalSelected >= 3;
+  }
 
   Widget get checkedConfirmView =>
       isMultiModel ? CheckedConfirmView() : const SizedBox();

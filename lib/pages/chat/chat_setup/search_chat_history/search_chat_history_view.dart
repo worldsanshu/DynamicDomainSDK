@@ -40,6 +40,8 @@ class SearchChatHistoryPage extends StatelessWidget {
     return WechatStyleSearchBox(
       controller: logic.searchCtrl,
       focusNode: logic.focusNode,
+      enabled: true,
+      hintText: StrRes.search,
       onSubmitted: (_) => logic.search(),
       onChanged: (v) {
         logic.onChanged(v);
