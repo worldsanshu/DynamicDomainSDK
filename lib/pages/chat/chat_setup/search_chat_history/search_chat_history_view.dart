@@ -53,21 +53,41 @@ class SearchChatHistoryPage extends StatelessWidget {
       suffix: GestureDetector(
         onTap: () => datePicker(context),
         behavior: HitTestBehavior.translucent,
-        child: Container(
-          width: 28.w,
-          height: 28.h,
-          margin: EdgeInsets.only(left: 8.w),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.circular(10.r),
-          ),
-          child: Center(
-            child: HugeIcon(
-              icon: HugeIcons.strokeRoundedCalendar03,
-              size: 18.w,
-              color: const Color(0xFF6B7280),
-            ),
-          ),
+        child: Obx(
+          () => logic.dateTime.value.year > 1
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  margin: EdgeInsets.only(left: 8.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7F8FA),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${logic.dateTime.value.year}-${logic.dateTime.value.month.toString().padLeft(2, '0')}-${logic.dateTime.value.day.toString().padLeft(2, '0')}',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: const Color(0xFF6B7280),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(
+                  width: 28.w,
+                  height: 28.h,
+                  margin: EdgeInsets.only(left: 8.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7F8FA),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Center(
+                    child: HugeIcon(
+                      icon: HugeIcons.strokeRoundedCalendar03,
+                      size: 18.w,
+                      color: const Color(0xFF6B7280),
+                    ),
+                  ),
+                ),
         ),
       ),
     );
@@ -98,124 +118,123 @@ class SearchChatHistoryPage extends StatelessWidget {
 
   Widget _buildItemView(Message message, BuildContext ctx) {
     return AnimationConfiguration.staggeredList(
-      position: logic.messageList.indexOf(message),
-      duration: const Duration(milliseconds: 400),
-      child: SlideAnimation(
-        curve: Curves.easeOutCubic,
-        verticalOffset: 40.0,
-        child: FadeInAnimation(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFFFFF),
-              borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                  offset: const Offset(0, 2),
-                  blurRadius: 6,
-                ),
-              ],
-              border: Border.all(
-                color: const Color(0xFFF3F4F6),
-                width: 1,
-              ),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(16.r),
-              child: InkWell(
-                onTap: () => logic.previewMessageHistory(message),
+        position: logic.messageList.indexOf(message),
+        duration: const Duration(milliseconds: 400),
+        child: SlideAnimation(
+          curve: Curves.easeOutCubic,
+          verticalOffset: 40.0,
+          child: FadeInAnimation(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFFFFF),
                 borderRadius: BorderRadius.circular(16.r),
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 48.w,
-                        height: 48.h,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: const Color(0xFFE5E7EB),
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF9CA3AF).withOpacity(0.1),
-                              offset: const Offset(0, 0),
-                              blurRadius: 8,
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF9CA3AF).withOpacity(0.06),
+                    offset: const Offset(0, 2),
+                    blurRadius: 6,
+                  ),
+                ],
+                border: Border.all(
+                  color: const Color(0xFFF3F4F6),
+                  width: 1,
+                ),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(16.r),
+                child: InkWell(
+                  onTap: () => logic.previewMessageHistory(message),
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 48.w,
+                          height: 48.h,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: const Color(0xFFE5E7EB),
+                              width: 1.5,
                             ),
-                          ],
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF9CA3AF).withOpacity(0.1),
+                                offset: const Offset(0, 0),
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+                          child: AvatarView(
+                            url: message.senderFaceUrl,
+                            text: message.senderNickname,
+                            isCircle: true,
+                          ),
                         ),
-                        child: AvatarView(
-                          url: message.senderFaceUrl,
-                          text: message.senderNickname,
-                          isCircle: true,
-                        ),
-                      ),
-                      16.horizontalSpace,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    message.senderNickname ?? '',
+                        16.horizontalSpace,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      message.senderNickname ?? '',
+                                      style: TextStyle(
+                                        fontFamily: 'FilsonPro',
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xFF374151),
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Text(
+                                    IMUtils.getChatTimeline(
+                                        message.sendTime ?? 0),
                                     style: TextStyle(
                                       fontFamily: 'FilsonPro',
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: const Color(0xFF374151),
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: const Color(0xFF6B7280),
                                     ),
-                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
-                                Text(
-                                  IMUtils.getChatTimeline(
-                                      message.sendTime ?? 0),
-                                  style: TextStyle(
-                                    fontFamily: 'FilsonPro',
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: const Color(0xFF6B7280),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            8.verticalSpace,
-                            SearchKeywordText(
-                              text: logic.calContent(message),
-                              keyText: RegExp.escape(logic.searchKey.value),
-                              style: TextStyle(
-                                fontFamily: 'FilsonPro',
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w400,
-                                color: const Color(0xFF6B7280),
+                                ],
                               ),
-                              keyStyle: TextStyle(
-                                fontFamily: 'FilsonPro',
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF4F42FF),
+                              8.verticalSpace,
+                              SearchKeywordText(
+                                text: logic.calContent(message),
+                                keyText: RegExp.escape(logic.searchKey.value),
+                                style: TextStyle(
+                                  fontFamily: 'FilsonPro',
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: const Color(0xFF6B7280),
+                                ),
+                                keyStyle: TextStyle(
+                                  fontFamily: 'FilsonPro',
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF4F42FF),
+                                ),
+                                maxLines: 2,
                               ),
-                              maxLines: 2,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _resultView(BuildContext ctx) => Container(
@@ -380,92 +399,91 @@ class SearchChatHistoryPage extends StatelessWidget {
     required int index,
   }) {
     return AnimationConfiguration.staggeredList(
-      position: index,
-      duration: const Duration(milliseconds: 400),
-      child: SlideAnimation(
-        curve: Curves.easeOutCubic,
-        verticalOffset: 40.0,
-        child: FadeInAnimation(
-          child: GestureDetector(
-            onTap: onTap,
-            child: Column(
-              children: [
-                Container(
-                  width: 56.w,
-                  height: 56.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                        offset: const Offset(0, 3),
-                        blurRadius: 12,
-                        spreadRadius: 0,
-                      ),
-                      BoxShadow(
-                        color: Colors.white.withOpacity(0.95),
-                        offset: const Offset(0, -1),
-                        blurRadius: 6,
-                        spreadRadius: 0,
-                      ),
-                    ],
-                    border: Border.all(
-                      color: const Color(0xFFF3F4F6),
-                      width: 0.5,
-                    ),
-                  ),
-                  child: Container(
-                    margin: EdgeInsets.all(2.w),
+        position: index,
+        duration: const Duration(milliseconds: 400),
+        child: SlideAnimation(
+          curve: Curves.easeOutCubic,
+          verticalOffset: 40.0,
+          child: FadeInAnimation(
+            child: GestureDetector(
+              onTap: onTap,
+              child: Column(
+                children: [
+                  Container(
+                    width: 56.w,
+                    height: 56.h,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          AppColor.iconColor.withOpacity(0.12),
-                          AppColor.iconColor.withOpacity(0.05),
-                        ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF9CA3AF).withOpacity(0.08),
+                          offset: const Offset(0, 3),
+                          blurRadius: 12,
+                          spreadRadius: 0,
+                        ),
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.95),
+                          offset: const Offset(0, -1),
+                          blurRadius: 6,
+                          spreadRadius: 0,
+                        ),
+                      ],
+                      border: Border.all(
+                        color: const Color(0xFFF3F4F6),
+                        width: 0.5,
                       ),
-                      borderRadius: BorderRadius.circular(14.r),
                     ),
-                    child: Center(
-                      child: HugeIcon(
-                        icon: hugeIcon,
-                        size: 24.w,
-                        color: AppColor.iconColor,
+                    child: Container(
+                      margin: EdgeInsets.all(2.w),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColor.iconColor.withOpacity(0.12),
+                            AppColor.iconColor.withOpacity(0.05),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      child: Center(
+                        child: HugeIcon(
+                          icon: hugeIcon,
+                          size: 24.w,
+                          color: AppColor.iconColor,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                8.verticalSpace,
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF374151),
-                    shadows: [
-                      Shadow(
-                        offset: const Offset(0, 0.5),
-                        blurRadius: 1,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
-                    ],
+                  8.verticalSpace,
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF374151),
+                      shadows: [
+                        Shadow(
+                          offset: const Offset(0, 0.5),
+                          blurRadius: 1,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Future<void> datePicker(BuildContext ctx) async {
     logic.clearDateTime();
-    final DateTime? picked = await showModalBottomSheet<DateTime>(
+    await showModalBottomSheet<DateTime>(
       context: ctx,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -477,17 +495,15 @@ class SearchChatHistoryPage extends StatelessWidget {
           maxDate: DateTime.now(),
           icon: CupertinoIcons.calendar,
           onConfirm: (DateTime date) {
-            Get.back(result: date);
+            if (date != logic.dateTime.value) {
+              logic.updateSearchTime(date);
+              logic.searchByTime();
+            }
           },
           onCancel: () => Get.back(),
         );
       },
     );
-
-    if (picked != null && picked != logic.dateTime.value) {
-      logic.updateSearchTime(picked);
-      logic.searchByTime();
-    }
   }
 
   Widget get _emptyListView => AnimationConfiguration.staggeredList(
