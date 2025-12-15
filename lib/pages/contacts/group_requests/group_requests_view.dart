@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:openim/widgets/common_widgets.dart';
+import 'package:openim/widgets/empty_view.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -79,44 +81,9 @@ class GroupRequestsPage extends StatelessWidget {
               final filteredList = _getFilteredList();
 
               if (filteredList.isEmpty) {
-                return Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 120.w,
-                          height: 120.h,
-                          decoration: BoxDecoration(
-                            color: primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20.r),
-                            border: Border.all(
-                              color: primaryColor.withOpacity(0.2),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Ionicons.people_outline,
-                              size: 60.w,
-                              color: primaryColor,
-                            ),
-                          ),
-                        ),
-                        24.verticalSpace,
-                        Text(
-                          StrRes.noGroupRequests,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF6B7280),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                return EmptyView(
+                  message: StrRes.noGroupRequests,
+                  icon: CupertinoIcons.group,
                 );
               }
 

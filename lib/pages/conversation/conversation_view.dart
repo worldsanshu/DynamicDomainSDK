@@ -10,6 +10,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:openim/widgets/empty_view.dart';
 
 import 'package:openim/core/controller/im_controller.dart';
 import 'package:openim/widgets/custom_buttom.dart';
@@ -221,16 +222,21 @@ class _ConversationPageState extends State<ConversationPage> {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.zero,
-                      child: ListView.builder(
-                        itemExtent: 86.0,
-                        padding: EdgeInsets.zero,
-                        controller: logic.scrollController,
-                        itemCount: filteredList.length,
-                        itemBuilder: (context, index) {
-                          return _buildConversationItemView(
-                              filteredList[index]);
-                        },
-                      ),
+                      child: filteredList.isEmpty
+                          ? EmptyView(
+                              message: StrRes.noConversationsYet,
+                              icon: Ionicons.chatbubble_ellipses_outline,
+                            )
+                          : ListView.builder(
+                              itemExtent: 86.0,
+                              padding: EdgeInsets.zero,
+                              controller: logic.scrollController,
+                              itemCount: filteredList.length,
+                              itemBuilder: (context, index) {
+                                return _buildConversationItemView(
+                                    filteredList[index]);
+                              },
+                            ),
                     ),
                   ),
                 ],

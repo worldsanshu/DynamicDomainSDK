@@ -8,6 +8,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
 import 'package:hugeicons/hugeicons.dart';
+import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/friend_item_view.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim/pages/auth/widget/app_text_form_field.dart';
@@ -129,8 +130,8 @@ class _ContactsPageState extends State<ContactsPage>
                                 child: Center(
                                   child: Text(
                                     logic.friendApplicationCount > 99
-                                        ? '99+'
-                                        : logic.friendApplicationCount
+                                        ? StrRes.moreThan99
+                                          : logic.friendApplicationCount
                                             .toString(),
                                     style: TextStyle(
                                       fontFamily: 'FilsonPro',
@@ -163,8 +164,8 @@ class _ContactsPageState extends State<ContactsPage>
                                 child: Center(
                                   child: Text(
                                     logic.groupApplicationCount > 99
-                                        ? '99+'
-                                        : logic.groupApplicationCount
+                                        ? StrRes.moreThan99
+                                          : logic.groupApplicationCount
                                             .toString(),
                                     style: TextStyle(
                                       fontFamily: 'FilsonPro',
@@ -243,7 +244,7 @@ class _ContactsPageState extends State<ContactsPage>
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
-                     color: const Color(0xFFFFFFFF),
+                      color: const Color(0xFFFFFFFF),
                       child: Center(
                         child: Icon(
                           CupertinoIcons.search,
@@ -318,32 +319,12 @@ class _ContactsPageState extends State<ContactsPage>
           ),
           filteredList.isEmpty
               ? Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          CupertinoIcons.person_2,
-                          size: 48.w,
-                          color: const Color(0xFF9CA3AF),
-                        ),
-                        12.verticalSpace,
-                        Text(
-                          searchQuery.isEmpty
-                              ? StrRes.noFriendsYet
-                              : 'No friends found',
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF9CA3AF),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
+                  child: EmptyView(
+                  message: searchQuery.isEmpty
+                      ? StrRes.noFriendsYet
+                      : StrRes.noFriendsFound,
+                  icon: CupertinoIcons.person_2,
+                ))
               : Expanded(
                   child: WrapAzListView<FriendListItem>(
                     data: filteredList,
@@ -393,27 +374,9 @@ class _ContactsPageState extends State<ContactsPage>
             final joinedGroups = groupListLogic.joinedList;
 
             if (myGroups.isEmpty && joinedGroups.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      CupertinoIcons.group,
-                      size: 48.w,
-                      color: const Color(0xFF9CA3AF),
-                    ),
-                    12.verticalSpace,
-                    Text(
-                      StrRes.noGroupChatsYet,
-                      style: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF9CA3AF),
-                      ),
-                    ),
-                  ],
-                ),
+              return EmptyView(
+                icon: CupertinoIcons.group,
+                message: StrRes.noGroupChatsYet,
               );
             }
 
@@ -445,31 +408,16 @@ class _ContactsPageState extends State<ContactsPage>
             }).toList();
 
             if (filteredMyGroups.isEmpty && filteredJoinedGroups.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      CupertinoIcons.group,
-                      size: 48.w,
-                      color: const Color(0xFF9CA3AF),
-                    ),
-                    12.verticalSpace,
-                    Text(
-                      _selectedGroupFilter == GroupFilterType.myGroup
-                          ? StrRes.noCreatedGroupsYet
-                          : _selectedGroupFilter == GroupFilterType.joinedGroup
-                              ? StrRes.noJoinedGroupsYet
-                              : 'No groups found',
-                      style: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF9CA3AF),
-                      ),
-                    ),
-                  ],
-                ),
+              return EmptyView(
+                icon: CupertinoIcons.group,
+                message: searchQuery.isEmpty
+                    ? (_selectedGroupFilter == GroupFilterType.myGroup
+                        ? StrRes.noCreatedGroupsYet
+                        : _selectedGroupFilter ==
+                                GroupFilterType.joinedGroup
+                            ? StrRes.noJoinedGroupsYet
+                            : StrRes.noGroupChatsYet)
+                    : 'No groups found',
               );
             }
 
@@ -726,7 +674,7 @@ class _ContactsPageState extends State<ContactsPage>
                       ),
                       child: Center(
                         child: Text(
-                          count > 99 ? '99+' : count.toString(),
+                          count > 99 ? StrRes.moreThan99 : count.toString(),
                           style: TextStyle(
                             fontFamily: 'FilsonPro',
                             fontSize: 12.sp,

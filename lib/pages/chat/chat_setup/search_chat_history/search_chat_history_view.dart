@@ -9,8 +9,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
+import 'package:openim/widgets/empty_view.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:pull_to_refresh_new/pull_to_refresh.dart';
 import 'package:search_keyword_text/search_keyword_text.dart';
@@ -506,74 +508,14 @@ class SearchChatHistoryPage extends StatelessWidget {
     );
   }
 
-  Widget get _emptyListView => AnimationConfiguration.staggeredList(
-        position: 0,
-        duration: const Duration(milliseconds: 400),
-        child: SlideAnimation(
-          curve: Curves.easeOutCubic,
-          verticalOffset: 40.0,
-          child: FadeInAnimation(
-            child: Container(
-              width: 1.sw,
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  40.verticalSpace,
-                  Container(
-                    padding: EdgeInsets.all(20.w),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.circular(16.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                          offset: const Offset(0, 2),
-                          blurRadius: 6,
-                        ),
-                      ],
-                      border: Border.all(
-                        color: const Color(0xFFF3F4F6),
-                        width: 1,
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        HugeIcon(
-                          icon: HugeIcons.strokeRoundedSearch01,
-                          size: 48.w,
-                          color: const Color(0xFF6B7280),
-                        ),
-                        16.verticalSpace,
-                        logic.searchCtrl.text.isEmpty
-                            ? Text(
-                                StrRes.noMessagesOnThatDay,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'FilsonPro',
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF6B7280),
-                                ),
-                              )
-                            : Text(
-                                sprintf(StrRes.notFoundChatHistory,
-                                    [logic.searchKey.value]),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'FilsonPro',
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF6B7280),
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
+  Widget get _emptyListView {
+    final message = logic.searchCtrl.text.isEmpty
+        ? StrRes.noMessagesOnThatDay
+        : sprintf(StrRes.notFoundChatHistory, [logic.searchKey.value]);
+
+    return EmptyView(
+      message: message,
+      icon: Ionicons.search_outline,
+    );
+  }
 }

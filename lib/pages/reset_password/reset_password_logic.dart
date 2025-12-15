@@ -81,11 +81,6 @@ class ResetPasswordLogic extends GetxController {
     // Keep validators in sync: whenever either password field changes,
     // re-run form validation so the confirm password field reflects
     // the latest value even if it was edited first.
-    try {
-      if (formKey.currentState != null) {
-        formKey.currentState!.validate();
-      }
-    } catch (_) {}
   }
 
   Future<bool> onSendVerificationCode() async {

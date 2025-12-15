@@ -5,8 +5,10 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim/widgets/custom_buttom.dart';
+import 'package:openim/widgets/empty_view.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -52,12 +54,21 @@ class SelectContactsPage extends StatelessWidget {
             if (logic.isShowFriendListOnly) {
               if (hasSearchText) {
                 if (displayResults!.isEmpty) {
-                  return _buildNoDataView();
+                  return EmptyView(
+                    message: StrRes.noFriendsFound,
+                    icon: Ionicons.people_outline,
+                  );
                 }
                 return _buildSearchResultsList(displayResults);
               }
               // Show all friends
-                  return WrapAzListView<ISUserInfo>(
+              if (logic.friendList.isEmpty) {
+                return EmptyView(
+                  message: StrRes.noFriendsYet,
+                  icon: Ionicons.people_outline,
+                );
+              }
+              return WrapAzListView<ISUserInfo>(
                   data: logic.friendList,
                   itemCount: logic.friendList.length,
                   itemBuilder: (_, friend, index) => Obx(() => 
@@ -82,7 +93,10 @@ class SelectContactsPage extends StatelessWidget {
             // Normal view with categories and conversations
             if (hasSearchText) {
               if (displayResults!.isEmpty) {
-                return _buildNoDataView();
+                return EmptyView(
+                  message: StrRes.noData,
+                  icon: Ionicons.search_outline,
+                );
               }
               return _buildSearchResultsList(displayResults);
             }
@@ -135,20 +149,6 @@ class SelectContactsPage extends StatelessWidget {
 
         logic.checkedConfirmView,
       ],
-    );
-  }
-
-  Widget _buildNoDataView() {
-    return Center(
-      child: Text(
-        StrRes.noData,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w400,
-          color: const Color(0xFF9CA3AF),
-        ),
-      ),
     );
   }
 

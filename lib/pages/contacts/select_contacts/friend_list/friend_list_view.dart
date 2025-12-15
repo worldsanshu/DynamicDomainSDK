@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/friend_item_view.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -92,16 +94,9 @@ class SelectContactsFromFriendsPage extends StatelessWidget {
                     : logic.searchResults;
 
                 if (displayList.isEmpty) {
-                  return Center(
-                    child: Text(
-                      StrRes.noData,
-                      style: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF9CA3AF),
-                      ),
-                    ),
+                  return EmptyView(
+                    message: StrRes.noFriendsFound,
+                    icon: Ionicons.people_outline,
                   );
                 }
 

@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,8 @@ import 'package:search_keyword_text/search_keyword_text.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:openim/widgets/empty_view.dart';
 
 import '../../widgets/file_download_progress.dart';
 import 'global_search_logic.dart';
@@ -133,10 +136,10 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
             Expanded(
               child: Obx(() {
                 if (!logic.hasSearched.value) {
-                  return _initialEmptyState;
+                  return _initialEmptyStateView;
                 }
                 if (logic.isSearchNotResult) {
-                  return _emptyListView;
+                  return _emptyListViewWidget;
                 }
                 return TabBarView(
                   controller: _tabController,
@@ -307,7 +310,9 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
 
   Widget _buildContactsListView() =>
       logic.searchKey.isNotEmpty && logic.contactsList.isEmpty
-          ? _emptyListView
+          ? EmptyView(
+              message: StrRes.noSearchResultsContacts,
+              icon: CupertinoIcons.person_crop_circle_badge_xmark)
           : Container(
               color: Colors.white,
               child: ListView.builder(
@@ -325,7 +330,9 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
 
   Widget _buildGroupListView() =>
       logic.searchKey.isNotEmpty && logic.groupList.isEmpty
-          ? _emptyListView
+          ? EmptyView(
+              message: StrRes.noSearchResultsGroup,
+              icon: CupertinoIcons.group)
           : Container(
               color: Colors.white,
               child: ListView.builder(
@@ -340,7 +347,9 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
 
   Widget _buildChatHistoryListView() => logic.searchKey.isNotEmpty &&
           logic.textSearchResultItems.isEmpty
-      ? _emptyListView
+      ? EmptyView(
+              message: StrRes.noSearchResultsMessages,
+              icon: CupertinoIcons.chat_bubble_text)
       : SmartRefresher(
           key: const ValueKey(0),
           controller: logic.textMessageRefreshCtrl,
@@ -381,7 +390,9 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
 
   Widget _buildFileListView() =>
       logic.searchKey.isNotEmpty && logic.fileMessageList.isEmpty
-          ? _emptyListView
+          ? EmptyView(
+              message: StrRes.noSearchResultsContacts,
+              icon: CupertinoIcons.folder_circle_fill)
           : SmartRefresher(
               key: const ValueKey(1),
               controller: logic.fileMessageRefreshCtrl,
@@ -744,110 +755,70 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
     );
   }
 
-  Widget get _emptyListView => Center(
-        child: Container(
-          width: double.infinity,
-          margin: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              40.verticalSpace,
-              Container(
-                padding: EdgeInsets.all(20.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFFFFF),
-                  borderRadius: BorderRadius.circular(16.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                      offset: const Offset(0, 2),
-                      blurRadius: 6,
-                    ),
-                  ],
-                  border: Border.all(
-                    color: const Color(0xFFF3F4F6),
-                    width: 1,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedSearch01,
-                      size: 48.w,
-                      color: const Color(0xFF6B7280),
-                    ),
-                    16.verticalSpace,
-                    Text(
-                      StrRes.searchNotFound,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF6B7280),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+  Widget get _emptyListViewWidget {
+    final idx = logic.index.value;
+    IconData icon = Ionicons.search_outline;
+    String message = StrRes.searchNotFound;
+
+    switch (idx) {
+      case 1:
+        icon = Ionicons.person_outline;
+        message = StrRes.noSearchResultsContacts;
+        break;
+      case 2:
+        icon = Ionicons.people_outline;
+        message = StrRes.noSearchResultsGroup;
+        break;
+      case 3:
+        icon = Ionicons.chatbubble_ellipses_outline;
+        message = StrRes.noSearchResultsMessages;
+        break;
+      case 4:
+        icon = Ionicons.folder_open_outline;
+        message = StrRes.noSearchResultsFiles;
+        break;
+      default:
+        icon = Ionicons.search_outline;
+        message = StrRes.searchNotFound;
+    }
+
+    return EmptyView(
+      message: message,
+      icon: icon,
+    );
+  }
 
   // Initial empty state - shown when user hasn't searched yet
-  Widget get _initialEmptyState => Center(
-        child: Container(
-          width: double.infinity,
-          margin: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              40.verticalSpace,
-              Container(
-                padding: EdgeInsets.all(32.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFFFFF),
-                  borderRadius: BorderRadius.circular(16.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                      offset: const Offset(0, 2),
-                      blurRadius: 6,
-                    ),
-                  ],
-                  border: Border.all(
-                    color: const Color(0xFFF3F4F6),
-                    width: 1,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    // Search icon
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedSearch01,
-                      size: 64.w,
-                      color: const Color(0xFF9CA3AF),
-                    ),
-                    24.verticalSpace,
-                    // Text message
-                    Text(
-                      StrRes.pleaseEnterToSearch,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF6B7280),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+  Widget get _initialEmptyStateView {
+    final idx = logic.index.value;
+    IconData icon = Ionicons.search_outline;
+    String message = StrRes.pleaseEnterToSearch;
+
+    switch (idx) {
+      case 1:
+        icon = Ionicons.person_outline;
+        message = StrRes.pleaseEnterToSearchContacts;
+        break;
+      case 2:
+        icon = Ionicons.people_outline;
+        message = StrRes.pleaseEnterToSearchGroup;
+        break;
+      case 3:
+        icon = Ionicons.chatbubble_ellipses_outline;
+        message = StrRes.pleaseEnterToSearchMessages;
+        break;
+      case 4:
+        icon = Ionicons.folder_open_outline;
+        message = StrRes.pleaseEnterToSearchFiles;
+        break;
+      default:
+        icon = Ionicons.search_outline;
+        message = StrRes.pleaseEnterToSearch;
+    }
+
+    return EmptyView(
+      message: message,
+      icon: icon,
+    );
+  }
 }

@@ -1181,13 +1181,13 @@ class GroupSetupLogic extends GetxController {
         );
         LoadingView.singleton.dismiss();
         if (isOwnerOrAdmin) {
-          IMViews.showToast(StrRes.addSuccessfully);
+          IMViews.showToast(StrRes.addSuccessfully,type:1);
         } else {
-          IMViews.showToast(StrRes.inviteSuccessfully);
+          IMViews.showToast(StrRes.inviteSuccessfully,type:1);
         }
       } catch (e) {
         LoadingView.singleton.dismiss();
-        IMViews.showToast(StrRes.inviteFailed);
+        IMViews.showToast(StrRes.inviteFailed,type:1);
       }
 
       getGroupMembers();

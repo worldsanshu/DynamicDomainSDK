@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -87,50 +88,10 @@ class FriendRequestsPage extends StatelessWidget {
               final filteredList = _getFilteredList();
               
               if (filteredList.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 120.w,
-                        height: 100.h,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF9FAFB),
-                          borderRadius: BorderRadius.circular(20.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF9CA3AF).withOpacity(0.07),
-                              offset: const Offset(0, 3),
-                              blurRadius: 8,
-                            ),
-                          ],
-                          border: Border.all(
-                            color: const Color(0xFFE5E7EB),
-                            width: 1,
-                          ),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Ionicons.people_outline,
-                            size: 60.w,
-                            color: const Color(0xFF9CA3AF),
-                          ),
-                        ),
-                      ),
-                      24.verticalSpace,
-                      Text(
-                        StrRes.noFriendRequests,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF6B7280),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
+                return EmptyView(
+                  message: StrRes.noFriendRequests,
+                  icon: Ionicons.people_outline,
+                );}
 
               return AnimationLimiter(
                 child: ListView.builder(

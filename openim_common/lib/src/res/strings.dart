@@ -554,6 +554,14 @@ class StrRes {
 
   static String get joinedGroup => 'joinedGroup'.tr;
 
+    static String get noFriendsFound => 'noFriendsFound'.tr;
+
+    static String get moreThan99 => 'moreThan99'.tr;
+
+    static String get searchGroupsHint => 'searchGroupsHint'.tr;
+
+    static String get noConversationsYet => 'noConversationsYet'.tr;
+
   static String get noCreatedGroupsYet => 'noCreatedGroupsYet'.tr;
 
   static String get noJoinedGroupsYet => 'noJoinedGroupsYet'.tr;
@@ -995,6 +1003,14 @@ class StrRes {
   static String get nPerson => 'nPerson'.tr;
 
   static String get searchNotFound => 'searchNotFound'.tr;
+    static String get noSearchResultsContacts => 'noSearchResultsContacts'.tr;
+    static String get noSearchResultsGroup => 'noSearchResultsGroup'.tr;
+    static String get noSearchResultsMessages => 'noSearchResultsMessages'.tr;
+    static String get noSearchResultsFiles => 'noSearchResultsFiles'.tr;
+    static String get pleaseEnterToSearchContacts => 'pleaseEnterToSearchContacts'.tr;
+    static String get pleaseEnterToSearchGroup => 'pleaseEnterToSearchGroup'.tr;
+    static String get pleaseEnterToSearchMessages => 'pleaseEnterToSearchMessages'.tr;
+    static String get pleaseEnterToSearchFiles => 'pleaseEnterToSearchFiles'.tr;
 
   static String get organizationStructure => 'organizationStructure'.tr;
 

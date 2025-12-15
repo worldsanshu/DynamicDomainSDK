@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim/routes/app_navigator.dart';
+import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 import '../../../widgets/custom_buttom.dart';
@@ -154,10 +155,20 @@ class AddContactsBySearchPage extends StatelessWidget {
                   _buildResultsSection(),
                 ],
                 if (isSearching && !hasSearchResults) ...[
-                  _buildNotFoundView(),
+                  EmptyView(
+                    message: logic.isSearchUser
+                        ? StrRes.noFoundUser
+                        : StrRes.noFoundGroup,
+                    icon: CupertinoIcons.search
+                  ),
                 ],
                 if (!isSearching) ...[
-                  _buildInitialView(),
+                  EmptyView(
+                    message: logic.isSearchUser
+                        ? StrRes.searchByPhoneAndUid
+                        : StrRes.searchIDAddGroup,
+                    icon: CupertinoIcons.search,
+                  ),
                 ],
                 24.verticalSpace,
               ],
@@ -166,64 +177,6 @@ class AddContactsBySearchPage extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Widget _buildInitialView() {
-    return Center(
-      child: Container(
-        width: double.infinity,
-        margin: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            40.verticalSpace,
-            Container(
-              padding: EdgeInsets.all(32.w),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFFFFF),
-                borderRadius: BorderRadius.circular(16.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF9CA3AF).withOpacity(0.06),
-                    offset: const Offset(0, 2),
-                    blurRadius: 6,
-                  ),
-                ],
-                border: Border.all(
-                  color: const Color(0xFFF3F4F6),
-                  width: 1,
-                ),
-              ),
-              child: Column(
-                children: [
-                  HugeIcon(
-                    icon: logic.isSearchUser
-                        ? HugeIcons.strokeRoundedUserAdd01
-                        : HugeIcons.strokeRoundedUserGroup,
-                    size: 64.w,
-                    color: const Color(0xFF9CA3AF),
-                  ),
-                  24.verticalSpace,
-                  Text(
-                    logic.isSearchUser
-                        ? StrRes.searchByPhoneAndUid
-                        : StrRes.searchIDAddGroup,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF6B7280),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildResultsSection() {
@@ -352,55 +305,6 @@ class AddContactsBySearchPage extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-
-  Widget _buildNotFoundView() {
-    return Align(
-      alignment: Alignment.center,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16.w),
-        padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 20.w),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF9FAFB),
-          borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(
-            color: const Color(0xFFE5E7EB),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 68.w,
-              height: 68.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFF6B7280).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: HugeIcon(
-                icon: logic.isSearchUser
-                    ? HugeIcons.strokeRoundedUserRemove01
-                    : HugeIcons.strokeRoundedUserGroup,
-                color: AppColor.iconColor,
-                size: 20.w,
-              ),
-            ),
-            16.verticalSpace,
-            Text(
-              logic.isSearchUser ? StrRes.noFoundUser : StrRes.noFoundGroup,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFF6B7280),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

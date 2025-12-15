@@ -1,9 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -24,7 +26,10 @@ class BlacklistPage extends StatelessWidget {
       subtitle: StrRes.blockedContacts,
       showBackButton: true,
       body: Obx(() =>
-          logic.blacklist.isEmpty ? _buildEmptyView() : _buildBlacklistView()),
+          logic.blacklist.isEmpty ? EmptyView(
+            message: StrRes.blacklistEmpty,
+            icon: CupertinoIcons.person_crop_circle_badge_xmark,
+          ) : _buildBlacklistView()),
     );
   }
 
@@ -169,49 +174,6 @@ class BlacklistPage extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyView() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Empty illustration
-          Container(
-            width: 120.w,
-            height: 120.h,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF9FAFB),
-              borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(
-                color: const Color(0xFFE5E7EB),
-                width: 1,
-              ),
-            ),
-            child: Center(
-              child: HugeIcon(
-                icon: HugeIcons.strokeRoundedUserBlock01,
-                size: 60.w,
-                color: const Color(0xFF9CA3AF),
-              ),
-            ),
-          ),
-
-          24.verticalSpace,
-
-          // Empty message
-          Text(
-            StrRes.blacklistEmpty,
-            style: TextStyle(
-              fontFamily: 'FilsonPro',
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
-              color: const Color(0xFF6B7280),
-            ),
-          ),
-        ],
       ),
     );
   }

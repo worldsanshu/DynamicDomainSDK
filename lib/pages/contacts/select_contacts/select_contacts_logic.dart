@@ -213,7 +213,7 @@ class SelectContactsLogic
             controller: inputCtrl,
           ));
       if (sure == true) {
-        IMViews.showToast(StrRes.sentSuccessfully);
+        IMViews.showToast(StrRes.sentSuccessfully,type:1);
         Get.back(result: {
           "checkedList": checkedList.values,
           "customEx": inputCtrl.text.trim(),

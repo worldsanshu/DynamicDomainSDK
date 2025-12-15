@@ -41,11 +41,11 @@ class CreateGroupLogic extends GetxController {
 
   completeCreation() async {
     try {
-      if(allList.length < 3){
+      if(allList.length < 2){
         IMViews.showToast(StrRes.createGroupMinMemberHint);
         return;
       }
-      if (allList.length > 2) {
+      if (allList.length >= 2) {
         // convertMemberRole(UserInfo u) => GroupMemberRole(userID: u.userID);
 
         var info = await LoadingView.singleton.wrap(
