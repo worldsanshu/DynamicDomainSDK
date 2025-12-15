@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:openim/routes/app_navigator.dart';
 
 class ResetPasswordLogic extends GetxController {
   // Form key for validation
@@ -76,6 +77,15 @@ class ResetPasswordLogic extends GetxController {
 
     isButtonEnabled.value =
         phoneValid && passwordValid && confirmPasswordValid && smsCodeValid;
+
+    // Keep validators in sync: whenever either password field changes,
+    // re-run form validation so the confirm password field reflects
+    // the latest value even if it was edited first.
+    try {
+      if (formKey.currentState != null) {
+        formKey.currentState!.validate();
+      }
+    } catch (_) {}
   }
 
   Future<bool> onSendVerificationCode() async {
@@ -143,8 +153,12 @@ class ResetPasswordLogic extends GetxController {
     );
 
     if (result) {
-      IMViews.showToast(StrRes.resetSuccessful);
-      Get.back();
+      IMViews.showToast(StrRes.resetSuccessful,type: 1);
+      // Navigate back to login screen after successful password reset
+      AppNavigator.startLogin();
+    } else {
+      // Show failure message
+      IMViews.showToast(StrRes.saveFailed);
     }
   }
 }

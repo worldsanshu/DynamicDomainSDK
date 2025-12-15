@@ -258,9 +258,9 @@ class _ContactsPageState extends State<ContactsPage>
               ),
             ),
             secondChild: Container(
-              height: 64.h,
-              margin: EdgeInsets.only(top: 10.h),
-              padding: EdgeInsets.only(top: 10.h),
+              height: 48.h,
+              margin: EdgeInsets.symmetric(vertical: 6.h),
+              // padding: EdgeInsets.only(top: 10.h),
               color: const Color(0xFFFFFFFF),
               child: Row(
                 children: [

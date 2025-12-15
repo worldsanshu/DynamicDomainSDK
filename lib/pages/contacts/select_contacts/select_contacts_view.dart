@@ -63,7 +63,7 @@ class SelectContactsPage extends StatelessWidget {
                   itemBuilder: (_, friend, index) => Obx(() => 
                   Column(
                     children: [
-                      if(logic.friendList.length<7 )...[SizedBox(height: 12.h)],
+                      if(index==0)...[SizedBox(height: 16.h)],
                       FriendItemView(
                     info: friend,
                     showDivider: index != logic.friendList.length - 1,

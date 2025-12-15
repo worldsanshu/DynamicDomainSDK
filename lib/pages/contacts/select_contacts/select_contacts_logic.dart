@@ -539,9 +539,12 @@ class SelectContactsLogic
   }
 
   bool get enabledConfirmButton {
-    // Ensure the confirm button is enabled when at least 1 additional user is selected,
-    // considering the private chat user and the current user.
+    // For `addMember` action we allow confirming when at least one contact is selected.
+    // For other actions keep the existing minimum requirement (3 total selected).
     final totalSelected = defaultCheckedIDList.length + checkedList.length;
+    if (action == SelAction.addMember) {
+      return checkedList.isNotEmpty;
+    }
     return totalSelected >= 3;
   }
 

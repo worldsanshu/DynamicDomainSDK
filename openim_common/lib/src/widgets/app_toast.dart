@@ -46,7 +46,7 @@ class AppToast {
    Get.snackbar(
   '',
   '',
-  duration: duration ?? const Duration(milliseconds: 1500),
+  duration: duration ?? const Duration(milliseconds: 1750),
   snackPosition: SnackPosition.TOP,
   isDismissible: true,
   dismissDirection: DismissDirection.up,
@@ -56,7 +56,7 @@ class AppToast {
   padding: EdgeInsets.zero, // padding để container tự lo
   borderRadius: 12.r,
   snackStyle: SnackStyle.FLOATING,
-  animationDuration: const Duration(milliseconds: 1000),
+  animationDuration: const Duration(milliseconds: 750),
   forwardAnimationCurve: Curves.easeOut,
   reverseAnimationCurve: Curves.easeIn,
   titleText: const SizedBox.shrink(),

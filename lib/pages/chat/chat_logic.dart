@@ -1098,7 +1098,11 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
       if (multiSelList.length >= 20) {
         Get.dialog(
             barrierColor: Colors.transparent,
-            CustomDialog(title: StrRes.forwardMaxCountHint));
+            CustomDialog(
+              title: StrRes.forwardMaxCountHint,
+              showCancel: false,
+              rightText: StrRes.confirm,
+            ));
       } else {
         multiSelList.add(message);
         multiSelList.sort((a, b) {
@@ -1137,8 +1141,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
   /// 打开相册
   void onTapAlbum() async {
     final maxImageSendCount = clientConfigLogic.maxImageSendCount;
-    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
-        Get.context!,
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(Get.context!,
         pickerConfig: AssetPickerConfig(
             maxAssets: maxImageSendCount,
             selectPredicate: (_, entity, isSelected) async {
@@ -1757,7 +1760,9 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
         maxSelectCount: maxCount,
       )?.then((list) async {
         if (list == null) return;
-        if (list is List && list.isNotEmpty && list.first.nickname == StrRes.everyone) {
+        if (list is List &&
+            list.isNotEmpty &&
+            list.first.nickname == StrRes.everyone) {
           // Clear curMsgAtUser completely and add only @everyone
           curMsgAtUser.clear();
           curMsgAtUser.add(imLogic.atAllTag);
@@ -1796,7 +1801,11 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
           }
           if (uid != null) {
             newSelectedIDs.add(uid);
-            idToMember[uid] = {'userID': uid, 'nickname': nick ?? '', 'faceURL': face};
+            idToMember[uid] = {
+              'userID': uid,
+              'nickname': nick ?? '',
+              'faceURL': face
+            };
           }
         }
 
@@ -3183,10 +3192,9 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
 
   // Define onClickTitle getter
   VoidCallback get onClickTitle => () {
-    // Add logic for handling title click
-  };
-
-  }
+        // Add logic for handling title click
+      };
+}
 
 /// Emoji picker button widget with hover animation
 class _EmojiPickerButton extends StatefulWidget {
