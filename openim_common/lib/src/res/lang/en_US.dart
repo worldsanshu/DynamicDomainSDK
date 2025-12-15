@@ -1100,5 +1100,5 @@ const Map<String, String> en_US = {
  "doYouWantToRemoveOtherMembers":
       "Do you want to remove other selected members and only select @everyone?",
   "addMeAsFriend": "Let's be friends!", 
-  "acceptMeJoin": "Please accept me to join"
+  "acceptMeJoin": "Let me join!"
 };

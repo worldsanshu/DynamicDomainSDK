@@ -41,12 +41,14 @@ class UserProfilePanelLogic extends GetxController {
   final notAllowLookGroupMemberProfiles = true.obs;
   final notAllowAddGroupMemberFriend = false.obs;
   final iHaveAdminOrOwnerPermission = false.obs;
+  final hasPendingFriendRequest = false.obs;
   late StreamSubscription _friendAddedSub;
   late StreamSubscription _friendInfoChangedSub;
   late StreamSubscription _friendDeletedSub;
   late StreamSubscription _blacklistAddedSub;
   late StreamSubscription _blacklistDeletedSub;
   late StreamSubscription _memberInfoChangedSub;
+  late StreamSubscription _friendApplicationChangedSub;
 
   @override
   void onClose() {
@@ -56,6 +58,7 @@ class UserProfilePanelLogic extends GetxController {
     _blacklistAddedSub.cancel();
     _blacklistDeletedSub.cancel();
     _memberInfoChangedSub.cancel();
+    _friendApplicationChangedSub.cancel();
     super.onClose();
   }
 
@@ -116,6 +119,9 @@ class UserProfilePanelLogic extends GetxController {
         groupUserNickname.value = value.nickname ?? '';
       }
     });
+    _friendApplicationChangedSub = imLogic.friendApplicationChangedSubject.listen((value) {
+      _onFriendApplicationChanged(value);
+    });
     super.onInit();
   }
 
@@ -124,6 +130,7 @@ class UserProfilePanelLogic extends GetxController {
     _getUsersInfo();
     _queryGroupInfo();
     _queryGroupMemberInfo();
+    _checkPendingFriendRequest();
     // _queryUserOnlineStatus();
     super.onReady();
   }
@@ -237,6 +244,59 @@ class UserProfilePanelLogic extends GetxController {
     await clearDiskCachedImage(url);
     PaintingBinding.instance.imageCache.evict(keyToMd5(url));
     userInfo.refresh();
+  }
+
+  _checkPendingFriendRequest() async {
+    try {
+      print('🔍 Checking pending friend request for userID: ${userInfo.value.userID}');
+      final applications = await OpenIM.iMManager.friendshipManager
+          .getFriendApplicationListAsApplicant();
+      print('📋 Total applications sent: ${applications.length}');
+      
+      for (var app in applications) {
+        print('  - toUserID: ${app.toUserID}, handleResult: ${app.handleResult}');
+      }
+      
+      final hasPending = applications.any((app) =>
+          app.toUserID == userInfo.value.userID && app.handleResult == 0);
+      print('✅ Has pending request: $hasPending');
+      hasPendingFriendRequest.value = hasPending;
+    } catch (e) {
+      print('❌ Error checking pending friend request: $e');
+      hasPendingFriendRequest.value = false;
+    }
+  }
+
+  _onFriendApplicationChanged(dynamic value) {
+    print('🔔 Friend application changed: ${value.runtimeType}');
+    if (value is FriendApplicationInfo) {
+      print('  - fromUserID: ${value.fromUserID}');
+      print('  - toUserID: ${value.toUserID}');
+      print('  - handleResult: ${value.handleResult}');
+      print('  - current userID: ${userInfo.value.userID}');
+      
+      if (value.toUserID == userInfo.value.userID) {
+        print('✅ Match! Updating status...');
+        if (value.handleResult == 0) {
+          // Request is pending
+          print('  → Setting to PENDING');
+          hasPendingFriendRequest.value = true;
+        } else if (value.handleResult == 1) {
+          // Request approved - now friends
+          print('  → Setting to APPROVED (now friends)');
+          hasPendingFriendRequest.value = false;
+          userInfo.update((val) {
+            val?.isFriendship = true;
+          });
+        } else if (value.handleResult == -1) {
+          // Request rejected
+          print('  → Setting to REJECTED');
+          hasPendingFriendRequest.value = false;
+        }
+      } else {
+        print('❌ No match - different user');
+      }
+    }
   }
 
   _queryGroupInfo() async {
@@ -425,9 +485,14 @@ class UserProfilePanelLogic extends GetxController {
     IMUtils.copy(text: userInfo.value.userID!);
   }
 
-  void addFriend() => AppNavigator.startSendVerificationApplication(
-        userID: userInfo.value.userID!,
-      );
+  void addFriend() async {
+    await AppNavigator.startSendVerificationApplication(
+      userID: userInfo.value.userID!,
+    );
+    // Refresh status when returning from send verification screen
+    print('🔄 Returned from send verification, refreshing status...');
+    _checkPendingFriendRequest();
+  }
 
   void viewPersonalInfo() => AppNavigator.startPersonalInfo(
         userID: userInfo.value.userID!,

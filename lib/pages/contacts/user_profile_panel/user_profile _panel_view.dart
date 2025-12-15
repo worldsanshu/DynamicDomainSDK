@@ -187,40 +187,54 @@ class UserProfilePanelPage extends StatelessWidget {
 
   Widget _buildAddFriendButton(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    return GestureDetector(
-      onTap: logic.addFriend,
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 24.w),
-        padding: EdgeInsets.symmetric(vertical: 12.h),
-        decoration: BoxDecoration(
-          color: primaryColor,
-          borderRadius: BorderRadius.circular(12.r),
-          boxShadow: [
-            BoxShadow(
-              color: primaryColor.withOpacity(0.3),
-              offset: const Offset(0, 4),
-              blurRadius: 10,
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(CupertinoIcons.person_add, color: Colors.white, size: 20.w),
-            8.horizontalSpace,
-            Text(
-              StrRes.add,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+    return Obx(() {
+      final isPending = logic.hasPendingFriendRequest.value;
+      return GestureDetector(
+        onTap: isPending ? null : logic.addFriend,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 24.w),
+          padding: EdgeInsets.symmetric(vertical: 12.h),
+          decoration: BoxDecoration(
+            color: isPending
+                ? const Color(0xFFD1D5DB)
+                : primaryColor,
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: [
+              BoxShadow(
+                color: (isPending
+                        ? const Color(0xFFD1D5DB)
+                        : primaryColor)
+                    .withOpacity(0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 10,
               ),
-            ),
-          ],
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                isPending
+                    ? CupertinoIcons.clock
+                    : CupertinoIcons.person_add,
+                color: Colors.white,
+                size: 20.w,
+              ),
+              8.horizontalSpace,
+              Text(
+                isPending ? StrRes.requested : StrRes.add,
+                style: TextStyle(
+                  fontFamily: 'FilsonPro',
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildSectionTitle(String title) {
