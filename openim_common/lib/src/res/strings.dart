@@ -124,7 +124,7 @@ class StrRes {
   static String get refresh => 'refresh'.tr;
   static String get agree => 'agree'.tr;
   static String get warmTips => 'warmTips'.tr;
-      static String get rejectAndExit => 'rejectAndExit'.tr;
+  static String get rejectAndExit => 'rejectAndExit'.tr;
   static String get plsReadBeforeUse => 'plsReadBeforeUse'.tr;
   static String get userAgreement => 'userAgreement'.tr;
   static String get userAgreementDoc => 'userAgreementDoc'.tr;
@@ -200,12 +200,13 @@ class StrRes {
 
   static String get loginFailed => 'loginFailed'.tr;
 
-  static String get tooMuchRequestValidationCode => 'tooMuchRequestValidationCode'.tr;
+  static String get tooMuchRequestValidationCode =>
+      'tooMuchRequestValidationCode'.tr;
 
   static String get notFoundAccount => 'notFoundAccount'.tr;
 
   static String get loginIncorrectPwd => 'loginIncorrectPwd'.tr;
-  
+
   static String get passwordLogin => 'passwordLogin'.tr;
 
   static String get through => 'through'.tr;
@@ -359,7 +360,8 @@ class StrRes {
 
   static String get sentSuccessfully => 'sentSuccessfully'.tr;
 
-  static String get failedToSendVerificationCode => 'failedToSendVerificationCode'.tr;
+  static String get failedToSendVerificationCode =>
+      'failedToSendVerificationCode'.tr;
 
   static String get copySuccessfully => 'copySuccessfully'.tr;
 
@@ -554,13 +556,13 @@ class StrRes {
 
   static String get joinedGroup => 'joinedGroup'.tr;
 
-    static String get noFriendsFound => 'noFriendsFound'.tr;
+  static String get noFriendsFound => 'noFriendsFound'.tr;
 
-    static String get moreThan99 => 'moreThan99'.tr;
+  static String get moreThan99 => 'moreThan99'.tr;
 
-    static String get searchGroupsHint => 'searchGroupsHint'.tr;
+  static String get searchGroupsHint => 'searchGroupsHint'.tr;
 
-    static String get noConversationsYet => 'noConversationsYet'.tr;
+  static String get noConversationsYet => 'noConversationsYet'.tr;
 
   static String get noCreatedGroupsYet => 'noCreatedGroupsYet'.tr;
 
@@ -1003,14 +1005,16 @@ class StrRes {
   static String get nPerson => 'nPerson'.tr;
 
   static String get searchNotFound => 'searchNotFound'.tr;
-    static String get noSearchResultsContacts => 'noSearchResultsContacts'.tr;
-    static String get noSearchResultsGroup => 'noSearchResultsGroup'.tr;
-    static String get noSearchResultsMessages => 'noSearchResultsMessages'.tr;
-    static String get noSearchResultsFiles => 'noSearchResultsFiles'.tr;
-    static String get pleaseEnterToSearchContacts => 'pleaseEnterToSearchContacts'.tr;
-    static String get pleaseEnterToSearchGroup => 'pleaseEnterToSearchGroup'.tr;
-    static String get pleaseEnterToSearchMessages => 'pleaseEnterToSearchMessages'.tr;
-    static String get pleaseEnterToSearchFiles => 'pleaseEnterToSearchFiles'.tr;
+  static String get noSearchResultsContacts => 'noSearchResultsContacts'.tr;
+  static String get noSearchResultsGroup => 'noSearchResultsGroup'.tr;
+  static String get noSearchResultsMessages => 'noSearchResultsMessages'.tr;
+  static String get noSearchResultsFiles => 'noSearchResultsFiles'.tr;
+  static String get pleaseEnterToSearchContacts =>
+      'pleaseEnterToSearchContacts'.tr;
+  static String get pleaseEnterToSearchGroup => 'pleaseEnterToSearchGroup'.tr;
+  static String get pleaseEnterToSearchMessages =>
+      'pleaseEnterToSearchMessages'.tr;
+  static String get pleaseEnterToSearchFiles => 'pleaseEnterToSearchFiles'.tr;
 
   static String get organizationStructure => 'organizationStructure'.tr;
 
@@ -1367,8 +1371,10 @@ class StrRes {
   static String get fillInvitationCode => 'fillInvitationCode'.tr;
   static String get yourVerificationCodeIs => 'yourVerificationCodeIs'.tr;
   static String get friendDeletedSuccessfully => 'friendDeletedSuccessfully'.tr;
-  static String get addedBlacklistSuccessfully => 'addedBlacklistSuccessfully'.tr;
-  static String get removedBlacklistSuccessfully => 'removedBlacklistSuccessfully'.tr;
+  static String get addedBlacklistSuccessfully =>
+      'addedBlacklistSuccessfully'.tr;
+  static String get removedBlacklistSuccessfully =>
+      'removedBlacklistSuccessfully'.tr;
   static String get avatarUpdatedSuccessfully => 'avatarUpdatedSuccessfully'.tr;
   static String get genderUpdatedSuccessfully => 'genderUpdatedSuccessfully'.tr;
   static String get birthdayUpdatedSuccessfully =>
@@ -1660,7 +1666,12 @@ class StrRes {
       'cannotSelectEveryoneWithOthers'.tr;
   static String get cannotSelectEveryoneWithOthersContent =>
       'cannotSelectEveryoneWithOthersContent'.tr;
-  static String get doYouWantToRemoveOtherMembers => 'doYouWantToRemoveOtherMembers'.tr;
+  static String get doYouWantToRemoveOtherMembers =>
+      'doYouWantToRemoveOtherMembers'.tr;
   static String get addMeAsFriend => 'addMeAsFriend'.tr;
   static String get acceptMeJoin => 'acceptMeJoin'.tr;
+
+  // QR Scan error messages
+  static String get invalidQRCode => 'invalidQRCode'.tr;
+  static String get invalidQRImage => 'invalidQRImage'.tr;
 }

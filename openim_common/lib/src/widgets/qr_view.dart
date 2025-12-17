@@ -122,12 +122,18 @@ class _QrcodeViewState extends State<QrcodeView>
           final result = barcode.barcodes.first.rawValue;
           if (result != null) {
             _parse(result);
+          } else {
+            // QR found but no data
+            IMViews.showToast(StrRes.invalidQRImage);
           }
+        } else {
+          // No QR code found in image
+          IMViews.showToast(StrRes.invalidQRImage);
         }
       }
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -398,34 +404,37 @@ class _QrcodeViewState extends State<QrcodeView>
         var groupID = result.substring(appcfg.Config.groupScheme.length);
         PackageBridge.scanBridge!.scanOutGroupID(groupID);
       } else if (IMUtils.isUrlValid(result)) {
-        // Valid URL - launch in browser
+        // Valid URL - launch in in-app browser
         final uri = Uri.parse(Uri.encodeFull(result));
         try {
           final launched =
-              await launchUrl(uri, mode: LaunchMode.externalApplication);
+              await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
           if (!launched) {
             // Failed to launch URL
-            IMViews.showToast(StrRes.cannotRecognize);
+            IMViews.showToast(StrRes.invalidQRCode);
             _isProcessing = false;
             controller.start();
           }
-          // If launched successfully, the app will go to background
-          // and didChangeAppLifecycleState will handle resuming when user comes back
+          // If launched successfully in in-app browser
+          // Reset processing flag so user can scan again after closing browser
+          _isProcessing = false;
         } catch (e) {
           // Error launching URL
-          IMViews.showToast(StrRes.cannotRecognize);
+          IMViews.showToast(StrRes.invalidQRCode);
           _isProcessing = false;
           controller.start();
         }
       } else {
-        // Other QR code - return result and close
-        Get.back(result: result);
-        IMViews.showToast(StrRes.scanResult.trArgs([result]));
+        // Unrecognized QR code - stay on screen and show error
+        IMViews.showToast(StrRes.invalidQRCode);
+        _isProcessing = false;
+        controller.start();
       }
     } else {
-      // Invalid QR code
-      Get.back();
-      IMViews.showToast(StrRes.cannotRecognize);
+      // Invalid QR code - stay on screen and allow retry
+      IMViews.showToast(StrRes.invalidQRCode);
+      _isProcessing = false;
+      controller.start();
     }
   }
 }

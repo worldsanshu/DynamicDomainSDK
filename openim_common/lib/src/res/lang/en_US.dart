@@ -127,7 +127,8 @@ const Map<String, String> en_US = {
   "savedInviteCode": "Server code saved successfully",
   "loginFailed": "Login Failed, Please Try Again",
   "notFoundAccount": "Account not found",
-  "tooMuchRequestValidationCode":"Too many invalid enterprise codes. Please wait and try again later.",
+  "tooMuchRequestValidationCode":
+      "Too many invalid enterprise codes. Please wait and try again later.",
   "loginIncorrectPwd": "Incorrect account or password",
   "passwordLogin": "Password Login",
   'through': 'Through %s',
@@ -310,10 +311,10 @@ const Map<String, String> en_US = {
   "joinedGroup": "Joined Groups",
   "noFriendRequests": "No friend requests",
   "noGroupRequests": "No group notifications",
-    "noConversationsYet": "No conversations yet",
-    "noFriendsFound": "No friends found",
-    "moreThan99": "99+",
-    "searchGroupsHint": "Search groups...",
+  "noConversationsYet": "No conversations yet",
+  "noFriendsFound": "No friends found",
+  "moreThan99": "99+",
+  "searchGroupsHint": "Search groups...",
   "noCreatedGroupsYet": "You haven't created any groups yet",
   "noJoinedGroupsYet": "You haven't joined any groups yet",
   "all": "All",
@@ -538,14 +539,14 @@ const Map<String, String> en_US = {
   "iJoinedGroup": "I Joined",
   "nPerson": "%s people",
   "searchNotFound": "No relevant results found",
-    "noSearchResultsContacts": "No contacts found",
-    "noSearchResultsGroup": "No groups found",
-    "noSearchResultsMessages": "No messages found",
-    "noSearchResultsFiles": "No files found",
-    "pleaseEnterToSearchContacts": "Please enter keywords to search contacts",
-    "pleaseEnterToSearchGroup": "Please enter keywords to search groups",
-    "pleaseEnterToSearchMessages": "Please enter keywords to search messages",
-    "pleaseEnterToSearchFiles": "Please enter keywords to search files",
+  "noSearchResultsContacts": "No contacts found",
+  "noSearchResultsGroup": "No groups found",
+  "noSearchResultsMessages": "No messages found",
+  "noSearchResultsFiles": "No files found",
+  "pleaseEnterToSearchContacts": "Please enter keywords to search contacts",
+  "pleaseEnterToSearchGroup": "Please enter keywords to search groups",
+  "pleaseEnterToSearchMessages": "Please enter keywords to search messages",
+  "pleaseEnterToSearchFiles": "Please enter keywords to search files",
   "nOthers": "%s others",
   "organizationStructure": "Organization Structure",
   "recentConversations": "Recent Conversations",
@@ -780,7 +781,7 @@ const Map<String, String> en_US = {
   "onlineLast7Days": "7 Days Online",
 
   // Login and registration screen translations
-    "loginTitle": "Welcome to CNL",
+  "loginTitle": "Welcome to CNL",
   "loginSubtitle": "Log in to stay connected",
   "noAccountYetQuestion": "Don't have an account?",
   "goToRegister": " Go register",
@@ -1093,12 +1094,17 @@ const Map<String, String> en_US = {
   "selectAllMaxUserConfirm": "Confirm",
 
   "createGroupMinMemberHint": "To create a group, you need at least 2 members.",
-    "maxAtUserHint": "You can only tag up to 10 members or tag everyone.",
+  "maxAtUserHint": "You can only tag up to 10 members or tag everyone.",
   "cannotSelectEveryoneWithOthers":
       "Cannot select @everyone when other members are already selected. Please clear selection first.",
-    "cannotSelectEveryoneWithOthersContent": "Selecting @everyone requires clearing current selections",
- "doYouWantToRemoveOtherMembers":
+  "cannotSelectEveryoneWithOthersContent":
+      "Selecting @everyone requires clearing current selections",
+  "doYouWantToRemoveOtherMembers":
       "Do you want to remove other selected members and only select @everyone?",
-  "addMeAsFriend": "Let's be friends!", 
-  "acceptMeJoin": "Let me join!"
+  "addMeAsFriend": "Let's be friends!",
+  "acceptMeJoin": "Let me join!",
+
+  // QR Scan error messages
+  "invalidQRCode": "Invalid QR code. Please try again.",
+  "invalidQRImage": "Invalid QR code. Please try another image."
 };

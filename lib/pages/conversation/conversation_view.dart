@@ -980,29 +980,29 @@ class _ConversationPageState extends State<ConversationPage> {
           motion: const BehindMotion(),
           extentRatio: logic.existUnreadMsg(info) ? 0.45 : 0.3,
           children: [
-            CustomButton(
-              onTap: () => logic.pinConversation(info),
+            SlidableAction(
+              onPressed: (_) => logic.pinConversation(info),
+              backgroundColor: Colors.teal,
+              foregroundColor: Colors.white,
               icon: info.isPinned!
                   ? CupertinoIcons.pin_slash
                   : CupertinoIcons.pin,
-              color: Colors.teal,
-              iconSize: 25.w,
+              borderRadius: BorderRadius.circular(12.r),
             ),
-            8.horizontalSpace,
-            if (logic.existUnreadMsg(info)) ...[
-              CustomButton(
-                onTap: () => logic.markMessageHasRead(info),
+            if (logic.existUnreadMsg(info))
+              SlidableAction(
+                onPressed: (_) => logic.markMessageHasRead(info),
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
                 icon: Ionicons.checkmark_done_circle_outline,
-                color: Colors.green,
-                iconSize: 25.w,
+                borderRadius: BorderRadius.circular(12.r),
               ),
-              8.horizontalSpace,
-            ],
-            CustomButton(
-              onTap: () => logic.deleteConversation(info),
+            SlidableAction(
+              onPressed: (_) => logic.deleteConversation(info),
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
               icon: CupertinoIcons.trash,
-              color: Colors.red,
-              iconSize: 25.w,
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ],
         ),
@@ -1076,13 +1076,14 @@ class _ConversationPageState extends State<ConversationPage> {
                                 ? '99+'
                                 : logic.getUnreadCount(info).toString(),
                             fontSize: 12.sp,
-                            padding: EdgeInsets.symmetric(horizontal: 8.w,vertical: 4.h),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 4.h),
                             color: Colors.red,
                           ),
                         ],
                       ],
                     ),
-                   Row(
+                    Row(
                       children: [
                         Expanded(
                           child: MatchTextView(
@@ -1099,8 +1100,8 @@ class _ConversationPageState extends State<ConversationPage> {
                             ),
                             allAtMap: logic.getAtUserMap(info),
                             prefixSpan: TextSpan(
-                              text: _sanitizeText(
-                                  logic.getPrefixTag(info) ?? ""),
+                              text:
+                                  _sanitizeText(logic.getPrefixTag(info) ?? ""),
                               style: TextStyle(
                                 fontFamily: 'FilsonPro',
                                 fontSize: 14.sp,

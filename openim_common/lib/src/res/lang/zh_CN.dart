@@ -1057,4 +1057,8 @@ const Map<String, String> zh_CN = {
   "doYouWantToRemoveOtherMembers": "您是否要移除其他已选择的成员？",
   "addMeAsFriend": "让我们成为朋友吧！",
   "acceptMeJoin": "请接受我加入",
+
+  // QR Scan error messages
+  "invalidQRCode": "二维码无效，请重新尝试。",
+  "invalidQRImage": "二维码无效，请选择其他图片。"
 };
