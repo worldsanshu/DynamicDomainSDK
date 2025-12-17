@@ -117,7 +117,7 @@ class SplashLogic extends GetxController {
       DataSp.savePrivacyPolicyAgreement(result);
     }
 
-    gatewayConfigController.refreshGatewayConfig();
+    await gatewayConfigController.refreshGatewayConfig();
 
     if (authController.isLoggedIn) {
       _login();
@@ -381,5 +381,4 @@ class _ClayProtocolDialog extends StatelessWidget {
       ),
     );
   }
-
 }

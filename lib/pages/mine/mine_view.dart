@@ -116,6 +116,17 @@ class MinePage extends StatelessWidget {
             label: StrRes.realNameAuth,
             onTap: logic.startRealNameAuth,
           ),
+          // My Company - conditionally displayed
+          Obx(() {
+            if (logic.showMyCompanyEntry==true) {
+              return const SizedBox.shrink();
+            }
+            return MenuItemWidget(
+              icon: CupertinoIcons.building_2_fill,
+              label: StrRes.myCompany,
+              onTap: logic.startMerchantList,
+            );
+          }),
           MenuItemWidget(
             icon: CupertinoIcons.shield,
             label: StrRes.privacyPolicy,

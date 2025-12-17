@@ -304,7 +304,7 @@ class UserProfilePanelPage extends StatelessWidget {
         if ((!logic.isMyself && logic.isFriendship) || logic.isBlacklist)
           SettingsMenuItem(
             icon: CupertinoIcons.hand_raised,
-            color: const Color(0xFF10B981),
+            color: const Color(0xFFB98610),
             label: StrRes.addToBlacklist,
             onSwitchChanged: (_) => logic.toggleBlacklist(),
             switchValue: logic.isBlacklist,

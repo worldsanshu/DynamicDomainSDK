@@ -38,7 +38,7 @@ class GatewayConfigController extends GetxController {
   bool get showContactUs => appConfig['showContactUs'] == true;
 
   bool get showMyCompanyEntry =>
-      appConfig['showMyCompanyEntry'] == true && isUnderReview.value == false;
+      appConfig['showMyCompanyEntry'] == true && isUnderReview.value != true;
 
   int? get defaultMerchantID =>
       int.tryParse(gatewayConfig['defaultMerchantID'] ?? '');
