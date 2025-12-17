@@ -74,23 +74,12 @@ class AtSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
               buffer.write(value);
             }
           } else if (atAllReg.hasMatch(value)) {
-            // Use WidgetSpan for @everyone to support background color
-            inlineSpan = WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFEF3C7), // Light yellow background
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  '@${StrRes.everyone}',
-                  style: (atStyle ?? const TextStyle()).copyWith(
-                    color: const Color(0xFFD97706), // Amber text color
-                    fontWeight: FontWeight.w700, // Bold
-                    height: 1.2,
-                  ),
-                ),
+            // Use TextSpan for @everyone with amber color and bold font only
+            inlineSpan = TextSpan(
+              text: '@${StrRes.everyone} ',
+              style: (atStyle ?? const TextStyle()).copyWith(
+                color: const Color(0xFFD97706), // Amber text color
+                fontWeight: FontWeight.w700, // Bold
               ),
             );
             buffer.write('@${StrRes.everyone} ');

@@ -575,17 +575,28 @@ class _CheckedConfirmView extends StatelessWidget {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       alignment: Alignment.center,
-                      child: Text(
-                        sprintf(StrRes.confirmSelectedPeople, [
-                          logic.checkedCountExcludingEveryone,
-                          logic.maxLength,
-                        ]),
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+                      child: GetBuilder<GroupMemberListLogic>(
+                        id: 'confirm_button',
+                        tag: logic.opType.name,
+                        builder: (_) {
+                          final atAllTag =
+                              OpenIM.iMManager.conversationManager.atAllTag;
+                          final hasEveryone = logic.checkedList
+                              .any((e) => e.userID == atAllTag);
+                          final maxCount = hasEveryone ? 1 : logic.maxLength;
+                          return Text(
+                            sprintf(StrRes.confirmSelectedPeople, [
+                              logic.checkedList.length,
+                              maxCount,
+                            ]),
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),

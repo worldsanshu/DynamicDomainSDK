@@ -357,12 +357,18 @@ class GroupMemberListLogic extends GetxController {
 
       if (result == true) {
         checkedList.clear();
-        update(); // Ensure UI and result are in sync
+        update([
+          'selected_count',
+          'confirm_button'
+        ]); // Update both count and button
         print('checkedList cleared: ${checkedList.length} items');
         final info = _buildEveryoneMemberInfo();
         if (!checkedList.any((e) => e.userID == everyoneId)) {
           checkedList.add(info);
-          update();
+          update([
+            'selected_count',
+            'confirm_button'
+          ]); // Update both count and button
           print(
               'checkedList updated with @everyone: ${checkedList.length} items');
         }
@@ -378,7 +384,8 @@ class GroupMemberListLogic extends GetxController {
     final info = _buildEveryoneMemberInfo();
     if (!checkedList.any((e) => e.userID == everyoneId)) {
       checkedList.add(info);
-      update();
+      update(
+          ['selected_count', 'confirm_button']); // Update both count and button
       print('checkedList updated with @everyone: ${checkedList.length} items');
     }
   }
