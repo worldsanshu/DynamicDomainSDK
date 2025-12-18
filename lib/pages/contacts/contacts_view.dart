@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
-import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/friend_item_view.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
@@ -229,7 +228,7 @@ class _ContactsPageState extends State<ContactsPage>
                 children: [
                   Expanded(
                     child: _buildFunctionItem(
-                      icon: HugeIcons.strokeRoundedUserAdd01,
+                      icon: CupertinoIcons.person_add,
                       label: StrRes.newFriend,
                       count: logic.friendApplicationCount,
                       onTap: logic.newFriend,
@@ -296,7 +295,7 @@ class _ContactsPageState extends State<ContactsPage>
                               },
                               child: Icon(
                                 CupertinoIcons.xmark_circle_fill,
-                                size: 18.w,
+                                size: 22.w,
                                 color: const Color(0xFF9CA3AF),
                               ),
                             )
@@ -354,7 +353,7 @@ class _ContactsPageState extends State<ContactsPage>
               children: [
                 Expanded(
                   child: _buildFunctionItem(
-                    icon: HugeIcons.strokeRoundedUserGroup,
+                    icon: CupertinoIcons.person_3,
                     label: StrRes.groupJoinRequests,
                     count: logic.groupApplicationCount,
                     onTap: logic.newGroup,
@@ -420,7 +419,7 @@ class _ContactsPageState extends State<ContactsPage>
                             },
                             child: Icon(
                               CupertinoIcons.xmark_circle_fill,
-                              size: 18.w,
+                              size: 22.w,
                               color: const Color(0xFF9CA3AF),
                             ),
                           )
@@ -620,8 +619,8 @@ class _ContactsPageState extends State<ContactsPage>
       ),
     );
   }
-  
-   Widget _buildFilterChip({
+
+  Widget _buildFilterChip({
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
@@ -657,7 +656,7 @@ class _ContactsPageState extends State<ContactsPage>
   }
 
   Widget _buildFunctionItem({
-    required List<List<dynamic>> icon,
+    required IconData icon,
     required String label,
     int count = 0,
     VoidCallback? onTap,
@@ -689,8 +688,8 @@ class _ContactsPageState extends State<ContactsPage>
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  HugeIcon(
-                    icon: icon,
+                  Icon(
+                    icon,
                     size: 20.w,
                     color: const Color(0xFF424242),
                   ),

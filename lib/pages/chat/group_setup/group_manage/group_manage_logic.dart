@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim/pages/chat/group_setup/group_setup_logic.dart';
 import 'package:openim_common/openim_common.dart';
@@ -217,8 +217,8 @@ class _JoinGroupSettingView extends StatelessWidget {
                       color: Color(0xFFF3F4F6),
                       shape: BoxShape.circle,
                     ),
-                    child: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedCancel01,
+                    child: Icon(
+                      CupertinoIcons.xmark,
                       size: 16,
                       color: Color(0xFF6B7280),
                     ),
@@ -234,19 +234,19 @@ class _JoinGroupSettingView extends StatelessWidget {
             child: Column(
               children: [
                 _buildOptionItem(
-                  icon: HugeIcons.strokeRoundedUserAdd01,
+                  icon: CupertinoIcons.person_add,
                   title: StrRes.allowAnyoneJoinGroup,
                   subtitle: StrRes.anyoneCanJoinWithoutApproval,
                   onTap: () => Get.back(result: 0),
                 ),
                 _buildOptionItem(
-                  icon: HugeIcons.strokeRoundedUserCheck01,
+                  icon: CupertinoIcons.person_crop_circle_badge_checkmark,
                   title: StrRes.inviteNotVerification,
                   subtitle: StrRes.membersCanInviteAdminApprovalRequired,
                   onTap: () => Get.back(result: 1),
                 ),
                 _buildOptionItem(
-                  icon: HugeIcons.strokeRoundedUserLock01,
+                  icon: CupertinoIcons.lock,
                   title: StrRes.needVerification,
                   subtitle: StrRes.allRequestsRequireAdminApproval,
                   onTap: () => Get.back(result: 2),
@@ -261,7 +261,7 @@ class _JoinGroupSettingView extends StatelessWidget {
   }
 
   Widget _buildOptionItem({
-    required List<List<dynamic>> icon,
+    required IconData icon,
     required String title,
     required String subtitle,
     required VoidCallback onTap,
@@ -284,8 +284,8 @@ class _JoinGroupSettingView extends StatelessWidget {
           child: Row(
             children: [
               // Icon
-              HugeIcon(
-                icon: icon,
+              Icon(
+                icon,
                 size: 20.w,
                 color: AppColor.iconColor,
               ),
@@ -323,8 +323,8 @@ class _JoinGroupSettingView extends StatelessWidget {
               8.horizontalSpace,
 
               // Arrow
-              const HugeIcon(
-                icon: HugeIcons.strokeRoundedArrowRight01,
+              Icon(
+                CupertinoIcons.chevron_right,
                 size: 16,
                 color: Color(0xFF6B7280),
               ),

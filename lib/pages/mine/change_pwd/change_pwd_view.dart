@@ -7,7 +7,7 @@ import 'package:openim/constants/app_color.dart';
 import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'change_pwd_logic.dart';
 import '../../../widgets/base_page.dart';
@@ -124,19 +124,19 @@ class ChangePwdPage extends StatelessWidget {
           _buildPasswordItem(
             label: StrRes.oldPwd,
             controller: logic.oldPwdCtrl,
-            icon: HugeIcons.strokeRoundedLockPassword,
+            icon: CupertinoIcons.lock,
             autofocus: true,
             isFirst: true,
           ),
           _buildPasswordItem(
             label: StrRes.newPwd,
             controller: logic.newPwdCtrl,
-            icon: HugeIcons.strokeRoundedKeyframeAlignHorizontal,
+            icon: CupertinoIcons.lock_rotation,
           ),
           _buildPasswordItem(
             label: StrRes.confirmNewPwd,
             controller: logic.againPwdCtrl,
-            icon: HugeIcons.strokeRoundedCheckmarkBadge01,
+            icon: CupertinoIcons.checkmark_shield,
             isLast: true,
           ),
         ],
@@ -147,7 +147,7 @@ class ChangePwdPage extends StatelessWidget {
   Widget _buildPasswordItem({
     required String label,
     required TextEditingController controller,
-    required List<List<dynamic>> icon,
+    required IconData icon,
     bool autofocus = false,
     bool isFirst = false,
     bool isLast = false,
@@ -178,8 +178,8 @@ class ChangePwdPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
               child: Row(
                 children: [
-                  HugeIcon(
-                    icon: icon,
+                  Icon(
+                    icon,
                     size: 20.w,
                     color: AppColor.iconColor,
                   ),

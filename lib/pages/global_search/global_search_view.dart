@@ -12,7 +12,7 @@ import 'package:pull_to_refresh_new/pull_to_refresh.dart';
 import 'package:search_keyword_text/search_keyword_text.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:hugeicons/hugeicons.dart';
+
 import 'package:ionicons/ionicons.dart';
 import 'package:openim/widgets/empty_view.dart';
 
@@ -129,7 +129,7 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
                 ),
               ],
             ),
-            
+
             const Divider(height: 1, color: Color(0xFFF3F4F6)),
 
             // Tab Bar View
@@ -331,8 +331,7 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
   Widget _buildGroupListView() =>
       logic.searchKey.isNotEmpty && logic.groupList.isEmpty
           ? EmptyView(
-              message: StrRes.noSearchResultsGroup,
-              icon: CupertinoIcons.group)
+              message: StrRes.noSearchResultsGroup, icon: CupertinoIcons.group)
           : Container(
               color: Colors.white,
               child: ListView.builder(
@@ -348,8 +347,8 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
   Widget _buildChatHistoryListView() => logic.searchKey.isNotEmpty &&
           logic.textSearchResultItems.isEmpty
       ? EmptyView(
-              message: StrRes.noSearchResultsMessages,
-              icon: CupertinoIcons.chat_bubble_text)
+          message: StrRes.noSearchResultsMessages,
+          icon: CupertinoIcons.chat_bubble_text)
       : SmartRefresher(
           key: const ValueKey(0),
           controller: logic.textMessageRefreshCtrl,
@@ -493,10 +492,10 @@ class _GlobalSearchPageState extends State<GlobalSearchPage>
                         ),
                       ),
                       const Spacer(),
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedArrowRight02,
+                      Icon(
+                        CupertinoIcons.chevron_right,
                         color: const Color(0xFF4F42FF),
-                        size: 18.w,
+                        size: 22.w,
                       ),
                     ],
                   ),

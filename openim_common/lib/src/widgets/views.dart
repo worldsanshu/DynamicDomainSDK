@@ -13,7 +13,7 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_picker_plus/flutter_picker_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
+
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:openim_common/openim_common.dart';
@@ -206,15 +206,15 @@ class IMViews {
                     ...items.asMap().entries.map((entry) => Padding(
                           padding: EdgeInsets.only(bottom: 12.h),
                           child: _buildPhotoActionItem(
-                            icon: const [[]],
-                            customIcon: entry.value.customIcon,
+                            icon:
+                                entry.value.customIcon ?? CupertinoIcons.circle,
                             title: entry.value.label,
                             onTap: entry.value.onTap!,
                           ),
                         )),
                     if (fromCamera)
                       _buildPhotoActionItem(
-                        icon: HugeIcons.strokeRoundedCamera01,
+                        icon: CupertinoIcons.camera,
                         title: StrRes.camera,
                         onTap: () async {
                           Get.back();
@@ -258,7 +258,7 @@ class IMViews {
                     if (fromGallery) ...[
                       SizedBox(height: 12.h),
                       _buildPhotoActionItem(
-                        icon: HugeIcons.strokeRoundedImage01,
+                        icon: CupertinoIcons.photo,
                         title: StrRes.toolboxAlbum,
                         onTap: () {
                           Get.back();
@@ -285,9 +285,7 @@ class IMViews {
 
                               if (file?.path != null) {
                                 final map = await uCropPic(file!.path,
-                                    crop: crop,
-                                    toUrl: toUrl,
-                                    quality: quality);
+                                    crop: crop, toUrl: toUrl, quality: quality);
                                 onData?.call(map['path'], map['url']);
                               }
                             },
@@ -298,7 +296,7 @@ class IMViews {
                     if (useNicknameAsAvatarEnabled) ...[
                       SizedBox(height: 12.h),
                       _buildPhotoActionItem(
-                        icon: HugeIcons.strokeRoundedUser,
+                        icon: CupertinoIcons.person,
                         title: isGroup
                             ? StrRes.useDefaultGroupAvatar
                             : StrRes.useNicknameAsAvatar,
@@ -328,12 +326,11 @@ class IMViews {
   }
 
   static Widget _buildPhotoActionItem({
-    required List<List<dynamic>> icon,
-    IconData? customIcon,
+    required IconData icon,
     required String title,
     required VoidCallback onTap,
   }) {
-    final color=Theme.of(Get.context!).primaryColor;
+    final color = Theme.of(Get.context!).primaryColor;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -354,17 +351,11 @@ class IMViews {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: customIcon != null
-                    ? Icon(
-                        customIcon,
-                        size: 20.w,
-                        color: color,
-                      )
-                    : HugeIcon(
-                        icon: icon,
-                        size: 20.w,
-                        color: color,
-                      ),
+                child: Icon(
+                  icon,
+                  size: 20.w,
+                  color: color,
+                ),
               ),
               16.horizontalSpace,
               Expanded(

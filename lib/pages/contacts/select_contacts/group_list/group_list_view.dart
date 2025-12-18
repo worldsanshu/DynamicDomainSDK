@@ -75,7 +75,7 @@ class SelectContactsFromGroupPage extends StatelessWidget {
                     onTap: logic.clearSearch,
                     child: Icon(
                       CupertinoIcons.xmark_circle_fill,
-                      size: 18.w,
+                      size: 22.w,
                       color: const Color(0xFF9CA3AF),
                     ),
                   )

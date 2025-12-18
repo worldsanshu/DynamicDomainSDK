@@ -9,7 +9,6 @@ import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 import 'blacklist_logic.dart';
 
@@ -20,16 +19,16 @@ class BlacklistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return GradientScaffold(
       title: StrRes.blacklist,
       subtitle: StrRes.blockedContacts,
       showBackButton: true,
-      body: Obx(() =>
-          logic.blacklist.isEmpty ? EmptyView(
-            message: StrRes.blacklistEmpty,
-            icon: CupertinoIcons.person_crop_circle_badge_xmark,
-          ) : _buildBlacklistView()),
+      body: Obx(() => logic.blacklist.isEmpty
+          ? EmptyView(
+              message: StrRes.blacklistEmpty,
+              icon: CupertinoIcons.person_crop_circle_badge_xmark,
+            )
+          : _buildBlacklistView()),
     );
   }
 
@@ -59,7 +58,6 @@ class BlacklistPage extends StatelessWidget {
   }
 
   Widget _buildBlacklistItem(BlacklistInfo info) {
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -139,7 +137,8 @@ class BlacklistPage extends StatelessWidget {
                 GestureDetector(
                   onTap: () => _showRemoveDialog(info),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFEE2E2),
                       borderRadius: BorderRadius.circular(8.r),
@@ -151,8 +150,8 @@ class BlacklistPage extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        HugeIcon(
-                          icon: HugeIcons.strokeRoundedDelete03,
+                        Icon(
+                          CupertinoIcons.delete,
                           color: const Color(0xFFDC2626),
                           size: 16.w,
                         ),
@@ -179,7 +178,6 @@ class BlacklistPage extends StatelessWidget {
   }
 
   void _showRemoveDialog(BlacklistInfo info) {
-
     Get.dialog(
       Dialog(
         backgroundColor: Colors.white,
@@ -201,8 +199,8 @@ class BlacklistPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14.r),
                 ),
                 alignment: Alignment.center,
-                child: HugeIcon(
-                  icon: HugeIcons.strokeRoundedUserBlock01,
+                child: Icon(
+                  CupertinoIcons.person_crop_circle_badge_xmark,
                   size: 40.w,
                   color: const Color(0xFFDC2626),
                 ),

@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
@@ -43,22 +43,19 @@ class RealNameAuthView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: AnimationConfiguration.toStaggeredList(
                       duration: const Duration(milliseconds: 420),
-                      childAnimationBuilder: (widget) =>
-                          SlideAnimation(
+                      childAnimationBuilder: (widget) => SlideAnimation(
                         verticalOffset: 40.0,
                         curve: Curves.easeOutQuart,
                         child: FadeInAnimation(child: widget),
                       ),
                       children: [
                         Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16.w),
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: _buildStatusCard(),
                         ),
                         12.verticalSpace,
                         Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16.w),
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: logic.canEdit
                               ? Column(
                                   children: [
@@ -119,8 +116,8 @@ class RealNameAuthView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Center(
-                  child: HugeIcon(
-                    icon: _getStatusIcon(logic.authStatus.value),
+                  child: Icon(
+                    _getStatusIcon(logic.authStatus.value),
                     size: 24.w,
                     color: logic.statusColor,
                   ),
@@ -232,7 +229,7 @@ class RealNameAuthView extends StatelessWidget {
               focusNode: logic.realNameFocusNode,
               label: StrRes.realName,
               hint: StrRes.plsEnterRealName,
-              icon: HugeIcons.strokeRoundedUser,
+              icon: CupertinoIcons.person,
               validator: _validateName,
             ),
             16.verticalSpace,
@@ -241,7 +238,7 @@ class RealNameAuthView extends StatelessWidget {
               focusNode: logic.idCardNumberFocusNode,
               label: StrRes.realNameIdCardNumber,
               hint: StrRes.plsEnter18DigitIdCard,
-              icon: HugeIcons.strokeRoundedFile01,
+              icon: CupertinoIcons.doc,
               validator: _validateIdNumber,
             ),
           ],
@@ -255,7 +252,7 @@ class RealNameAuthView extends StatelessWidget {
     required FocusNode focusNode,
     required String label,
     required String hint,
-    required dynamic icon,
+    required IconData icon,
     String? Function(String?)? validator,
   }) {
     return Column(
@@ -292,10 +289,7 @@ class RealNameAuthView extends StatelessWidget {
               width: 24.w,
               height: 24.h,
               child: Center(
-                child: HugeIcon(
-                    icon: icon as List<List<dynamic>>,
-                    size: 18.w,
-                    color: AppColor.iconColor),
+                child: Icon(icon, size: 22.w, color: AppColor.iconColor),
               ),
             ),
             border: OutlineInputBorder(
@@ -499,8 +493,8 @@ class RealNameAuthView extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedCamera01,
+                      Icon(
+                        CupertinoIcons.camera,
                         size: 32.w,
                         color: const Color(0xFF9CA3AF),
                       ),
@@ -592,8 +586,8 @@ class RealNameAuthView extends StatelessWidget {
         children: [
           Row(
             children: [
-              HugeIcon(
-                icon: HugeIcons.strokeRoundedFlag03,
+              Icon(
+                CupertinoIcons.flag,
                 size: 20.w,
                 color: const Color(0xFFF87171),
               ),
@@ -733,15 +727,15 @@ class RealNameAuthView extends StatelessWidget {
   dynamic _getStatusIcon(int status) {
     switch (status) {
       case 0:
-        return HugeIcons.strokeRoundedFile01;
+        return CupertinoIcons.doc;
       case 1:
-        return HugeIcons.strokeRoundedClock01;
+        return CupertinoIcons.clock;
       case 2:
-        return HugeIcons.strokeRoundedCheckmarkCircle02;
+        return CupertinoIcons.checkmark_circle;
       case 3:
-        return HugeIcons.strokeRoundedCancel01;
+        return CupertinoIcons.xmark;
       default:
-        return HugeIcons.strokeRoundedInformationCircle;
+        return CupertinoIcons.info_circle;
     }
   }
 

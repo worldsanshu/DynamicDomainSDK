@@ -14,7 +14,6 @@ import 'package:openim_common/src/config.dart'
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 import 'qr_scan_box.dart';
 
@@ -349,8 +348,8 @@ class _QrcodeViewState extends State<QrcodeView>
                       ),
                     ],
                   ),
-                  child: HugeIcon(
-                    icon: HugeIcons.strokeRoundedArrowLeft01,
+                  child: Icon(
+                    CupertinoIcons.arrow_left,
                     size: 20.w,
                     color: const Color(0xFF757575), // AppColor.iconColor,
                   ),

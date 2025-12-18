@@ -6,7 +6,7 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:openim/routes/app_navigator.dart';
 import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim_common/openim_common.dart';
@@ -186,8 +186,8 @@ class AccountSetupLogic extends GetxController {
                           ),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
-                        child: HugeIcon(
-                          icon: HugeIcons.strokeRoundedUserBlock01,
+                        child: Icon(
+                          CupertinoIcons.nosign,
                           size: 24.w,
                           color: Get.theme.primaryColor,
                         ),
@@ -571,8 +571,8 @@ class AccountSetupLogic extends GetxController {
                           ),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
-                        child: HugeIcon(
-                          icon: HugeIcons.strokeRoundedTranslate,
+                        child: Icon(
+                          CupertinoIcons.textformat,
                           size: 24.w,
                           color: Get.theme.primaryColor,
                         ),
@@ -608,8 +608,8 @@ class AccountSetupLogic extends GetxController {
                                 ),
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
-                              child: HugeIcon(
-                                icon: HugeIcons.strokeRoundedSmartPhone01,
+                              child: Icon(
+                                CupertinoIcons.device_phone_portrait,
                                 size: 20.w,
                                 color: Get.theme.primaryColor,
                               ),
@@ -640,8 +640,8 @@ class AccountSetupLogic extends GetxController {
                                 ),
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
-                              child: HugeIcon(
-                                icon: HugeIcons.strokeRoundedTranslate,
+                              child: Icon(
+                                CupertinoIcons.textformat,
                                 size: 20.w,
                                 color: Get.theme.primaryColor,
                               ),
@@ -672,8 +672,8 @@ class AccountSetupLogic extends GetxController {
                                 ),
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
-                              child: HugeIcon(
-                                icon: HugeIcons.strokeRoundedGlobe02,
+                              child: Icon(
+                                CupertinoIcons.globe,
                                 size: 20.w,
                                 color: Get.theme.primaryColor,
                               ),
@@ -789,8 +789,8 @@ class AccountSetupLogic extends GetxController {
                           ),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
-                        child: HugeIcon(
-                          icon: HugeIcons.strokeRoundedLockPassword,
+                        child: Icon(
+                          CupertinoIcons.lock,
                           size: 24.w,
                           color: Get.theme.primaryColor,
                         ),
@@ -828,8 +828,8 @@ class AccountSetupLogic extends GetxController {
                             ),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
-                          child: HugeIcon(
-                            icon: HugeIcons.strokeRoundedLockPassword,
+                          child: Icon(
+                            CupertinoIcons.lock,
                             size: 20.w,
                             color: Get.theme.primaryColor,
                           ),
@@ -862,8 +862,8 @@ class AccountSetupLogic extends GetxController {
                               ),
                               borderRadius: BorderRadius.circular(10.r),
                             ),
-                            child: HugeIcon(
-                              icon: HugeIcons.strokeRoundedFingerPrint,
+                            child: Icon(
+                              CupertinoIcons.hand_raised,
                               size: 20.w,
                               color: Get.theme.primaryColor,
                             ),
@@ -1001,8 +1001,8 @@ class AccountSetupLogic extends GetxController {
                           ),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
-                        child: HugeIcon(
-                          icon: HugeIcons.strokeRoundedLockPassword,
+                        child: Icon(
+                          CupertinoIcons.lock,
                           size: 24.w,
                           color: Get.theme.primaryColor,
                         ),
@@ -1030,19 +1030,19 @@ class AccountSetupLogic extends GetxController {
                         label: StrRes.oldPwd,
                         controller: oldPwdCtrl,
                         obscureRx: oldPwdObscure,
-                        icon: HugeIcons.strokeRoundedLockPassword,
+                        icon: CupertinoIcons.lock,
                       ),
                       _buildPasswordField(
                         label: StrRes.newPwd,
                         controller: newPwdCtrl,
                         obscureRx: newPwdObscure,
-                        icon: HugeIcons.strokeRoundedKeyframeAlignHorizontal,
+                        icon: CupertinoIcons.lock_rotation,
                       ),
                       _buildPasswordField(
                         label: StrRes.confirmNewPwd,
                         controller: againPwdCtrl,
                         obscureRx: againPwdObscure,
-                        icon: HugeIcons.strokeRoundedCheckmarkBadge01,
+                        icon: CupertinoIcons.checkmark_shield,
                         showDivider: false,
                       ),
                     ],
@@ -1081,7 +1081,7 @@ class AccountSetupLogic extends GetxController {
     required String label,
     required TextEditingController controller,
     required RxBool obscureRx,
-    required List<List<dynamic>> icon,
+    required IconData icon,
     bool showDivider = true,
   }) {
     return Column(
@@ -1101,9 +1101,9 @@ class AccountSetupLogic extends GetxController {
                   ),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
-                child: HugeIcon(
-                  icon: icon,
-                  size: 18.w,
+                child: Icon(
+                  icon,
+                  size: 22.w,
                   color: Get.theme.primaryColor,
                 ),
               ),
@@ -1153,7 +1153,7 @@ class AccountSetupLogic extends GetxController {
                                   obscureRx.value
                                       ? Icons.visibility_off_rounded
                                       : Icons.visibility_rounded,
-                                  size: 18.w,
+                                  size: 22.w,
                                   color: const Color(0xFF6B7280),
                                 ),
                               ),

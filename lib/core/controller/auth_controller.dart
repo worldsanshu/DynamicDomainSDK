@@ -154,7 +154,17 @@ class AuthController extends SuperController {
         }
 
         // 解析登录凭证
-        final loginCertificate = _parseLoginCertificate(result['imCurrent']);
+        var loginCertificate = _parseLoginCertificate(result['imCurrent']);
+        if (loginCertificate == null) {
+          if (merchantList.length == 1) {
+            final switchResult = await GatewayApi.switchMerchant(
+              merchantID: merchantList.first.id,
+            );
+            loginCertificate =
+                _parseLoginCertificate(switchResult['imCurrent']);
+          }
+        }
+
         if (loginCertificate == null) {
           _handleRegisterError(StrRes.enterVerificationCode);
           return;
@@ -181,14 +191,14 @@ class AuthController extends SuperController {
             );
           } else {
             print('---- login error: $errCode, $errMsg');
-            String msg=StrRes.loginFailed;
-            switch(errCode){
+            String msg = StrRes.loginFailed;
+            switch (errCode) {
               case 51:
-                msg=StrRes.notFoundAccount;
+                msg = StrRes.notFoundAccount;
               case 53:
-                msg=StrRes.loginIncorrectPwd;
+                msg = StrRes.loginIncorrectPwd;
               default:
-                msg=StrRes.loginFailed;
+                msg = StrRes.loginFailed;
             }
             IMViews.showToast(msg);
           }
@@ -393,20 +403,16 @@ class AuthController extends SuperController {
   }
 
   @override
-  void onDetached() {
-  }
+  void onDetached() {}
 
   @override
-  void onHidden() {
-  }
+  void onHidden() {}
 
   @override
-  void onInactive() {
-  }
+  void onInactive() {}
 
   @override
-  void onPaused() {
-  }
+  void onPaused() {}
 
   @override
   void onResumed() {

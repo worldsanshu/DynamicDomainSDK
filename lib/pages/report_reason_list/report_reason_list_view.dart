@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:openim/pages/report_reason_list/report_reason_list_logic.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
@@ -310,8 +310,8 @@ class ReportReasonListPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          HugeIcon(
-                            icon: HugeIcons.strokeRoundedArrowRight01,
+                          Icon(
+                            CupertinoIcons.chevron_right,
                             size: 16.w,
                             color: const Color(0xFF9CA3AF),
                           ),

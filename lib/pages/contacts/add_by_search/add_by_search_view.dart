@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hugeicons/hugeicons.dart';
+
 import 'package:openim/constants/app_color.dart';
 import 'package:openim/routes/app_navigator.dart';
 import 'package:openim/widgets/empty_view.dart';
@@ -156,11 +156,10 @@ class AddContactsBySearchPage extends StatelessWidget {
                 ],
                 if (isSearching && !hasSearchResults) ...[
                   EmptyView(
-                    message: logic.isSearchUser
-                        ? StrRes.noFoundUser
-                        : StrRes.noFoundGroup,
-                    icon: CupertinoIcons.search
-                  ),
+                      message: logic.isSearchUser
+                          ? StrRes.noFoundUser
+                          : StrRes.noFoundGroup,
+                      icon: CupertinoIcons.search),
                 ],
                 if (!isSearching) ...[
                   EmptyView(
@@ -285,8 +284,8 @@ class AddContactsBySearchPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  HugeIcon(
-                    icon: HugeIcons.strokeRoundedArrowRight01,
+                  Icon(
+                    CupertinoIcons.chevron_right,
                     size: 20.w,
                     color: AppColor.iconColor,
                   ),

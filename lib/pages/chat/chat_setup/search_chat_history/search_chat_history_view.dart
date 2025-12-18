@@ -8,7 +8,7 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
@@ -83,9 +83,9 @@ class SearchChatHistoryPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Center(
-                    child: HugeIcon(
-                      icon: HugeIcons.strokeRoundedCalendar03,
-                      size: 18.w,
+                    child: Icon(
+                      CupertinoIcons.calendar,
+                      size: 22.w,
                       color: const Color(0xFF6B7280),
                     ),
                   ),
@@ -109,10 +109,9 @@ class SearchChatHistoryPage extends StatelessWidget {
             //     child: _defaultView(context),
             //   )
             EmptyView(
-              message: StrRes.pleaseEnterToSearch,
-              icon: Ionicons.search,
-            )
-
+                message: StrRes.pleaseEnterToSearch,
+                icon: Ionicons.search,
+              )
             : (logic.isSearchNotResult
                 ? SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
@@ -371,21 +370,21 @@ class SearchChatHistoryPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildQuickActionButton(
-                  hugeIcon: HugeIcons.strokeRoundedImage02,
+                  icon: CupertinoIcons.photo_fill,
                   label: StrRes.picture,
                   color: const Color(0xFF34D399),
                   onTap: logic.searchChatHistoryPicture,
                   index: 1,
                 ),
                 _buildQuickActionButton(
-                  hugeIcon: HugeIcons.strokeRoundedVideoReplay,
+                  icon: CupertinoIcons.video_camera,
                   label: StrRes.video,
                   color: const Color(0xFFF87171),
                   onTap: logic.searchChatHistoryVideo,
                   index: 2,
                 ),
                 _buildQuickActionButton(
-                  hugeIcon: HugeIcons.strokeRoundedFile02,
+                  icon: CupertinoIcons.doc_fill,
                   label: StrRes.file,
                   color: const Color(0xFFFBBF24),
                   onTap: logic.searchChatHistoryFile,
@@ -400,7 +399,7 @@ class SearchChatHistoryPage extends StatelessWidget {
   }
 
   Widget _buildQuickActionButton({
-    required List<List<dynamic>> hugeIcon,
+    required IconData icon,
     required String label,
     required Color color,
     required VoidCallback onTap,
@@ -456,8 +455,8 @@ class SearchChatHistoryPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14.r),
                       ),
                       child: Center(
-                        child: HugeIcon(
-                          icon: hugeIcon,
+                        child: Icon(
+                          icon,
                           size: 24.w,
                           color: AppColor.iconColor,
                         ),

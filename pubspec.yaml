@@ -121,7 +121,6 @@ dependencies:
     path: local_plugin/flutter_openim_sdk
   flutter_inappwebview: ^6.1.5
   image_gallery_saver_plus: ^4.0.1
-  hugeicons: ^1.0.2
   flutter_spinkit: 5.2.1
 
 

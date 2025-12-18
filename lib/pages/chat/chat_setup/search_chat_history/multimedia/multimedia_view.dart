@@ -186,7 +186,7 @@ class MultimediaItemWidget extends StatelessWidget {
                       child: Icon(
                         CupertinoIcons.play_fill,
                         color: Colors.white,
-                        size: 18.w,
+                        size: 22.w,
                       ),
                     ),
                   Positioned(

@@ -12,7 +12,7 @@ import 'package:openim/core/controller/client_config_controller.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:openim/pages/auth/widget/app_text_form_field.dart';
 import 'package:openim/widgets/qr_code_bottom_sheet.dart';
 
@@ -477,8 +477,8 @@ class GroupSetupLogic extends GetxController {
                       EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                   child: Row(
                     children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedEdit02,
+                      Icon(
+                        CupertinoIcons.pencil,
                         size: 24.w,
                         color: const Color(0xFF374151),
                       ),
@@ -774,8 +774,8 @@ class GroupSetupLogic extends GetxController {
                           ),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
-                        child: HugeIcon(
-                          icon: HugeIcons.strokeRoundedUserEdit01,
+                        child: Icon(
+                          CupertinoIcons.person_crop_circle,
                           size: 24.w,
                           color: Get.theme.primaryColor,
                         ),

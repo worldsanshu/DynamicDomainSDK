@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:openim/core/controller/client_config_controller.dart';
 import 'package:openim/pages/chat/chat_setup/search_chat_history/multimedia/multimedia_logic.dart';
 import 'package:openim_common/openim_common.dart';
@@ -140,7 +140,7 @@ class ChatSetupLogic extends GetxController {
         );
       });
       chatLogic?.clearAllMessage();
-      IMViews.showToast(StrRes.clearSuccessfully,type:1);
+      IMViews.showToast(StrRes.clearSuccessfully, type: 1);
 
       AppNavigator.startBackMain();
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -238,8 +238,8 @@ class ChatSetupLogic extends GetxController {
                       EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                   child: Row(
                     children: [
-                      HugeIcon(
-                        icon: HugeIcons.strokeRoundedTextFont,
+                      Icon(
+                        CupertinoIcons.textformat_size,
                         size: 24.w,
                         color: const Color(0xFF374151),
                       ),
@@ -376,9 +376,9 @@ class ChatSetupLogic extends GetxController {
                               color: const Color(0xFF4F42FF).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12.r),
                             ),
-                            child: HugeIcon(
-                              icon: HugeIcons.strokeRoundedTextFont,
-                              size: 18.w,
+                            child: Icon(
+                              CupertinoIcons.textformat_size,
+                              size: 22.w,
                               color: const Color(0xFF4F42FF),
                             ),
                           ),
@@ -411,9 +411,9 @@ class ChatSetupLogic extends GetxController {
                               color: const Color(0xFF4F42FF).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12.r),
                             ),
-                            child: HugeIcon(
-                              icon: HugeIcons.strokeRoundedTextFont,
-                              size: 18.w,
+                            child: Icon(
+                              CupertinoIcons.textformat_size,
+                              size: 22.w,
                               color: const Color(0xFF4F42FF),
                             ),
                           ),
@@ -575,7 +575,8 @@ class ChatSetupLogic extends GetxController {
 
                 // Title Section
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
                   child: Row(
                     children: [
                       Container(
@@ -584,8 +585,8 @@ class ChatSetupLogic extends GetxController {
                           color: const Color(0xFFF3F4F6),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
-                        child: HugeIcon(
-                          icon: HugeIcons.strokeRoundedImage02,
+                        child: Icon(
+                          CupertinoIcons.photo_fill,
                           size: 24.w,
                           color: const Color(0xFF374151),
                         ),
@@ -610,7 +611,7 @@ class ChatSetupLogic extends GetxController {
                   child: Column(
                     children: [
                       _buildOptionItem(
-                        icon: HugeIcons.strokeRoundedImage01,
+                        icon: CupertinoIcons.photo,
                         title: StrRes.selectAssetsFromAlbum,
                         color: const Color(0xFF34D399),
                         onTap: () {
@@ -620,7 +621,7 @@ class ChatSetupLogic extends GetxController {
                       ),
                       16.verticalSpace,
                       _buildOptionItem(
-                        icon: HugeIcons.strokeRoundedCamera01,
+                        icon: CupertinoIcons.camera,
                         title: StrRes.selectAssetsFromCamera,
                         color: const Color(0xFF4F42FF),
                         onTap: () {
@@ -630,7 +631,7 @@ class ChatSetupLogic extends GetxController {
                       ),
                       16.verticalSpace,
                       _buildOptionItem(
-                        icon: HugeIcons.strokeRoundedRefresh,
+                        icon: CupertinoIcons.refresh,
                         title: StrRes.setDefaultBackground,
                         color: const Color(0xFFFBBF24),
                         onTap: () {
@@ -654,7 +655,7 @@ class ChatSetupLogic extends GetxController {
   }
 
   Widget _buildOptionItem({
-    required List<List<dynamic>> icon,
+    required IconData icon,
     required String title,
     required Color color,
     required VoidCallback onTap,
@@ -683,8 +684,8 @@ class ChatSetupLogic extends GetxController {
                 color: color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16.r),
               ),
-              child: HugeIcon(
-                icon: icon,
+              child: Icon(
+                icon,
                 size: 24.w,
                 color: color,
               ),
@@ -703,7 +704,7 @@ class ChatSetupLogic extends GetxController {
             ),
             Icon(
               Icons.arrow_forward_ios_rounded,
-              size: 16.w,
+              size: 20.w,
               color: const Color(0xFFD1D5DB),
             ),
           ],

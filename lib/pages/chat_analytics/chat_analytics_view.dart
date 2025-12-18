@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -26,9 +25,7 @@ class ChatAnalyticsView extends StatelessWidget {
             onTap: logic.refreshData,
             icon: CupertinoIcons.refresh,
           ),
-          body: logic.isLoading.value
-              ? _buildLoadingView()
-              : _buildContent(),
+          body: logic.isLoading.value ? _buildLoadingView() : _buildContent(),
         ));
   }
 
@@ -114,7 +111,7 @@ class ChatAnalyticsView extends StatelessWidget {
           child: _buildStatCard(
             title: StrRes.totalMessages,
             value: logic.totalMessages,
-            icon: HugeIcons.strokeRoundedBubbleChat,
+            icon: CupertinoIcons.chat_bubble_2,
             color: const Color(0xFF4F42FF),
             subtitle: '${StrRes.sent}: ${logic.totalMessagesSent.value}',
           ),
@@ -124,7 +121,7 @@ class ChatAnalyticsView extends StatelessWidget {
           child: _buildStatCard(
             title: StrRes.conversations,
             value: '${logic.totalConversations.value}',
-            icon: HugeIcons.strokeRoundedUserMultiple,
+            icon: CupertinoIcons.person_2,
             color: const Color(0xFF10B981),
             subtitle:
                 '${StrRes.friends}: ${logic.totalFriends.value} | ${StrRes.groups}: ${logic.totalGroups.value}',
@@ -137,7 +134,7 @@ class ChatAnalyticsView extends StatelessWidget {
   Widget _buildStatCard({
     required String title,
     required String value,
-    required List<List<dynamic>> icon,
+    required IconData icon,
     required Color color,
     required String subtitle,
   }) {
@@ -169,8 +166,8 @@ class ChatAnalyticsView extends StatelessWidget {
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
-                child: HugeIcon(
-                  icon: icon,
+                child: Icon(
+                  icon,
                   color: color,
                   size: 20.w,
                 ),
@@ -221,7 +218,7 @@ class ChatAnalyticsView extends StatelessWidget {
   Widget _buildActivityChart() {
     return _buildSectionCard(
       title: StrRes.sevenDayActivity,
-      icon: HugeIcons.strokeRoundedAnalytics02,
+      icon: CupertinoIcons.chart_bar,
       color: const Color(0xFFA78BFA),
       child: Column(
         children: [
@@ -243,7 +240,7 @@ class ChatAnalyticsView extends StatelessWidget {
                   final height = maxValue == 0
                       ? 10.h
                       : (entry.value / maxValue * 100.h).clamp(10.h, 100.h);
-                  
+
                   final isToday = entry.key == data.keys.last;
 
                   return Column(
@@ -256,7 +253,9 @@ class ChatAnalyticsView extends StatelessWidget {
                             fontFamily: 'FilsonPro',
                             fontSize: 10.sp,
                             fontWeight: FontWeight.w600,
-                            color: isToday ? const Color(0xFFA78BFA) : const Color(0xFF9CA3AF),
+                            color: isToday
+                                ? const Color(0xFFA78BFA)
+                                : const Color(0xFF9CA3AF),
                           ),
                         ),
                       6.verticalSpace,
@@ -267,9 +266,15 @@ class ChatAnalyticsView extends StatelessWidget {
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: isToday 
-                              ? [const Color(0xFFA78BFA), const Color(0xFFC4B5FD)]
-                              : [const Color(0xFFE5E7EB), const Color(0xFFF3F4F6)],
+                            colors: isToday
+                                ? [
+                                    const Color(0xFFA78BFA),
+                                    const Color(0xFFC4B5FD)
+                                  ]
+                                : [
+                                    const Color(0xFFE5E7EB),
+                                    const Color(0xFFF3F4F6)
+                                  ],
                           ),
                           borderRadius: BorderRadius.circular(8.r),
                         ),
@@ -280,8 +285,11 @@ class ChatAnalyticsView extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'FilsonPro',
                           fontSize: 10.sp,
-                          fontWeight: isToday ? FontWeight.w600 : FontWeight.w500,
-                          color: isToday ? const Color(0xFFA78BFA) : const Color(0xFF9CA3AF),
+                          fontWeight:
+                              isToday ? FontWeight.w600 : FontWeight.w500,
+                          color: isToday
+                              ? const Color(0xFFA78BFA)
+                              : const Color(0xFF9CA3AF),
                         ),
                       ),
                     ],
@@ -298,7 +306,7 @@ class ChatAnalyticsView extends StatelessWidget {
   Widget _buildMessageTypeChart() {
     return _buildSectionCard(
       title: StrRes.messageTypes,
-      icon: HugeIcons.strokeRoundedPieChart,
+      icon: CupertinoIcons.chart_pie,
       color: const Color(0xFFFBBF24),
       child: Column(
         children: [
@@ -381,7 +389,7 @@ class ChatAnalyticsView extends StatelessWidget {
   Widget _buildTopContacts() {
     return _buildSectionCard(
       title: StrRes.topFriends,
-      icon: HugeIcons.strokeRoundedUser,
+      icon: CupertinoIcons.person,
       color: const Color(0xFF10B981),
       child: Column(
         children: [
@@ -397,7 +405,8 @@ class ChatAnalyticsView extends StatelessWidget {
                 return _buildRankingItem(
                   rank: entry.key + 1,
                   name: entry.value.name,
-                  subtitle: '${_formatMessageCount(entry.value.messageCount)} ${StrRes.messagesCount}',
+                  subtitle:
+                      '${_formatMessageCount(entry.value.messageCount)} ${StrRes.messagesCount}',
                   avatar: entry.value.avatar,
                 );
               }).toList(),
@@ -411,7 +420,7 @@ class ChatAnalyticsView extends StatelessWidget {
   Widget _buildTopGroups() {
     return _buildSectionCard(
       title: StrRes.topGroups,
-      icon: HugeIcons.strokeRoundedUserGroup,
+      icon: CupertinoIcons.person_3,
       color: const Color(0xFFEC4899),
       child: Column(
         children: [
@@ -428,7 +437,8 @@ class ChatAnalyticsView extends StatelessWidget {
                   rank: entry.key + 1,
                   name: entry.value.name,
                   isGroup: true,
-                  subtitle: '${_formatMessageCount(entry.value.messageCount)} ${StrRes.messagesCount}',
+                  subtitle:
+                      '${_formatMessageCount(entry.value.messageCount)} ${StrRes.messagesCount}',
                   avatar: entry.value.avatar,
                 );
               }).toList(),
@@ -441,7 +451,7 @@ class ChatAnalyticsView extends StatelessWidget {
 
   Widget _buildSectionCard({
     required String title,
-    required List<List<dynamic>> icon,
+    required IconData icon,
     required Color color,
     required Widget child,
   }) {
@@ -471,8 +481,8 @@ class ChatAnalyticsView extends StatelessWidget {
                     color: color.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
-                  child: HugeIcon(
-                    icon: icon,
+                  child: Icon(
+                    icon,
                     color: color,
                     size: 20.w,
                   ),
@@ -590,8 +600,8 @@ class ChatAnalyticsView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          HugeIcon(
-            icon: HugeIcons.strokeRoundedBarChart,
+          Icon(
+            CupertinoIcons.chart_bar,
             size: 32.w,
             color: const Color(0xFFD1D5DB),
           ),
@@ -625,32 +635,32 @@ class ChatAnalyticsView extends StatelessWidget {
   }
 
   Widget _getMessageTypeIcon(String type) {
-    List<List<dynamic>> iconData;
+    IconData iconData;
     Color color;
 
     switch (type) {
       case 'Text':
-        iconData = HugeIcons.strokeRoundedBubbleChat;
+        iconData = CupertinoIcons.chat_bubble;
         color = const Color(0xFF4F42FF);
         break;
       case 'Image':
-        iconData = HugeIcons.strokeRoundedImage01;
+        iconData = CupertinoIcons.photo;
         color = const Color(0xFF10B981);
         break;
       case 'Voice':
-        iconData = HugeIcons.strokeRoundedMic01;
+        iconData = CupertinoIcons.mic;
         color = const Color(0xFFF59E0B);
         break;
       case 'Video':
-        iconData = HugeIcons.strokeRoundedVideo01;
+        iconData = CupertinoIcons.videocam;
         color = const Color(0xFFEF4444);
         break;
       case 'File':
-        iconData = HugeIcons.strokeRoundedFile01;
+        iconData = CupertinoIcons.doc;
         color = const Color(0xFFA78BFA);
         break;
       default:
-        iconData = HugeIcons.strokeRoundedCircle;
+        iconData = CupertinoIcons.circle;
         color = const Color(0xFF6B7280);
         break;
     }
@@ -661,8 +671,8 @@ class ChatAnalyticsView extends StatelessWidget {
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8.r),
       ),
-      child: HugeIcon(
-        icon: iconData,
+      child: Icon(
+        iconData,
         color: color,
         size: 16.w,
       ),

@@ -213,7 +213,7 @@ class SelectContactsLogic
             controller: inputCtrl,
           ));
       if (sure == true) {
-        IMViews.showToast(StrRes.sentSuccessfully,type:1);
+        IMViews.showToast(StrRes.sentSuccessfully, type: 1);
         Get.back(result: {
           "checkedList": checkedList.values,
           "customEx": inputCtrl.text.trim(),
@@ -316,8 +316,8 @@ class SelectContactsLogic
         .map((item) {
           // Display remark if available, otherwise display nickname
           if (item is ISUserInfo) {
-            return (item.remark != null && item.remark!.isNotEmpty) 
-                ? item.remark 
+            return (item.remark != null && item.remark!.isNotEmpty)
+                ? item.remark
                 : item.nickname;
           }
           return parseName(item);
@@ -423,22 +423,24 @@ class SelectContactsLogic
     // Search in friend list - search by nickname, remark, and userID
     for (var friend in friendList) {
       bool match = false;
-      
+
       // Search by nickname
       if (friend.nickname?.toLowerCase().contains(lowerQuery) ?? false) {
         match = true;
       }
-      
+
       // Search by remark (if available)
-      if (!match && (friend.remark?.toLowerCase().contains(lowerQuery) ?? false)) {
+      if (!match &&
+          (friend.remark?.toLowerCase().contains(lowerQuery) ?? false)) {
         match = true;
       }
-      
+
       // Search by userID
-      if (!match && (friend.userID?.toLowerCase().contains(lowerQuery) ?? false)) {
+      if (!match &&
+          (friend.userID?.toLowerCase().contains(lowerQuery) ?? false)) {
         match = true;
       }
-      
+
       if (match) {
         searchResults.putIfAbsent(friend.userID ?? '', () => friend);
       }
@@ -539,13 +541,19 @@ class SelectContactsLogic
   }
 
   bool get enabledConfirmButton {
-    // For `addMember` action we allow confirming when at least one contact is selected.
-    // For other actions keep the existing minimum requirement (3 total selected).
+    // For `forward` and `addMember` actions we allow confirming when at least one contact is selected.
+    // For `crateGroup` action, require 3 total selected (to form a group).
+    // For other actions, allow at least 1 selection.
     final totalSelected = defaultCheckedIDList.length + checkedList.length;
-    if (action == SelAction.addMember) {
+    if (action == SelAction.forward ||
+        action == SelAction.addMember ||
+        action == SelAction.recommend) {
       return checkedList.isNotEmpty;
     }
-    return totalSelected >= 3;
+    if (action == SelAction.crateGroup) {
+      return totalSelected >= 3;
+    }
+    return checkedList.isNotEmpty;
   }
 
   Widget get checkedConfirmView =>

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 
@@ -68,7 +67,7 @@ class GroupManagePage extends StatelessWidget {
                       8.verticalSpace,
                       _buildMenuSection([
                         _buildMenuItem(
-                          icon: HugeIcons.strokeRoundedNotificationOff02,
+                          icon: CupertinoIcons.bell_slash,
                           label: StrRes.muteAllMember,
                           hasSwitch: true,
                           switchValue: logic.groupInfo.value.status == 3,
@@ -88,7 +87,7 @@ class GroupManagePage extends StatelessWidget {
                       8.verticalSpace,
                       _buildMenuSection([
                         _buildMenuItem(
-                          icon: HugeIcons.strokeRoundedUserBlock01,
+                          icon: CupertinoIcons.nosign,
                           label: StrRes.notAllowSeeMemberProfile,
                           hasSwitch: true,
                           switchValue: logic.allowLookProfiles,
@@ -96,7 +95,7 @@ class GroupManagePage extends StatelessWidget {
                           showDivider: true,
                         ),
                         _buildMenuItem(
-                          icon: HugeIcons.strokeRoundedUserAdd01,
+                          icon: CupertinoIcons.person_add,
                           label: StrRes.notAllAddMemberToBeFriend,
                           hasSwitch: true,
                           switchValue: logic.allowAddFriend,
@@ -105,7 +104,7 @@ class GroupManagePage extends StatelessWidget {
                           showDivider: true,
                         ),
                         _buildMenuItem(
-                          icon: HugeIcons.strokeRoundedSettings02,
+                          icon: CupertinoIcons.gear,
                           label: StrRes.joinGroupSet,
                           value: logic.joinGroupOption,
                           onTap: logic.modifyJoinGroupSet,
@@ -125,8 +124,7 @@ class GroupManagePage extends StatelessWidget {
                         8.verticalSpace,
                         _buildMenuSection([
                           _buildMenuItem(
-                            icon: HugeIcons
-                                .strokeRoundedArrowDataTransferHorizontal,
+                            icon: CupertinoIcons.arrow_right_arrow_left,
                             label: StrRes.transferGroupOwnerRight,
                             onTap: logic.transferGroupOwnerRight,
                             isWarning: true,
@@ -161,7 +159,7 @@ class GroupManagePage extends StatelessWidget {
             ),
             child: Icon(
               icon,
-              size: 18.w,
+              size: 22.w,
               color: color,
             ),
           ),
@@ -201,7 +199,7 @@ class GroupManagePage extends StatelessWidget {
   }
 
   Widget _buildMenuItem({
-    required List<List<dynamic>> icon,
+    required IconData icon,
     required String label,
     String? value,
     bool hasSwitch = false,
@@ -234,9 +232,9 @@ class GroupManagePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Center(
-                      child: HugeIcon(
-                        icon: icon,
-                        size: 18.w,
+                      child: Icon(
+                        icon,
+                        size: 22.w,
                         color: isWarning
                             ? const Color(0xFFEF4444)
                             : const Color(0xFF6B7280),
@@ -281,14 +279,14 @@ class GroupManagePage extends StatelessWidget {
                       ),
                     ),
                     8.horizontalSpace,
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedArrowRight01,
+                    Icon(
+                      CupertinoIcons.chevron_right,
                       size: 16.w,
                       color: const Color(0xFF9CA3AF),
                     ),
                   ] else if (onTap != null)
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedArrowRight01,
+                    Icon(
+                      CupertinoIcons.chevron_right,
                       size: 16.w,
                       color: const Color(0xFF9CA3AF),
                     ),

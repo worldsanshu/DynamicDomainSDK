@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 
 enum DialogType {
   confirm,
@@ -41,7 +41,7 @@ class CustomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final btnColor=primaryColor ?? Theme.of(context).primaryColor;
+    final btnColor = primaryColor ?? Theme.of(context).primaryColor;
     return Material(
       color: Colors.transparent,
       child: Stack(
@@ -55,12 +55,13 @@ class CustomDialog extends StatelessWidget {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                 child: Container(
-                  color: Colors.black.withOpacity(0.25), // Làm tối nền một chút để nổi bật dialog
+                  color: Colors.black.withOpacity(
+                      0.25), // Làm tối nền một chút để nổi bật dialog
                 ),
               ),
             ),
           ),
-          
+
           // 2. Nội dung Dialog
           Center(
             child: AnimationConfiguration.synchronized(
@@ -74,7 +75,8 @@ class CustomDialog extends StatelessWidget {
                     margin: EdgeInsets.symmetric(horizontal: 24.w),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(24.r), // Bo tròn mềm mại hơn
+                      borderRadius:
+                          BorderRadius.circular(24.r), // Bo tròn mềm mại hơn
                       boxShadow: [
                         BoxShadow(
                           color: const Color(0xFF111827).withOpacity(0.15),
@@ -113,8 +115,8 @@ class CustomDialog extends StatelessWidget {
                               shape: BoxShape.circle,
                               color: btnColor.withOpacity(0.08),
                             ),
-                            child: HugeIcon(
-                              icon: HugeIcons.strokeRoundedNotification03,
+                            child: Icon(
+                              CupertinoIcons.bell,
                               color: btnColor,
                               size: 32.w,
                             ),
@@ -143,8 +145,10 @@ class CustomDialog extends StatelessWidget {
                           scrollable
                               ? Container(
                                   constraints: BoxConstraints(maxHeight: 200.h),
-                                  margin: EdgeInsets.symmetric(horizontal: 20.w),
-                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                                  margin:
+                                      EdgeInsets.symmetric(horizontal: 20.w),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12.w, vertical: 8.h),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFF9FAFB),
                                     borderRadius: BorderRadius.circular(12.r),
@@ -158,7 +162,8 @@ class CustomDialog extends StatelessWidget {
                                   ),
                                 )
                               : Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 24.w),
                                   child: Text(
                                     content!,
                                     textAlign: TextAlign.center,
@@ -178,7 +183,8 @@ class CustomDialog extends StatelessWidget {
                                 Expanded(
                                   child: _buildSecondaryButton(
                                     text: leftText ?? StrRes.cancel,
-                                    onTap: onTapLeft ?? () => Get.back(result: false),
+                                    onTap: onTapLeft ??
+                                        () => Get.back(result: false),
                                   ),
                                 ),
                                 SizedBox(width: 12.w), // Khoảng cách giữa 2 nút
@@ -187,7 +193,8 @@ class CustomDialog extends StatelessWidget {
                                 child: _buildPrimaryButton(
                                   text: rightText ?? StrRes.agree,
                                   color: btnColor,
-                                  onTap: onTapRight ?? () => Get.back(result: true),
+                                  onTap: onTapRight ??
+                                      () => Get.back(result: true),
                                 ),
                               ),
                             ],
@@ -279,6 +286,7 @@ class CustomDialog extends StatelessWidget {
     );
   }
 }
+
 class ForwardHintDialog extends StatelessWidget {
   const ForwardHintDialog({
     super.key,
@@ -588,10 +596,8 @@ class ForwardHintDialog extends StatelessWidget {
           ),
         ),
         padding: EdgeInsets.all(5.w),
-        child: HugeIcon(
-          icon: isCancel
-              ? HugeIcons.strokeRoundedCancel01
-              : HugeIcons.strokeRoundedSent,
+        child: Icon(
+          isCancel ? CupertinoIcons.xmark : CupertinoIcons.paperplane,
           color: textColor,
           size: 20.w,
         ),

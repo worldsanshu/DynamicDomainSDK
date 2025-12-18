@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
+
 import 'package:ionicons/ionicons.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim/widgets/custom_buttom.dart';
@@ -69,25 +69,24 @@ class SelectContactsPage extends StatelessWidget {
                 );
               }
               return WrapAzListView<ISUserInfo>(
-                  data: logic.friendList,
-                  itemCount: logic.friendList.length,
-                  itemBuilder: (_, friend, index) => Obx(() => 
-                  Column(
-                    children: [
-                      if(index==0)...[SizedBox(height: 16.h)],
-                      FriendItemView(
-                    info: friend,
-                    showDivider: index != logic.friendList.length - 1,
-                    checked: logic.isChecked(friend),
-                    // Allow toggling even if previously default-checked so
-                    // selected users are visible and can be unchecked.
-                    enabled: true,
-                    onTap: () => logic.toggleChecked(friend),
-                    showRadioButton: logic.showRadioButton,
-                  )
-                    ],
-                  )),
-                );
+                data: logic.friendList,
+                itemCount: logic.friendList.length,
+                itemBuilder: (_, friend, index) => Obx(() => Column(
+                      children: [
+                        if (index == 0) ...[SizedBox(height: 16.h)],
+                        FriendItemView(
+                          info: friend,
+                          showDivider: index != logic.friendList.length - 1,
+                          checked: logic.isChecked(friend),
+                          // Allow toggling even if previously default-checked so
+                          // selected users are visible and can be unchecked.
+                          enabled: true,
+                          onTap: () => logic.toggleChecked(friend),
+                          showRadioButton: logic.showRadioButton,
+                        )
+                      ],
+                    )),
+              );
             }
 
             // Normal view with categories and conversations
@@ -122,14 +121,14 @@ class SelectContactsPage extends StatelessWidget {
                       margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
                       alignment: Alignment.centerLeft,
                       child: Text(
-                            StrRes.recentConversations,
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF64748B),
-                            ),
-                          ),
+                        StrRes.recentConversations,
+                        style: TextStyle(
+                          fontFamily: 'FilsonPro',
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF64748B),
+                        ),
+                      ),
                     ),
                     ...List.generate(
                       logic.conversationList.length,
@@ -505,7 +504,8 @@ class SelectedContactsListView extends StatelessWidget {
                       onTap: () => Get.back(),
                       child: CustomButton(
                           icon: CupertinoIcons.xmark,
-                          iconSize: 12, color: Colors.blueGrey),
+                          iconSize: 12,
+                          color: Colors.blueGrey),
                     ),
                   ],
                 ),
@@ -606,8 +606,8 @@ class SelectedContactsListView extends StatelessWidget {
             onTap: () => logic.removeItem(info),
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                child: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedDelete02, color: Colors.red)),
+                child:
+                    Icon(CupertinoIcons.delete, color: Colors.red, size: 20.w)),
           ),
         ],
       ),

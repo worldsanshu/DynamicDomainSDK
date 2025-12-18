@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'group_online_info_logic.dart';
@@ -228,8 +228,8 @@ class GroupOnlineInfoPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                HugeIcon(
-                  icon: HugeIcons.strokeRoundedUserEdit01,
+                Icon(
+                  CupertinoIcons.person_crop_circle,
                   size: 20.w,
                   color: const Color(0xFF6B7280),
                 ),
@@ -292,8 +292,8 @@ class GroupOnlineInfoPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
             child: Row(
               children: [
-                HugeIcon(
-                  icon: _getStatusIcon(keyType),
+                Icon(
+                  _getStatusIcon(keyType),
                   size: 24.w,
                   color: _getStatusColor(keyType),
                 ),
@@ -341,8 +341,8 @@ class GroupOnlineInfoPage extends StatelessWidget {
                   ),
                 ),
                 8.horizontalSpace,
-                HugeIcon(
-                  icon: HugeIcons.strokeRoundedArrowRight01,
+                Icon(
+                  CupertinoIcons.chevron_right,
                   size: 16.w,
                   color: const Color(0xFF9CA3AF),
                 ),
@@ -369,18 +369,18 @@ class GroupOnlineInfoPage extends StatelessWidget {
     }
   }
 
-  List<List<dynamic>> _getStatusIcon(String keyType) {
+  IconData _getStatusIcon(String keyType) {
     switch (keyType) {
       case 'currentlyOnline':
-        return HugeIcons.strokeRoundedCircle;
+        return CupertinoIcons.circle;
       case 'onlineLast24Hours':
-        return HugeIcons.strokeRoundedClock01;
+        return CupertinoIcons.clock;
       case 'onlineLast3Days':
-        return HugeIcons.strokeRoundedCalendar01;
+        return CupertinoIcons.calendar;
       case 'onlineLast7Days':
-        return HugeIcons.strokeRoundedCalendarAdd01;
+        return CupertinoIcons.calendar_badge_plus;
       default:
-        return HugeIcons.strokeRoundedUser;
+        return CupertinoIcons.person;
     }
   }
 }

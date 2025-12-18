@@ -1,8 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 import '../contacts/contacts_view.dart';
 import '../conversation/conversation_view.dart';
@@ -64,8 +63,8 @@ class HomePage extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 20.0, horizontal: 30.0),
-                      child: HugeIcon(
-                        icon: HugeIcons.strokeRoundedHome01,
+                      child: Icon(
+                        CupertinoIcons.house_fill,
                         color: logic.index.value == 0
                             ? const Color(0xFF3B82F6)
                             : const Color(0xFF6B7280),
@@ -113,8 +112,8 @@ class HomePage extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 20.0, horizontal: 30.0),
-                      child: HugeIcon(
-                        icon: HugeIcons.strokeRoundedUserMultiple02,
+                      child: Icon(
+                        CupertinoIcons.person_2_fill,
                         color: logic.index.value == 1
                             ? const Color(0xFF3B82F6)
                             : const Color(0xFF6B7280),
@@ -160,8 +159,8 @@ class HomePage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 20.0, horizontal: 30.0),
-                  child: HugeIcon(
-                    icon: HugeIcons.strokeRoundedSearch01,
+                  child: Icon(
+                    CupertinoIcons.search,
                     color: logic.index.value == 2
                         ? const Color(0xFF3B82F6)
                         : const Color(0xFF6B7280),
@@ -178,8 +177,8 @@ class HomePage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 20.0, horizontal: 30.0),
-                  child: HugeIcon(
-                    icon: HugeIcons.strokeRoundedUser03,
+                  child: Icon(
+                    CupertinoIcons.person_fill,
                     color: logic.index.value == 3
                         ? const Color(0xFF3B82F6)
                         : const Color(0xFF6B7280),

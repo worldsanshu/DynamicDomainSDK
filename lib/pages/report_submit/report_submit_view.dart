@@ -167,7 +167,7 @@ class ReportDetailPage extends StatelessWidget {
                       ),
                       child: Icon(
                         Icons.edit_note_rounded,
-                        size: 18.w,
+                        size: 22.w,
                         color: const Color(0xFF3B82F6),
                       ),
                     ),
@@ -263,7 +263,7 @@ class ReportDetailPage extends StatelessWidget {
                       ),
                       child: Icon(
                         Icons.photo_library_outlined,
-                        size: 18.w,
+                        size: 22.w,
                         color: const Color(0xFF10B981),
                       ),
                     ),

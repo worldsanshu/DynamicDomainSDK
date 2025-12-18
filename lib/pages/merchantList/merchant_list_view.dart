@@ -38,7 +38,7 @@ class MerchantListView extends StatelessWidget {
           return IconButton(
             icon: Icon(
               CupertinoIcons.clear_circled_solid,
-              size: 20.w,
+              size: 16.w,
               color: const Color(0xFF9CA3AF),
             ),
             onPressed: logic.clearSearch,

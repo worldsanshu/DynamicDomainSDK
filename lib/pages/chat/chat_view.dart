@@ -517,7 +517,7 @@ class ChatPage extends StatelessWidget {
                                               Icon(
                                                 Icons.keyboard_arrow_down,
                                                 color: const Color(0xFF4F42FF),
-                                                size: 18.w,
+                                                size: 22.w,
                                               ),
                                               6.horizontalSpace,
                                               Text(

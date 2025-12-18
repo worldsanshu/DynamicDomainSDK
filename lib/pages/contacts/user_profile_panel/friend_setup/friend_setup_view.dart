@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -127,7 +126,7 @@ class FriendSetupPage extends StatelessWidget {
       children: [
         _buildMenuItem(
           label: StrRes.setupRemark,
-          icon: HugeIcons.strokeRoundedEdit02,
+          icon: CupertinoIcons.pencil,
           iconColor: const Color(0xFF4F42FF),
           showRightArrow: true,
           onTap: logic.setFriendRemark,
@@ -135,7 +134,7 @@ class FriendSetupPage extends StatelessWidget {
         _buildDivider(),
         _buildMenuItem(
           label: StrRes.recommendToFriend,
-          icon: HugeIcons.strokeRoundedUserAdd01,
+          icon: CupertinoIcons.person_add,
           iconColor: const Color(0xFF34D399),
           showRightArrow: true,
           onTap: logic.recommendToFriend,
@@ -150,7 +149,7 @@ class FriendSetupPage extends StatelessWidget {
       children: [
         Obx(() => _buildMenuItem(
               label: StrRes.addToBlacklist,
-              icon: HugeIcons.strokeRoundedUserBlock02,
+              icon: CupertinoIcons.nosign,
               iconColor: const Color(0xFFFBBF24),
               showSwitchButton: true,
               switchOn:
@@ -192,7 +191,7 @@ class FriendSetupPage extends StatelessWidget {
 
   Widget _buildMenuItem({
     required String label,
-    required dynamic icon, // Changed to dynamic to support HugeIcons
+    required IconData icon,
     required Color iconColor,
     bool showRightArrow = false,
     bool showSwitchButton = false,
@@ -219,10 +218,10 @@ class FriendSetupPage extends StatelessWidget {
           child: Row(
             children: [
               // Icon container
-              HugeIcon(
-                icon: icon,
+              Icon(
+                icon,
                 size: 20.w,
-                color: AppColor.iconColor, //iconColor,
+                color: AppColor.iconColor,
               ),
 
               16.horizontalSpace,
@@ -242,8 +241,8 @@ class FriendSetupPage extends StatelessWidget {
 
               // Right actions
               if (showRightArrow)
-                HugeIcon(
-                  icon: HugeIcons.strokeRoundedArrowRight01,
+                Icon(
+                  CupertinoIcons.chevron_right,
                   size: 20.w,
                   color: AppColor.iconColor,
                 ),

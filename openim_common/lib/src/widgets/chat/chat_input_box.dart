@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:openim_common/src/res/styles/app_colors.dart';
 
 double kInputBoxMinHeight = 56.h;
@@ -193,7 +193,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
 
   // Claymorphism button widget
   Widget _buildClaymorphismButton({
-    required List<List<dynamic>> icon,
+    required IconData icon,
     required VoidCallback onTap,
     Color? iconColor,
     Color? backgroundColor,
@@ -223,8 +223,8 @@ class _ChatInputBoxState extends State<ChatInputBox>
             width: 1,
           ),
         ),
-        child: HugeIcon(
-          icon: icon,
+        child: Icon(
+          icon,
           size: 25.w,
           color: iconColor ??
               (isActive ? const Color(0xFF4F42FF) : const Color(0xFF6B7280)),
@@ -253,8 +253,8 @@ class _ChatInputBoxState extends State<ChatInputBox>
                 ),
         ),
         alignment: Alignment.center,
-        child: HugeIcon(
-          icon: HugeIcons.strokeRoundedSent,
+        child: Icon(
+          CupertinoIcons.paperplane,
           size: 20.w,
           color: _sendButtonVisible ? Colors.white : AppColors.iconColor,
         ),
@@ -286,8 +286,8 @@ class _ChatInputBoxState extends State<ChatInputBox>
             width: 1,
           ),
         ),
-        child: HugeIcon(
-          icon: HugeIcons.strokeRoundedMore,
+        child: Icon(
+          CupertinoIcons.ellipsis,
           size: 25.w,
           color: const Color(0xFF6B7280),
         ),
@@ -323,8 +323,8 @@ class _ChatInputBoxState extends State<ChatInputBox>
                   width: 1,
                 ),
               ),
-              child: HugeIcon(
-                icon: HugeIcons.strokeRoundedArrowRight01,
+              child: Icon(
+                CupertinoIcons.chevron_right,
                 size: 18.w,
                 color: const Color(0xFF6B7280),
               ),
@@ -374,7 +374,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
                         6.horizontalSpace,
                         // Voice button
                         _buildClaymorphismButton(
-                          icon: HugeIcons.strokeRoundedMic01,
+                          icon: CupertinoIcons.mic,
                           onTap: onTapSpeak,
                         ),
                       ],

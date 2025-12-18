@@ -122,7 +122,7 @@ class _ConversationPageState extends State<ConversationPage> {
                         child: Center(
                           child: Icon(
                             CupertinoIcons.speaker_3,
-                            size: 18.w,
+                            size: 22.w,
                             color: const Color(0xFFF59E0B),
                           ),
                         ),
@@ -1102,7 +1102,7 @@ class _ConversationPageState extends State<ConversationPage> {
             child: Center(
               child: Icon(
                 CupertinoIcons.wifi,
-                size: 18.w,
+                size: 22.w,
                 color: const Color(0xFFEF4444),
               ),
             ),

@@ -1,10 +1,10 @@
 // ignore_for_file: unused_element, deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim_common/openim_common.dart';
 import '../../../widgets/base_page.dart';
@@ -135,7 +135,7 @@ class AddContactsMethodPage extends StatelessWidget {
       child: Column(
         children: [
           _buildMenuItem(
-            icon: HugeIcons.strokeRoundedQrCode01,
+            icon: CupertinoIcons.qrcode,
             iconColor: const Color(0xFF4F42FF),
             text: StrRes.scan,
             hintText: StrRes.scanHint,
@@ -143,7 +143,7 @@ class AddContactsMethodPage extends StatelessWidget {
             showDivider: true,
           ),
           _buildMenuItem(
-            icon: HugeIcons.strokeRoundedUserAdd01,
+            icon: CupertinoIcons.person_add,
             iconColor: const Color(0xFF10B981),
             text: StrRes.addFriend,
             hintText: StrRes.addFriendHint,
@@ -151,7 +151,7 @@ class AddContactsMethodPage extends StatelessWidget {
             showDivider: true,
           ),
           _buildMenuItem(
-            icon: HugeIcons.strokeRoundedUserGroup,
+            icon: CupertinoIcons.person_3,
             iconColor: const Color(0xFFA78BFA),
             text: StrRes.createGroup,
             hintText: StrRes.createGroupHint,
@@ -159,7 +159,7 @@ class AddContactsMethodPage extends StatelessWidget {
             showDivider: true,
           ),
           _buildMenuItem(
-            icon: HugeIcons.strokeRoundedGroupItems,
+            icon: CupertinoIcons.person_2_square_stack,
             iconColor: const Color(0xFFF59E0B),
             text: StrRes.addGroup,
             hintText: StrRes.addGroupHint,
@@ -172,7 +172,7 @@ class AddContactsMethodPage extends StatelessWidget {
   }
 
   Widget _buildMenuItem({
-    required List<List<dynamic>> icon,
+    required IconData icon,
     required Color iconColor,
     required String text,
     required String hintText,
@@ -190,10 +190,10 @@ class AddContactsMethodPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
               child: Row(
                 children: [
-                  HugeIcon(
-                    icon: icon,
+                  Icon(
+                    icon,
                     size: 20.w,
-                    color: AppColor.iconColor, //iconColor,
+                    color: AppColor.iconColor,
                   ),
                   16.horizontalSpace,
                   Expanded(
@@ -222,8 +222,8 @@ class AddContactsMethodPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  HugeIcon(
-                    icon: HugeIcons.strokeRoundedArrowRight01,
+                  Icon(
+                    CupertinoIcons.chevron_right,
                     size: 16.w,
                     color: const Color(0xFF9CA3AF),
                   ),

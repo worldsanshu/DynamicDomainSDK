@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
+
 import 'package:openim_common/openim_common.dart';
 
 import '../../../core/controller/im_controller.dart';
@@ -158,8 +158,8 @@ class MyInfoPage extends StatelessWidget {
                   ),
                 ],
               ),
-              child: HugeIcon(
-                icon: HugeIcons.strokeRoundedCamera01,
+              child: Icon(
+                CupertinoIcons.camera,
                 size: 14.w,
                 color: Colors.white,
               ),

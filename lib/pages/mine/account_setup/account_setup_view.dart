@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
-import 'package:hugeicons/hugeicons.dart';
 
 import '../../../widgets/gradient_scaffold.dart';
 import '../../../widgets/settings_menu.dart';
@@ -33,21 +32,21 @@ class AccountSetupPage extends StatelessWidget {
             SettingsMenuSection(
               items: [
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedNotificationOff02,
+                  icon: CupertinoIcons.bell_slash,
                   label: StrRes.notDisturbMode,
                   hasSwitch: true,
                   switchValue: logic.isGlobalNotDisturb,
                   onSwitchChanged: (_) => logic.toggleNotDisturbMode(),
                 ),
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedMusicNote01,
+                  icon: CupertinoIcons.music_note,
                   label: StrRes.allowRing,
                   hasSwitch: true,
                   switchValue: logic.isAllowBeep,
                   onSwitchChanged: (_) => logic.toggleBeep(),
                 ),
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedSmartPhone01,
+                  icon: CupertinoIcons.device_phone_portrait,
                   label: StrRes.allowVibrate,
                   hasSwitch: true,
                   switchValue: logic.isAllowVibration,
@@ -64,20 +63,19 @@ class AccountSetupPage extends StatelessWidget {
             SettingsMenuSection(
               items: [
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedUserAdd01,
+                  icon: CupertinoIcons.person_add,
                   label: StrRes.allowAddMeFried,
                   hasSwitch: true,
                   switchValue: logic.isAllowAddFriend,
-                  onSwitchChanged: (_) =>
-                      logic.toggleForbidAddMeToFriend(),
+                  onSwitchChanged: (_) => logic.toggleForbidAddMeToFriend(),
                 ),
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedUserBlock01,
+                  icon: CupertinoIcons.nosign,
                   label: StrRes.blacklist,
                   onTap: logic.blacklist,
                 ),
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedGlobe02,
+                  icon: CupertinoIcons.globe,
                   label: StrRes.languageSetup,
                   value: logic.curLanguage.value,
                   onTap: logic.languageSetting,
@@ -93,17 +91,17 @@ class AccountSetupPage extends StatelessWidget {
             SettingsMenuSection(
               items: [
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedLockPassword,
+                  icon: CupertinoIcons.lock,
                   label: StrRes.unlockSettings,
                   onTap: logic.unlockSetup,
                 ),
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedKeyframeAlignHorizontal,
+                  icon: CupertinoIcons.lock_rotation,
                   label: StrRes.changePassword,
                   onTap: logic.changePwd,
                 ),
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedKid,
+                  icon: CupertinoIcons.person_crop_circle_badge_exclam,
                   label: StrRes.teenMode,
                   hasSwitch: true,
                   switchValue: logic.teenModeEnabled.value,
@@ -123,13 +121,13 @@ class AccountSetupPage extends StatelessWidget {
             SettingsMenuSection(
               items: [
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedDelete02,
+                  icon: CupertinoIcons.trash,
                   label: StrRes.clearChatHistory,
                   onTap: logic.clearChatHistory,
                   isWarning: true,
                 ),
                 _buildMenuItem(
-                  icon: HugeIcons.strokeRoundedUserRemove01,
+                  icon: CupertinoIcons.person_badge_minus,
                   label: StrRes.deleteAccount,
                   onTap: logic.deleteAccount,
                   isWarning: true,
@@ -143,7 +141,7 @@ class AccountSetupPage extends StatelessWidget {
     );
   }
 
-  Widget _buildIconContainer(dynamic icon, {bool isWarning = false}) {
+  Widget _buildIconContainer(IconData icon, {bool isWarning = false}) {
     return Container(
       width: 36.w,
       height: 36.w,
@@ -154,8 +152,8 @@ class AccountSetupPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Center(
-        child: HugeIcon(
-          icon: icon,
+        child: Icon(
+          icon,
           size: 20.w,
           color: isWarning ? const Color(0xFFEF4444) : const Color(0xFF424242),
         ),
@@ -164,7 +162,7 @@ class AccountSetupPage extends StatelessWidget {
   }
 
   Widget _buildMenuItem({
-    required dynamic icon,
+    required IconData icon,
     required String label,
     String? value,
     bool hasSwitch = false,
