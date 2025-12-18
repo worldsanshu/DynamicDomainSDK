@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:ui';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
@@ -12,6 +11,7 @@ import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/friend_item_view.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim/pages/auth/widget/app_text_form_field.dart';
+import 'package:openim/widgets/overlay_new_contact.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
@@ -19,7 +19,6 @@ import 'package:sprintf/sprintf.dart';
 
 import 'contacts_logic.dart';
 import '../conversation/conversation_logic.dart';
-import '../home/home_logic.dart';
 import 'group_list_logic.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -81,7 +80,7 @@ class _ContactsPageState extends State<ContactsPage>
               '${StrRes.friends}: ${logic.friendListLogic.friendList.length}, ${StrRes.groups}: ${groupListLogic.createdList.length + groupListLogic.joinedList.length}',
           trailing: HeaderActionButton(
             buttonKey: _newButtonKey,
-            onTap: _showActionPopup,
+            onTap: () => showNewContactPopup(context, _newButtonKey),
           ),
           body: Column(
             children: [
@@ -621,40 +620,8 @@ class _ContactsPageState extends State<ContactsPage>
       ),
     );
   }
-
-  Widget _buildSearchBox({
-    required TextEditingController controller,
-    required String hintText,
-    required ValueChanged<String> onChanged,
-    required FocusNode focusNode,
-  }) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      color: Colors.white,
-      child: AppTextFormField(
-        focusNode: focusNode,
-        controller: controller,
-        label: hintText,
-        keyboardType: TextInputType.text,
-        onChanged: onChanged,
-        validator: (value) => null,
-        prefixIcon: Icon(CupertinoIcons.search),
-        suffixIcon: GestureDetector(
-          onTap: () {
-            controller.clear();
-            onChanged('');
-          },
-          child: Icon(
-            CupertinoIcons.xmark_circle_fill,
-            size: 18.w,
-            color: const Color(0xFF9CA3AF),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterChip({
+  
+   Widget _buildFilterChip({
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
@@ -863,161 +830,6 @@ class _ContactsPageState extends State<ContactsPage>
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showActionPopup() {
-    final homeLogic = Get.find<HomeLogic>();
-    final RenderBox button =
-        _newButtonKey.currentContext!.findRenderObject() as RenderBox;
-    final Offset buttonPosition = button.localToGlobal(Offset.zero);
-    final menuWidth = 200.w;
-    final double left = buttonPosition.dx + button.size.width - menuWidth;
-    final double top = buttonPosition.dy + button.size.height + 4;
-
-    showGeneralDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      barrierDismissible: true,
-      barrierLabel: 'Dismiss',
-      transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-          child: Stack(
-            children: [
-              Positioned(
-                left: left,
-                top: top,
-                width: menuWidth,
-                child: Material(
-                  color: Colors.transparent,
-                  child: ScaleTransition(
-                    scale: animation,
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildMenuItemPopup(
-                            icon: HugeIcons.strokeRoundedAiScan,
-                            title: StrRes.scan,
-                            onTap: () {
-                              Navigator.pop(context);
-                              homeLogic.scan();
-                            },
-                            isFirst: true,
-                          ),
-                          _buildMenuDividerPopup(),
-                          _buildMenuItemPopup(
-                            icon: HugeIcons.strokeRoundedUserAdd01,
-                            title: StrRes.addFriend,
-                            onTap: () {
-                              Navigator.pop(context);
-                              homeLogic.addFriend();
-                            },
-                          ),
-                          _buildMenuDividerPopup(),
-                          _buildMenuItemPopup(
-                            icon: HugeIcons.strokeRoundedUserGroup,
-                            title: StrRes.addGroup,
-                            onTap: () {
-                              Navigator.pop(context);
-                              homeLogic.addGroup();
-                            },
-                          ),
-                          _buildMenuDividerPopup(),
-                          _buildMenuItemPopup(
-                            icon: HugeIcons.strokeRoundedUserGroup02,
-                            title: StrRes.createGroup,
-                            onTap: () {
-                              Navigator.pop(context);
-                              homeLogic.createGroup();
-                            },
-                            isLast: true,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildMenuItemPopup({
-    required List<List<dynamic>> icon,
-    required String title,
-    VoidCallback? onTap,
-    bool isFirst = false,
-    bool isLast = false,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          decoration: BoxDecoration(
-            borderRadius: isFirst
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(12.r),
-                    topRight: Radius.circular(12.r),
-                  )
-                : isLast
-                    ? BorderRadius.only(
-                        bottomLeft: Radius.circular(12.r),
-                        bottomRight: Radius.circular(12.r),
-                      )
-                    : null,
-          ),
-          child: Row(
-            children: [
-              HugeIcon(
-                icon: icon,
-                size: 20.w,
-                color: const Color(0xFF424242),
-              ),
-              12.horizontalSpace,
-              Text(
-                title,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF374151),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMenuDividerPopup() {
-    return Padding(
-      padding: EdgeInsets.only(left: 16.w, right: 16.w),
-      child: const Divider(
-        height: 1,
-        thickness: 1,
-        color: Color(0xFFF3F4F6),
       ),
     );
   }

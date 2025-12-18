@@ -635,6 +635,28 @@ class ConversationLogic extends SuperController {
     return info.faceURL;
   }
 
+  /// Get preview messages for overlay (only unread messages)
+  Future<List<Message>> getPreviewMessages(ConversationInfo info) async {
+    try {
+      final unreadCount = getUnreadCount(info);
+      if (unreadCount == 0) {
+        return []; // No unread messages, return empty list
+      }
+
+      final count = unreadCount > 10 ? 10 : unreadCount;
+      final result =
+          await OpenIM.iMManager.messageManager.getAdvancedHistoryMessageList(
+        conversationID: info.conversationID,
+        count: count,
+        startMsg: null,
+      );
+      return result.messageList ?? [];
+    } catch (e) {
+      Logger.print('Error fetching preview messages: $e');
+      return [];
+    }
+  }
+
   bool isGroupChat(ConversationInfo info) {
     return info.isGroupChat;
   }

@@ -22,7 +22,7 @@ class MinePage extends StatelessWidget {
 
     return GradientScaffold(
       title: StrRes.mine,
-      scrollable: true,
+      scrollable: false, // Changed to false - we'll handle scrolling manually
       avatar: Obx(() => AvatarView(
             url: logic.imLogic.userInfo.value.faceURL,
             text: logic.imLogic.userInfo.value.nickname,
@@ -34,6 +34,7 @@ class MinePage extends StatelessWidget {
           )),
       body: Column(
         children: [
+          // === FIXED SECTION ===
           // User Info
           Obx(() {
             final user = logic.imLogic.userInfo.value;
@@ -78,7 +79,7 @@ class MinePage extends StatelessWidget {
 
           24.verticalSpace,
 
-          // Action Buttons Row
+          // Action Buttons Row (FIXED)
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Row(
@@ -109,59 +110,69 @@ class MinePage extends StatelessWidget {
           24.verticalSpace,
           const Divider(height: 1, color: Color(0xFFF3F4F6)),
 
-          // Menu List
-          _buildSectionTitle(StrRes.aboutSection),
-          MenuItemWidget(
-            icon: CupertinoIcons.person_crop_circle_badge_checkmark,
-            label: StrRes.realNameAuth,
-            onTap: logic.startRealNameAuth,
-          ),
-          // My Company - conditionally displayed
-          Obx(() {
-            if (logic.showMyCompanyEntry==true) {
-              return const SizedBox.shrink();
-            }
-            return MenuItemWidget(
-              icon: CupertinoIcons.building_2_fill,
-              label: StrRes.myCompany,
-              onTap: logic.startMerchantList,
-            );
-          }),
-          MenuItemWidget(
-            icon: CupertinoIcons.shield,
-            label: StrRes.privacyPolicy,
-            onTap: logic.privacyPolicy,
-          ),
-          MenuItemWidget(
-            icon: CupertinoIcons.doc_text,
-            label: StrRes.serviceAgreement,
-            onTap: logic.serviceAgreement,
-          ),
-          MenuItemWidget(
-            icon: CupertinoIcons.info,
-            label: StrRes.aboutUs,
-            onTap: logic.aboutUs,
-          ),
+          // === SCROLLABLE SECTION ===
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Column(
+                children: [
+                  // Menu List
+                  _buildSectionTitle(StrRes.aboutSection),
+                  MenuItemWidget(
+                    icon: CupertinoIcons.person_crop_circle_badge_checkmark,
+                    label: StrRes.realNameAuth,
+                    onTap: logic.startRealNameAuth,
+                  ),
+                  // My Company - conditionally displayed
+                  Obx(() {
+                    if (logic.showMyCompanyEntry == true) {
+                      return const SizedBox.shrink();
+                    }
+                    return MenuItemWidget(
+                      icon: CupertinoIcons.building_2_fill,
+                      label: StrRes.myCompany,
+                      onTap: logic.startMerchantList,
+                    );
+                  }),
+                  MenuItemWidget(
+                    icon: CupertinoIcons.shield,
+                    label: StrRes.privacyPolicy,
+                    onTap: logic.privacyPolicy,
+                  ),
+                  MenuItemWidget(
+                    icon: CupertinoIcons.doc_text,
+                    label: StrRes.serviceAgreement,
+                    onTap: logic.serviceAgreement,
+                  ),
+                  MenuItemWidget(
+                    icon: CupertinoIcons.info,
+                    label: StrRes.aboutUs,
+                    onTap: logic.aboutUs,
+                  ),
 
-          _buildSectionTitle(StrRes.systemSection),
-          MenuItemWidget(
-            icon: CupertinoIcons.chart_bar,
-            label: StrRes.chatAnalytics,
-            onTap: logic.startChatAnalytics,
+                  _buildSectionTitle(StrRes.systemSection),
+                  MenuItemWidget(
+                    icon: CupertinoIcons.chart_bar,
+                    label: StrRes.chatAnalytics,
+                    onTap: logic.startChatAnalytics,
+                  ),
+                  MenuItemWidget(
+                    icon: CupertinoIcons.delete,
+                    label: StrRes.clearCache,
+                    onTap: logic.clearCache,
+                    textColor: const Color(0xFFEF4444),
+                  ),
+                  MenuItemWidget(
+                    icon: Icons.logout,
+                    label: StrRes.logout,
+                    onTap: logic.logout,
+                    textColor: const Color(0xFFEF4444),
+                  ),
+                  40.verticalSpace,
+                ],
+              ),
+            ),
           ),
-          MenuItemWidget(
-            icon: CupertinoIcons.delete,
-            label: StrRes.clearCache,
-            onTap: logic.clearCache,
-            textColor: const Color(0xFFEF4444),
-          ),
-          MenuItemWidget(
-            icon: Icons.logout,
-            label: StrRes.logout,
-            onTap: logic.logout,
-            textColor: const Color(0xFFEF4444),
-          ),
-          40.verticalSpace,
         ],
       ),
     );

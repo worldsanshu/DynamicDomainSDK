@@ -10,31 +10,31 @@ import 'package:get/get.dart';
 class GradientScaffold extends StatelessWidget {
   /// Main title text (required)
   final String title;
-  
+
   /// Optional subtitle text
   final String? subtitle;
-  
+
   /// Show back button (optional)
   final bool showBackButton;
-  
+
   /// Back button callback (default: Get.back())
   final VoidCallback? onBack;
-  
+
   /// Custom trailing widget on the right (optional)
   final Widget? trailing;
-  
+
   /// Body content widget
   final Widget body;
-  
+
   /// Whether body scrolls (wrap in SingleChildScrollView)
   final bool scrollable;
-  
+
   /// Background color of body
   final Color bodyColor;
-  
+
   /// Avatar widget to display overlapping header and body
   final Widget? avatar;
-  
+
   /// Search box widget (overlapping between header and body)
   final Widget? searchBox;
 
@@ -63,66 +63,80 @@ class GradientScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
 
-    Widget content = Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        // 1. Header Background
-        _buildHeader(primaryColor),
-        
-        // 2. Main Content Card
-        Container(
-          margin: EdgeInsets.only(top: searchBox != null ? bodyTopMargin.h + 12.h : bodyTopMargin.h),          
-          decoration: BoxDecoration(
-            color: bodyColor,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, -5),
+    // Build the body content widget
+    Widget bodyContent = scrollable
+        ? Expanded(
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Column(
+                children: [
+                  SizedBox(height: avatar != null ? 80.h : bodyTopPadding.h),
+                  body,
+                ],
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+            ),
+          )
+        : Expanded(
             child: Column(
-              mainAxisSize: scrollable ? MainAxisSize.min : MainAxisSize.max,
               children: [
                 SizedBox(height: avatar != null ? 80.h : bodyTopPadding.h),
-                scrollable 
-                    ? body 
-                    : Expanded(child: body),
+                Expanded(child: body),
               ],
             ),
-          ),
-        ),
-        
-        // 3. Avatar (Overlapping) - optional
-        if (avatar != null)
-          Positioned(
-            top: 90.h,
-            child: avatar!,
-          ),
-          
-        // 4. Search Box (Overlapping) - optional
-        if (searchBox != null)
-          Positioned(
-            top: (headerHeight - 75).h,
-            left: 20.w,
-            right: 20.w,
-            child: searchBox!,
-          ),
-      ],
-    );
+          );
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: scrollable
-          ? SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              child: content,
-            )
-          : content,
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          // 1. Header Background (Fixed)
+          _buildHeader(primaryColor),
+
+          // 2. Main Content Card
+          Container(
+            margin: EdgeInsets.only(
+                top: searchBox != null
+                    ? bodyTopMargin.h + 12.h
+                    : bodyTopMargin.h),
+            decoration: BoxDecoration(
+              color: bodyColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, -5),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+              child: Column(
+                children: [
+                  bodyContent,
+                ],
+              ),
+            ),
+          ),
+
+          // 3. Avatar (Overlapping) - optional
+          if (avatar != null)
+            Positioned(
+              top: 90.h,
+              child: avatar!,
+            ),
+
+          // 4. Search Box (Overlapping) - optional
+          if (searchBox != null)
+            Positioned(
+              top: (headerHeight - 75).h,
+              left: 20.w,
+              right: 20.w,
+              child: searchBox!,
+            ),
+        ],
+      ),
     );
   }
 
@@ -144,7 +158,8 @@ class GradientScaffold extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: (headerHeight-105).h),
+          padding: EdgeInsets.only(
+              left: 20.w, right: 20.w, bottom: (headerHeight - 105).h),
           child: _buildHeaderContent(),
         ),
       ),
@@ -170,7 +185,7 @@ class GradientScaffold extends StatelessWidget {
           ),
           12.horizontalSpace,
         ],
-        
+
         // Title + Subtitle
         Expanded(
           child: Column(
@@ -202,7 +217,7 @@ class GradientScaffold extends StatelessWidget {
             ],
           ),
         ),
-        
+
         // Trailing (optional)
         if (trailing != null) trailing!,
       ],

@@ -31,15 +31,14 @@ class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
     this.onTap,
-    this.title="",
+    this.title = "",
     this.margin,
     this.padding,
     this.icon,
     this.iconSize = 16,
     required this.color,
     this.badgeCount,
-    this.fontSize=14,
-
+    this.fontSize = 14,
     this.label,
     this.labelColor,
   });
@@ -51,64 +50,68 @@ class CustomButton extends StatelessWidget {
             ? EdgeInsets.all(16.w)
             : EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h));
 
-    final button = GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            margin: margin,
-            padding: effectivePadding,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.175),
-              borderRadius: BorderRadius.circular(icon != null ? 50.r : 12.r),
-            ),
-            child: IntrinsicWidth(
-              child: icon != null
-                  ? Icon(
-                      icon,
-                      color: color,
-                      size: iconSize.w,
-                    )
-                  : Text(
-                      title,
-                      style: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        color: color,
-                        fontSize: fontSize,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-            ),
-          ),
-          if (badgeCount != null && badgeCount! > 0)
-            Positioned(
-              top: -5.h,
-              right: 0.w,
-              child: Container(
-                constraints: BoxConstraints(minWidth: 24.w, minHeight: 24.h),
-                padding: EdgeInsets.symmetric(horizontal: 6.w),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFEF4444),
-                  shape: BoxShape.circle,
+    final button = Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                margin: margin,
+                padding: effectivePadding,
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.175),
+                  borderRadius:
+                      BorderRadius.circular(icon != null ? 50.r : 12.r),
                 ),
-                child: Center(
-                  child: Text(
-                    badgeCount! > 99 ? '99+' : badgeCount.toString(),
-                    style: TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                child: IntrinsicWidth(
+                  child: icon != null
+                      ? Icon(
+                          icon,
+                          color: color,
+                          size: iconSize.w,
+                        )
+                      : Text(
+                          title,
+                          style: TextStyle(
+                            fontFamily: 'FilsonPro',
+                            color: color,
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                ),
+              ),
+              if (badgeCount != null && badgeCount! > 0)
+                Positioned(
+                  top: -5.h,
+                  right: 0.w,
+                  child: Container(
+                    constraints:
+                        BoxConstraints(minWidth: 24.w, minHeight: 24.h),
+                    padding: EdgeInsets.symmetric(horizontal: 6.w),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFEF4444),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        badgeCount! > 99 ? '99+' : badgeCount.toString(),
+                        style: TextStyle(
+                          fontFamily: 'FilsonPro',
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-        ],
-      ),
-    );
+            ],
+          ),
+        ));
 
     // If label is provided, wrap button with Column to show label below
     if (label != null) {

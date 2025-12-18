@@ -87,12 +87,15 @@ class SettingsMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        InkWell(
-          onTap: hasSwitch ? null : onTap,
-          child: Padding(
-            padding: padding ??
-                EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-            child: isRow ? _buildRowLayout() : _buildColumnLayout(),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: hasSwitch ? null : onTap,
+            child: Padding(
+              padding: padding ??
+                  EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+              child: isRow ? _buildRowLayout() : _buildColumnLayout(),
+            ),
           ),
         ),
         if (showDivider)
@@ -178,85 +181,85 @@ class SettingsMenuItem extends StatelessWidget {
   }
 
   Widget _buildColumnLayout() {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      // Icon
-      if (icon != null || iconWidget != null) ...[
-        iconWidget ??
-            Container(
-              width: 36.w,
-              height: 36.w,
-              decoration: BoxDecoration(
-                color: color != null
-                    ? color!.withOpacity(0.1)
-                    : (isWarning
-                        ? const Color(0xFFEF4444).withOpacity(0.1)
-                        : const Color(0xFFF3F4F6)),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Icon(
-                icon,
-                size: 20.w,
-                color: color ??
-                    (isWarning
-                        ? const Color(0xFFEF4444)
-                        : const Color(0xFF424242)),
-              ),
-            ),
-        12.horizontalSpace,
-      ],
-
-      // Label + value (giữ cùng cột)
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontWeight: FontWeight.w500,
-                fontSize: 15.sp,
-                color: isWarning
-                    ? const Color(0xFFEF4444)
-                    : const Color(0xFF374151),
-              ),
-            ),
-            if (value != null)
-              Text(
-                value!,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14.sp,
-                  color: const Color(0xFF9CA3AF),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Icon
+        if (icon != null || iconWidget != null) ...[
+          iconWidget ??
+              Container(
+                width: 36.w,
+                height: 36.w,
+                decoration: BoxDecoration(
+                  color: color != null
+                      ? color!.withOpacity(0.1)
+                      : (isWarning
+                          ? const Color(0xFFEF4444).withOpacity(0.1)
+                          : const Color(0xFFF3F4F6)),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Icon(
+                  icon,
+                  size: 20.w,
+                  color: color ??
+                      (isWarning
+                          ? const Color(0xFFEF4444)
+                          : const Color(0xFF424242)),
                 ),
               ),
-          ],
-        ),
-      ),
+          12.horizontalSpace,
+        ],
 
-      // Toggle / arrow
-      if (hasSwitch && switchValue != null)
-        _buildSwitch()
-      else ...[
-        if (valueWidget != null) valueWidget!,
-        if (showArrow && !hasSwitch) ...[
-          8.horizontalSpace,
-          Icon(
-            Icons.arrow_forward_ios_rounded,
-            size: 14.w,
-            color: const Color(0xFF9CA3AF),
+        // Label + value (giữ cùng cột)
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontFamily: 'FilsonPro',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15.sp,
+                  color: isWarning
+                      ? const Color(0xFFEF4444)
+                      : const Color(0xFF374151),
+                ),
+              ),
+              if (value != null)
+                Text(
+                  value!,
+                  style: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14.sp,
+                    color: const Color(0xFF9CA3AF),
+                  ),
+                ),
+            ],
           ),
+        ),
+
+        // Toggle / arrow
+        if (hasSwitch && switchValue != null)
+          _buildSwitch()
+        else ...[
+          if (valueWidget != null) valueWidget!,
+          if (showArrow && !hasSwitch) ...[
+            8.horizontalSpace,
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 14.w,
+              color: const Color(0xFF9CA3AF),
+            ),
+          ],
         ],
       ],
-    ],
-  );
-} 
+    );
+  }
 
-Widget _buildSwitch() {
+  Widget _buildSwitch() {
     return GestureDetector(
       onTap: () => onSwitchChanged?.call(!(switchValue ?? false)),
       child: AnimatedContainer(

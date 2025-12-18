@@ -8,18 +8,18 @@ import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:openim/widgets/empty_view.dart';
 
 import 'package:openim/core/controller/im_controller.dart';
 import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
+import 'package:openim/widgets/overlay_new_contact.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'conversation_logic.dart';
-import '../home/home_logic.dart';
+import 'conversation_preview_overlay.dart';
 
 class ConversationPage extends StatefulWidget {
   ConversationPage({super.key});
@@ -50,7 +50,7 @@ class _ConversationPageState extends State<ConversationPage> {
           subtitle: logic.getUnreadText,
           trailing: HeaderActionButton(
             buttonKey: _newButtonKey,
-            onTap: _showActionPopup,
+            onTap: () => showNewContactPopup(context, _newButtonKey),
           ),
           body: Column(
             children: [
@@ -273,159 +273,6 @@ class _ConversationPageState extends State<ConversationPage> {
       }),
     );
   }
-
-  void _showActionPopup() {
-    final homeLogic = Get.find<HomeLogic>();
-    final RenderBox button =
-        _newButtonKey.currentContext!.findRenderObject() as RenderBox;
-    final Offset buttonPosition = button.localToGlobal(Offset.zero);
-    final menuWidth = 200.w;
-    final double left = buttonPosition.dx + button.size.width - menuWidth;
-    final double top = buttonPosition.dy + button.size.height + 4;
-
-    showGeneralDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      barrierDismissible: true,
-      barrierLabel: 'Dismiss',
-      transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-          child: Stack(
-            children: [
-              Positioned(
-                left: left,
-                top: top,
-                width: menuWidth,
-                child: Material(
-                  color: Colors.transparent,
-                  child: ScaleTransition(
-                    scale: animation,
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildMenuItemPopup(
-                            icon: HugeIcons.strokeRoundedAiScan,
-                            title: StrRes.scan,
-                            onTap: () {
-                              Navigator.pop(context);
-                              homeLogic.scan();
-                            },
-                            isFirst: true,
-                          ),
-                          _buildMenuDividerPopup(),
-                          _buildMenuItemPopup(
-                            icon: HugeIcons.strokeRoundedUserAdd01,
-                            title: StrRes.addFriend,
-                            onTap: () {
-                              Navigator.pop(context);
-                              homeLogic.addFriend();
-                            },
-                          ),
-                          _buildMenuDividerPopup(),
-                          _buildMenuItemPopup(
-                            icon: HugeIcons.strokeRoundedUserGroup,
-                            title: StrRes.addGroup,
-                            onTap: () {
-                              Navigator.pop(context);
-                              homeLogic.addGroup();
-                            },
-                          ),
-                          _buildMenuDividerPopup(),
-                          _buildMenuItemPopup(
-                            icon: HugeIcons.strokeRoundedUserGroup02,
-                            title: StrRes.createGroup,
-                            onTap: () {
-                              Navigator.pop(context);
-                              homeLogic.createGroup();
-                            },
-                            isLast: true,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildMenuDividerPopup() {
-    return Padding(
-      padding: EdgeInsets.only(left: 16.w, right: 16.w),
-      child: const Divider(
-        height: 1,
-        thickness: 1,
-        color: Color(0xFFF3F4F6),
-      ),
-    );
-  }
-
-  Widget _buildMenuItemPopup({
-    required List<List<dynamic>> icon,
-    required String title,
-    required VoidCallback onTap,
-    bool isFirst = false,
-    bool isLast = false,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: isFirst ? Radius.circular(12.r) : Radius.zero,
-              topRight: isFirst ? Radius.circular(12.r) : Radius.zero,
-              bottomLeft: isLast ? Radius.circular(12.r) : Radius.zero,
-              bottomRight: isLast ? Radius.circular(12.r) : Radius.zero,
-            ),
-          ),
-          child: Row(
-            children: [
-              HugeIcon(
-                icon: icon,
-                size: 20.w,
-                color: const Color(0xFF424242),
-              ),
-              12.horizontalSpace,
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF374151),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildFriendsCarousel() {
     return Obx(() {
       if (logic.showLoading || logic.friendList.isEmpty) {
@@ -1026,126 +873,145 @@ class _ConversationPageState extends State<ConversationPage> {
           )),
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
-          onTap: () => logic.toChat(conversationInfo: info),
-          child: Row(
-            children: [
-              _buildAvatar(info),
-              16.horizontalSpace,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  _sanitizeText(logic.getShowName(info)),
-                                  style: TextStyle(
-                                    fontFamily: 'FilsonPro',
-                                    fontSize: 16.sp,
-                                    fontWeight: logic.getUnreadCount(info) > 0
-                                        ? FontWeight.w600
-                                        : FontWeight.w500,
-                                    color: const Color(0xFF424242),
+        child: GestureDetector(
+          onLongPress: () => _showMessagePreview(info),
+          child: InkWell(
+            onTap: () => logic.toChat(conversationInfo: info),
+            child: Row(
+              children: [
+                _buildAvatar(info),
+                16.horizontalSpace,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    _sanitizeText(logic.getShowName(info)),
+                                    style: TextStyle(
+                                      fontFamily: 'FilsonPro',
+                                      fontSize: 16.sp,
+                                      fontWeight: logic.getUnreadCount(info) > 0
+                                          ? FontWeight.w600
+                                          : FontWeight.w500,
+                                      color: const Color(0xFF424242),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              if (info.isPinned!) ...[
-                                4.horizontalSpace,
-                                Icon(
-                                  CupertinoIcons.pin,
-                                  size: 14.w,
-                                  color: Theme.of(Get.context!).primaryColor,
-                                ),
+                                if (info.isPinned!) ...[
+                                  4.horizontalSpace,
+                                  Icon(
+                                    CupertinoIcons.pin,
+                                    size: 14.w,
+                                    color: Theme.of(Get.context!).primaryColor,
+                                  ),
+                                ],
                               ],
-                            ],
-                          ),
-                        ),
-                        if (logic.getUnreadCount(info) > 0) ...[
-                          8.horizontalSpace,
-                          CustomButton(
-                            onTap: () {},
-                            title: logic.getUnreadCount(info) > 99
-                                ? '99+'
-                                : logic.getUnreadCount(info).toString(),
-                            fontSize: 12.sp,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8.w, vertical: 4.h),
-                            color: Colors.red,
-                          ),
-                        ],
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: MatchTextView(
-                            text: _sanitizeText(logic.getContent(info)),
-                            textStyle: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 14.sp,
-                              fontWeight: logic.getUnreadCount(info) > 0
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
-                              color: logic.getUnreadCount(info) > 0
-                                  ? Theme.of(Get.context!).primaryColor
-                                  : const Color(0xFF9E9E9E),
                             ),
-                            allAtMap: logic.getAtUserMap(info),
-                            prefixSpan: TextSpan(
-                              text:
-                                  _sanitizeText(logic.getPrefixTag(info) ?? ""),
-                              style: TextStyle(
+                          ),
+                          if (logic.getUnreadCount(info) > 0) ...[
+                            8.horizontalSpace,
+                            CustomButton(
+                              onTap: () {},
+                              title: logic.getUnreadCount(info) > 99
+                                  ? '99+'
+                                  : logic.getUnreadCount(info).toString(),
+                              fontSize: 12.sp,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8.w, vertical: 4.h),
+                              color: Colors.red,
+                            ),
+                          ],
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MatchTextView(
+                              text: _sanitizeText(logic.getContent(info)),
+                              textStyle: TextStyle(
                                 fontFamily: 'FilsonPro',
                                 fontSize: 14.sp,
                                 fontWeight: logic.getUnreadCount(info) > 0
                                     ? FontWeight.w600
-                                    : FontWeight.w500,
-                                color: const Color(0xFF3B82F6),
+                                    : FontWeight.w400,
+                                color: logic.getUnreadCount(info) > 0
+                                    ? Theme.of(Get.context!).primaryColor
+                                    : const Color(0xFF9E9E9E),
                               ),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            patterns: <MatchPattern>[
-                              MatchPattern(
-                                type: PatternType.at,
+                              allAtMap: logic.getAtUserMap(info),
+                              prefixSpan: TextSpan(
+                                text: _sanitizeText(
+                                    logic.getPrefixTag(info) ?? ""),
                                 style: TextStyle(
                                   fontFamily: 'FilsonPro',
                                   fontSize: 14.sp,
                                   fontWeight: logic.getUnreadCount(info) > 0
                                       ? FontWeight.w600
-                                      : FontWeight.w400,
-                                  color: const Color(0xFF6B7280),
+                                      : FontWeight.w500,
+                                  color: const Color(0xFF3B82F6),
                                 ),
                               ),
-                            ],
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              patterns: <MatchPattern>[
+                                MatchPattern(
+                                  type: PatternType.at,
+                                  style: TextStyle(
+                                    fontFamily: 'FilsonPro',
+                                    fontSize: 14.sp,
+                                    fontWeight: logic.getUnreadCount(info) > 0
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                    color: const Color(0xFF6B7280),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        8.horizontalSpace,
-                        Text(
-                          _sanitizeText(logic.getTime(info)),
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w400,
-                            color: const Color(0xFF9E9E9E),
+                          8.horizontalSpace,
+                          Text(
+                            _sanitizeText(logic.getTime(info)),
+                            style: TextStyle(
+                              fontFamily: 'FilsonPro',
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF9E9E9E),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _showMessagePreview(ConversationInfo info) async {
+    final messages = await logic.getPreviewMessages(info);
+
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (context) => ConversationPreviewOverlay(
+        conversationInfo: info,
+        messages: messages,
+        onTapPreview: () => logic.toChat(conversationInfo: info),
       ),
     );
   }
