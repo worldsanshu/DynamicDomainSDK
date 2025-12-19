@@ -138,10 +138,12 @@ class IMViews {
     List<SheetItem> items = const [],
     int quality = 80,
     bool isGroup = false,
+    bool allowGif = false,
   }) {
     bool allowSendImageTypeHelper(String? mimeType) {
       final result = mimeType?.contains('png') == true ||
-          mimeType?.contains('jpeg') == true;
+          mimeType?.contains('jpeg') == true ||
+          (allowGif && mimeType?.contains('gif') == true);
 
       return result;
     }
@@ -419,7 +421,7 @@ class IMViews {
         final image =
             await IMUtils.compressImageAndGetFile(File(path), quality: quality);
 
-        result = OpenIM.iMManager.uploadFile(
+        result = await OpenIM.iMManager.uploadFile(
           id: putID,
           filePath: image!.path,
           fileName: image.path,

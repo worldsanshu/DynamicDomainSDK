@@ -6,8 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:openim/constants/app_color.dart';
+import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 import 'real_name_auth_logic.dart';
@@ -23,9 +23,10 @@ class RealNameAuthView extends StatelessWidget {
       title: StrRes.realNameAuth,
       subtitle: StrRes.identityVerification,
       showBackButton: true,
-      trailing: HeaderActionButton(
+      trailing: CustomButton(
         icon: CupertinoIcons.refresh,
         onTap: logic.loadAuthInfo,
+        color:Colors.white
       ),
       scrollable: true,
       body: Obx(

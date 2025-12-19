@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
@@ -48,9 +47,10 @@ class _ConversationPageState extends State<ConversationPage> {
     return Obx(() => GradientScaffold(
           title: '${logic.titleText} (${logic.conversationCount.value})',
           subtitle: logic.getUnreadText,
-          trailing: HeaderActionButton(
-            buttonKey: _newButtonKey,
+          trailing: CustomButton(
             onTap: () => showNewContactPopup(context, _newButtonKey),
+            icon: Icons.grid_view,
+              color: Colors.white,
           ),
           body: Column(
             children: [
@@ -68,66 +68,46 @@ class _ConversationPageState extends State<ConversationPage> {
   }
 
   Widget _buildAnnouncementList() {
+    final primaryColor = Theme.of(context).primaryColor;
     return Column(
       children: logic.systemAnnouncementList.map(
         (announcement) {
           return Container(
-            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 2.h),
             decoration: BoxDecoration(
-              color: const Color(0xFFFEF3C7),
-              borderRadius: BorderRadius.circular(16.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
-                  offset: const Offset(2, 2),
-                  blurRadius: 4,
-                ),
-                BoxShadow(
-                  color: Colors.white.withOpacity(0.8),
-                  offset: const Offset(-1, -1),
-                  blurRadius: 4,
-                ),
-              ],
+              color: primaryColor.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
-                color: Colors.white,
-                width: 1.5,
-              ),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withOpacity(0.9),
-                  const Color(0xFFFEF3C7),
-                ],
-                stops: const [0.05, 0.3],
+                color: primaryColor.withOpacity(0.15),
+                width: 1,
               ),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                borderRadius: BorderRadius.circular(16.r),
+                borderRadius: BorderRadius.circular(12.r),
                 onTap: () => logic.viewAnnouncement(announcement),
                 child: Padding(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                   child: Row(
                     children: [
                       Container(
-                        width: 32.w,
-                        height: 32.h,
+                        width: 28.w,
+                        height: 28.h,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF59E0B).withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(10.r),
+                          color: primaryColor.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Center(
                           child: Icon(
-                            CupertinoIcons.speaker_3,
-                            size: 22.w,
-                            color: const Color(0xFFF59E0B),
+                            CupertinoIcons.speaker_2_fill,
+                            size: 16.w,
+                            color: primaryColor,
                           ),
                         ),
                       ),
-                      12.horizontalSpace,
+                      10.horizontalSpace,
                       Expanded(
                         child: Text(
                           announcement.content
@@ -135,29 +115,29 @@ class _ConversationPageState extends State<ConversationPage> {
                               .replaceAll('·', '|'),
                           style: TextStyle(
                             fontFamily: 'FilsonPro',
-                            fontSize: 14.sp,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFF92400E),
+                            color: primaryColor.withOpacity(0.9),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      8.horizontalSpace,
+                      6.horizontalSpace,
                       GestureDetector(
                         onTap: () => logic.markAnnouncementAsRead(announcement),
                         child: Container(
-                          width: 28.w,
-                          height: 28.h,
+                          width: 24.w,
+                          height: 24.h,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(8.r),
+                            color: primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: Center(
                             child: Icon(
                               CupertinoIcons.xmark,
-                              size: 16.w,
-                              color: const Color(0xFF92400E),
+                              size: 14.w,
+                              color: primaryColor.withOpacity(0.7),
                             ),
                           ),
                         ),
@@ -273,6 +253,7 @@ class _ConversationPageState extends State<ConversationPage> {
       }),
     );
   }
+
   Widget _buildFriendsCarousel() {
     return Obx(() {
       if (logic.showLoading || logic.friendList.isEmpty) {
@@ -300,8 +281,8 @@ class _ConversationPageState extends State<ConversationPage> {
       });
       uniqueFriends = uniqueFriends.take(20).toList();
       return Container(
-        margin: EdgeInsets.only(top: 0.h),
-        height: 80.h,
+        margin: EdgeInsets.only(top: 5.h),
+        height: 72.h,
         width: double.infinity,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,

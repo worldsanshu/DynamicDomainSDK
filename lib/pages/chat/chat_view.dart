@@ -9,6 +9,7 @@ import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 import '../../widgets/file_download_progress.dart';
+import '../../widgets/gradient_scaffold.dart';
 import 'chat_logic.dart';
 
 class ChatPage extends StatelessWidget {
@@ -312,291 +313,182 @@ class ChatPage extends StatelessWidget {
         )
       : const SizedBox();
 
-  // Content Container with Cute Minimalist Style
-  // ignore: unused_element
-  Widget _buildCuteMinimalistContent({required Widget child}) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.r),
-            topRight: Radius.circular(20.r),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF9CA3AF).withOpacity(0.08),
-              offset: const Offset(0, -2),
-              blurRadius: 12,
-            ),
-          ],
-        ),
-        child: child,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final primaryColor = theme.primaryColor;
-
     return WillPopScope(
       onWillPop: logic.willPop(),
       child: ChatVoiceRecordLayout(
         onCompleted: logic.sendVoice,
         builder: (bar) => Obx(() {
-          return Scaffold(
-            backgroundColor: Colors.white,
-            body: Stack(
+          return GradientScaffold(
+            titleWidget: _userInfo(),
+            showBackButton: true,
+            // Override back behavior if multi-select mode is active
+            onBack: logic.multiSelMode.value ? logic.closeMultiSelMode : null,
+            scrollable: false,
+            // Header trailing buttons (Call, More)
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // 1. Gradient Header Background
-                Container(
-                  height: 160.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        primaryColor.withOpacity(0.8),
-                        primaryColor,
-                        primaryColor.withOpacity(0.9),
-                      ],
-                    ),
+                if (logic.showAudioAndVideoCall) ...[
+                  CustomButton(
+                    onTap: logic.onTapAudioCall,
+                    icon: Icons.call,
+                    color: Colors.white,
                   ),
-                ),
-
-                // 2. Main Content (White Card)
-                Column(
-                  children: [
-                    SizedBox(height: 110.h),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(32.r)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, -5),
-                            ),
-                          ],
+                  6.horizontalSpace,
+                  CustomButton(
+                    onTap: logic.onTapVideoCall,
+                    icon: Icons.videocam_outlined,
+                    color: Colors.white,
+                  ),
+                  6.horizontalSpace,
+                ],
+                CustomButton(
+                  onTap: logic.chatSetup,
+                  icon: Icons.more_horiz,
+                    color: Colors.white,
+                  ),
+              ],
+            ),
+            
+            body: WaterMarkBgView(
+              text: '',
+              path: logic.background.value,
+              backgroundColor: const Color(0xFFFFFFFF),
+              topView: _topNoticeView,
+              bottomView: logic.isBanned
+                  ? ChatGroupBannedBox(
+                      text: StrRes.groupBannedMessage,
+                    )
+                  : ChatInputBox(
+                      key: logic.chatInputBoxStateKey,
+                      allAtMap: logic.atUserNameMappingMap,
+                      forceCloseToolboxSub: logic.forceCloseToolbox,
+                      controller: logic.inputCtrl,
+                      focusNode: logic.focusNode,
+                      enabled: !logic.isMuted,
+                      hintText: logic.hintText,
+                      inputFormatters: [AtTextInputFormatter(logic.openAtList)],
+                      isMultiModel: logic.multiSelMode.value,
+                      isNotInGroup: logic.isInvalidGroup,
+                      quoteContent: logic.quoteContent.value,
+                      onClearQuote: () => logic.setQuoteMsg(null),
+                      onSend: (v) => logic.sendTextMsg(),
+                      onTapAlbum: logic.onTapAlbum,
+                      onTapCamera: logic.onTapCamera,
+                      onTapFile: logic.onTapFile,
+                      onTapCard: logic.onTapCarte,
+                      toolbox: ChatToolBox(
+                        onTapAlbum: logic.onTapAlbum,
+                        onTapCamera: logic.onTapCamera,
+                        onTapCard: logic.onTapCarte,
+                        onTapFile: logic.onTapFile,
+                        showAudioCall: logic.showAudioAndVideoCall,
+                        showVideoCall: logic.showAudioAndVideoCall,
+                        height: logic.keyboardHeight.value,
+                      ),
+                      voiceRecordBar: bar,
+                      emojiView: Obx(
+                        () => ChatEmojiView(
+                          key: ValueKey(
+                              'emoji_view_${logic.favoriteEmojiList.length}'),
+                          textEditingController: logic.inputCtrl,
+                          favoriteList: logic.favoriteEmojiList,
+                          onAddFavorite: logic.openEmojiPicker,
+                          onSelectedFavorite: (index, emoji) =>
+                              logic.inputCtrl.text += emoji,
+                          height: logic.keyboardHeight.value,
                         ),
-                        child: ClipRRect(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(32.r)),
-                          child: WaterMarkBgView(
-                            text: '',
-                            path: logic.background.value,
-                            backgroundColor: const Color(0xFFFFFFFF),
-                            topView: _topNoticeView,
-                            bottomView: logic.isBanned
-                                ? ChatGroupBannedBox(
-                                    text: StrRes.groupBannedMessage,
-                                  )
-                                : ChatInputBox(
-                                    key: logic.chatInputBoxStateKey,
-                                    allAtMap: logic.atUserNameMappingMap,
-                                    forceCloseToolboxSub:
-                                        logic.forceCloseToolbox,
-                                    controller: logic.inputCtrl,
-                                    focusNode: logic.focusNode,
-                                    enabled: !logic.isMuted,
-                                    hintText: logic.hintText,
-                                    inputFormatters: [
-                                      AtTextInputFormatter(logic.openAtList)
-                                    ],
-                                    isMultiModel: logic.multiSelMode.value,
-                                    isNotInGroup: logic.isInvalidGroup,
-                                    quoteContent: logic.quoteContent.value,
-                                    onClearQuote: () => logic.setQuoteMsg(null),
-                                    onSend: (v) => logic.sendTextMsg(),
-                                    onTapAlbum: logic.onTapAlbum,
-                                    onTapCamera: logic.onTapCamera,
-                                    onTapFile: logic.onTapFile,
-                                    onTapCard: logic.onTapCarte,
-                                    toolbox: ChatToolBox(
-                                      onTapAlbum: logic.onTapAlbum,
-                                      onTapCamera: logic.onTapCamera,
-                                      onTapCard: logic.onTapCarte,
-                                      onTapFile: logic.onTapFile,
-                                      showAudioCall:
-                                          logic.showAudioAndVideoCall,
-                                      showVideoCall:
-                                          logic.showAudioAndVideoCall,
-                                      height: logic.keyboardHeight.value,
-                                    ),
-                                    voiceRecordBar: bar,
-                                    emojiView: Obx(
-                                      () => ChatEmojiView(
-                                        key: ValueKey(
-                                            'emoji_view_${logic.favoriteEmojiList.length}'),
-                                        textEditingController: logic.inputCtrl,
-                                        favoriteList: logic.favoriteEmojiList,
-                                        onAddFavorite: logic.openEmojiPicker,
-                                        onSelectedFavorite: (index, emoji) =>
-                                            logic.inputCtrl.text += emoji,
-                                        height: logic.keyboardHeight.value,
-                                      ),
-                                    ),
-                                    multiOpToolbox: ChatMultiSelToolbox(
-                                      onDelete: logic.mergeDelete,
-                                      onMergeForward: () => logic.forward(null),
-                                    ),
-                                    callbackKeyboardHeight: (double height) =>
-                                        logic.keyboardHeight.value = height,
-                                  ),
-                            child: AnimationLimiter(
-                              child: Stack(
-                                children: [
-                                  ChatListView(
-                                    onTouch: () => logic.closeToolbox(),
-                                    itemCount: logic.messageList.length,
-                                    controller: logic.scrollController,
-                                    onScrollToBottomLoad:
-                                        logic.onScrollToBottomLoad,
-                                    onScrollToTop: logic.onScrollToTop,
-                                    itemBuilder: (_, index) {
-                                      final message =
-                                          logic.indexOfMessage(index);
-                                      if (logic.isMessageHidden(message)) {
-                                        return const SizedBox.shrink();
-                                      }
-                                      return AnimationConfiguration
-                                          .staggeredList(
-                                        position: index,
-                                        duration:
-                                            const Duration(milliseconds: 400),
-                                        child: SlideAnimation(
-                                          curve: Curves.easeOutCubic,
-                                          verticalOffset: 40.0,
-                                          child: FadeInAnimation(
-                                            curve: Curves.easeOutCubic,
-                                            child: _buildItemView(message),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  if (logic
-                                      .scrollingCacheMessageList.isNotEmpty)
-                                    Positioned(
-                                      bottom: 20,
-                                      right: 16,
-                                      child: GestureDetector(
-                                        onTap: logic.onScrollBottom,
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 12.h, horizontal: 16.w),
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFF4F42FF)
-                                                .withOpacity(0.1),
-                                            borderRadius:
-                                                BorderRadius.circular(16.r),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: const Color(0xFF9CA3AF)
-                                                    .withOpacity(0.08),
-                                                offset: const Offset(0, 2),
-                                                blurRadius: 6,
-                                              ),
-                                            ],
-                                            border: Border.all(
-                                              color: const Color(0xFFF3F4F6),
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.keyboard_arrow_down,
-                                                color: const Color(0xFF4F42FF),
-                                                size: 22.w,
-                                              ),
-                                              6.horizontalSpace,
-                                              Text(
-                                                StrRes.newMessagesCount
-                                                    .replaceFirst('%s',
-                                                        '${logic.scrollingCacheMessageList.length}'),
-                                                style: TextStyle(
-                                                  fontFamily: 'FilsonPro',
-                                                  fontSize: 12.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                  color:
-                                                      const Color(0xFF4F42FF),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
+                      ),
+                      multiOpToolbox: ChatMultiSelToolbox(
+                        onDelete: logic.mergeDelete,
+                        onMergeForward: () => logic.forward(null),
+                      ),
+                      callbackKeyboardHeight: (double height) =>
+                          logic.keyboardHeight.value = height,
+                    ),
+              child: AnimationLimiter(
+                child: Stack(
+                  children: [
+                    ChatListView(
+                      onTouch: () => logic.closeToolbox(),
+                      itemCount: logic.messageList.length,
+                      controller: logic.scrollController,
+                      onScrollToBottomLoad: logic.onScrollToBottomLoad,
+                      onScrollToTop: logic.onScrollToTop,
+                      itemBuilder: (_, index) {
+                        final message = logic.indexOfMessage(index);
+                        if (logic.isMessageHidden(message)) {
+                          return const SizedBox.shrink();
+                        }
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 400),
+                          child: SlideAnimation(
+                            curve: Curves.easeOutCubic,
+                            verticalOffset: 40.0,
+                            child: FadeInAnimation(
+                              curve: Curves.easeOutCubic,
+                              child: _buildItemView(message),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    if (logic.scrollingCacheMessageList.isNotEmpty)
+                      Positioned(
+                        bottom: 20,
+                        right: 16,
+                        child: GestureDetector(
+                          onTap: logic.onScrollBottom,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12.h, horizontal: 16.w),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF4F42FF).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(16.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      const Color(0xFF9CA3AF).withOpacity(0.08),
+                                  offset: const Offset(0, 2),
+                                  blurRadius: 6,
+                                ),
+                              ],
+                              border: Border.all(
+                                color: const Color(0xFFF3F4F6),
+                                width: 1,
                               ),
                             ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: const Color(0xFF4F42FF),
+                                  size: 22.w,
+                                ),
+                                6.horizontalSpace,
+                                Text(
+                                  StrRes.newMessagesCount.replaceFirst('%s',
+                                      '${logic.scrollingCacheMessageList.length}'),
+                                  style: TextStyle(
+                                    fontFamily: 'FilsonPro',
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF4F42FF),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
-
-                // 3. Custom AppBar (Overlay)
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: SafeArea(
-                    bottom: false,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                      child: Row(
-                        children: [
-                          CustomButton(
-                            onTap: logic.multiSelMode.value
-                                ? logic.closeMultiSelMode
-                                : Get.back,
-                            icon: Icons.arrow_back_ios_new_rounded,
-                            color: Colors.white,
-                            padding: EdgeInsets.all(10.w),
-                          ),
-                          12.horizontalSpace,
-                          Expanded(child: _userInfo()),
-                          if (logic.showAudioAndVideoCall) ...[
-                            CustomButton(
-                              margin: const EdgeInsets.only(right: 8),
-                              onTap: logic.onTapAudioCall,
-                              icon: Icons.call,
-                              color: Colors.white,
-                              padding: EdgeInsets.all(10.w),
-                            ),
-                            CustomButton(
-                              margin: const EdgeInsets.only(right: 8),
-                              onTap: logic.onTapVideoCall,
-                              icon: Icons.videocam_outlined,
-                              color: Colors.white,
-                              padding: EdgeInsets.all(10.w),
-                            ),
-                          ],
-                          CustomButton(
-                            onTap: logic.chatSetup,
-                            icon: Icons.more_horiz,
-                            color: Colors.white,
-                            padding: EdgeInsets.all(10.w),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           );
         }),

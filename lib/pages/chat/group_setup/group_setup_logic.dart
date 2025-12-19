@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim/core/controller/client_config_controller.dart';
+import 'package:openim/widgets/font_size_bottom_sheet.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -397,6 +398,7 @@ class GroupSetupLogic extends GetxController {
     IMViews.openPhotoSheet(
       onlyImage: true,
       isGroup: true,
+      allowGif: true,
       onData: (path, url) async {
         if (url != null) {
           try {
@@ -1010,6 +1012,14 @@ class GroupSetupLogic extends GetxController {
   void searchChatHistoryFile() => AppNavigator.startSearchChatHistoryFile(
         conversationInfo: conversationInfo.value,
       );
+
+  void setFontSize() {
+    FontSizeBottomSheet.show(
+      onSave: (factor) async {
+        await chatLogic?.changeFontSize(factor);
+      },
+    );
+  }
 
   void _removeConversation() async {
     // 删除群会话

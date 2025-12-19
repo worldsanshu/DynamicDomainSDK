@@ -536,13 +536,13 @@ class _ChatItemViewState extends State<ChatItemView> {
     if (!_isISend || _message.status != MessageStatus.succeeded) {
       return null;
     }
-    // Chỉ hiển thị 'Seen' nếu đã đọc, còn lại là 'Sent' cho cả cá nhân và nhóm
+
     if (_message.isSingleChat) {
-      return _message.isRead == true ? StrRes.hasRead : StrRes.unread;
+      // For 1-1 chats: show 'Seen' if isRead=true, 'Sent' if isRead=false
+      return _message.isRead == true ? StrRes.hasRead : StrRes.sent;
     } else {
-      final unreadCount = _message.attachedInfoElem?.groupHasReadInfo?.unreadCount;
-      if (unreadCount == null) return null;
-      return unreadCount == 0 ? StrRes.hasRead : StrRes.unread;
+      // Group chat: hide status temporarily
+      return null;
     }
   }
 
@@ -557,7 +557,7 @@ class _ChatItemViewState extends State<ChatItemView> {
         style: Styles.ts_8E9AB0_12sp,
       );
     }
-    
+
     // For sent messages, show status (always visible when not showing time)
     if (_isISend && _message.status == MessageStatus.succeeded) {
       final statusText = _statusString;
@@ -569,7 +569,7 @@ class _ChatItemViewState extends State<ChatItemView> {
         );
       }
     }
-    
+
     return null;
   }
 

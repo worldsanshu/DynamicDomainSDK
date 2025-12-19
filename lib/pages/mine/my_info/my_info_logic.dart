@@ -216,6 +216,7 @@ class MyInfoLogic extends GetxController {
   void openUpdateAvatarSheet() {
     IMViews.openPhotoSheet(
       onlyImage: true,
+      allowGif: true,
       onData: (path, url) async {
         if (url != null) {
           try {

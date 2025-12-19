@@ -83,24 +83,16 @@ class MatchTextView extends StatelessWidget {
 
   _matchModel(List<InlineSpan> children) {
     // Debug: Log the input text being processed
-    print('[DEBUG @everyone] Processing text: "$text"');
-
     final mappingMap = <String, MatchPattern>{};
 
     for (var e in patterns) {
       if (e.type == PatternType.at) {
         mappingMap[regexAt] = e;
         mappingMap[regexAtAll] = MatchPattern(type: PatternType.atAll);
-        print(
-            '[DEBUG @everyone] Registered PatternType.at with regexAt: $regexAt');
-        print(
-            '[DEBUG @everyone] Registered PatternType.atAll with regexAtAll: $regexAtAll');
-      } else if (e.type == PatternType.atAll) {
+       } else if (e.type == PatternType.atAll) {
         // Handle atAll pattern explicitly
         mappingMap[regexAtAll] = e;
-        print(
-            '[DEBUG @everyone] Registered explicit PatternType.atAll: $regexAtAll');
-      } else if (e.type == PatternType.email) {
+        } else if (e.type == PatternType.email) {
         mappingMap[regexEmail] = e;
       } else if (e.type == PatternType.mobile) {
         mappingMap[regexMobile] = e;
@@ -112,9 +104,6 @@ class MatchTextView extends StatelessWidget {
         mappingMap[e.pattern!] = e;
       }
     }
-
-    print('[DEBUG @everyone] Total patterns registered: ${mappingMap.length}');
-
     var regexEmoji = emojiFaces.keys
         .toList()
         .join('|')

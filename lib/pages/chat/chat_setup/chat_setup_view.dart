@@ -23,10 +23,11 @@ class ChatSetupPage extends StatelessWidget {
     return GradientScaffold(
       title: StrRes.chatSettings,
       showBackButton: true,
-      scrollable: true,
+      scrollable: false, // Disable full scroll
       avatar: _buildAvatar(),
       body: Obx(() => Column(
             children: [
+              // ===== FIXED HEADER SECTION =====
               // User Info
               GestureDetector(
                 onTap: logic.viewUserInfo,
@@ -86,13 +87,13 @@ class ChatSetupPage extends StatelessWidget {
                       onTap: logic.searchChatHistoryPicture,
                       color: primaryColor,
                     ),
-                   CustomButton(
+                    CustomButton(
                       icon: CupertinoIcons.video_camera,
                       label: StrRes.video,
                       onTap: logic.searchChatHistoryVideo,
                       color: primaryColor,
                     ),
-                   CustomButton(
+                    CustomButton(
                       icon: CupertinoIcons.doc,
                       label: StrRes.file,
                       onTap: logic.searchChatHistoryFile,
@@ -105,55 +106,65 @@ class ChatSetupPage extends StatelessWidget {
               24.verticalSpace,
               const Divider(height: 1, color: Color(0xFFF3F4F6)),
 
-              // Menu Sections
-              _buildSectionTitle(StrRes.chatSettings),
-              SettingsMenuItem(
-                label: StrRes.topContacts,
-                hasSwitch: true,
-                switchValue: logic.isPinned,
-                onSwitchChanged: (_) => logic.toggleTopContacts(),
-                showArrow: false,
-              ),
-              SettingsMenuItem(
-                label: StrRes.messageNotDisturb,
-                hasSwitch: true,
-                switchValue: logic.isNotDisturb,
-                onSwitchChanged: (_) => logic.toggleNotDisturb(),
-                showArrow: false,
-              ),
+              // ===== SCROLLABLE SECTION =====
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      // Menu Sections
+                      _buildSectionTitle(StrRes.chatSettings),
+                      SettingsMenuItem(
+                        label: StrRes.topContacts,
+                        hasSwitch: true,
+                        switchValue: logic.isPinned,
+                        onSwitchChanged: (_) => logic.toggleTopContacts(),
+                        showArrow: false,
+                      ),
+                      SettingsMenuItem(
+                        label: StrRes.messageNotDisturb,
+                        hasSwitch: true,
+                        switchValue: logic.isNotDisturb,
+                        onSwitchChanged: (_) => logic.toggleNotDisturb(),
+                        showArrow: false,
+                      ),
 
-              _buildSectionTitle(StrRes.appearance),
-              SettingsMenuItem(
-                icon: CupertinoIcons.photo,
-                label: StrRes.setChatBackground,
-                onTap: logic.setBackgroundImage,
-              ),
-              SettingsMenuItem(
-                icon: CupertinoIcons.textformat,
-                label: StrRes.fontSize,
-                onTap: logic.setFontSize,
-              ),
+                      _buildSectionTitle(StrRes.appearance),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.photo,
+                        label: StrRes.setChatBackground,
+                        onTap: logic.setBackgroundImage,
+                      ),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.textformat,
+                        label: StrRes.fontSize,
+                        onTap: logic.setFontSize,
+                      ),
 
-              _buildSectionTitle(StrRes.actions),
-              SettingsMenuItem(
-                icon: CupertinoIcons.person_2,
-                label: StrRes.createGroup,
-                onTap: logic.createGroup,
-              ),
-              SettingsMenuItem(
-                icon: CupertinoIcons.flag,
-                label: StrRes.report,
-                onTap: logic.startReport,
-                color: Colors.amber,
-              ),
-              SettingsMenuItem(
-                icon: CupertinoIcons.delete,
-                label: StrRes.clearChatHistory,
-                onTap: logic.clearChatHistory,
-                isWarning: true,
-              ),
+                      _buildSectionTitle(StrRes.actions),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.person_2,
+                        label: StrRes.createGroup,
+                        onTap: logic.createGroup,
+                      ),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.flag,
+                        label: StrRes.report,
+                        onTap: logic.startReport,
+                        color: Colors.amber,
+                      ),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.delete,
+                        label: StrRes.clearChatHistory,
+                        onTap: logic.clearChatHistory,
+                        isWarning: true,
+                      ),
 
-              40.verticalSpace,
+                      40.verticalSpace,
+                    ],
+                  ),
+                ),
+              ),
             ],
           )),
     );
@@ -179,8 +190,7 @@ class ChatSetupPage extends StatelessWidget {
               text: logic.conversationInfo.value.showName,
               width: 100.w,
               height: 100.w,
-              textStyle:
-                  TextStyle(fontSize: 32.sp, color: Colors.white),
+              textStyle: TextStyle(fontSize: 32.sp, color: Colors.white),
               isCircle: true,
               enabledPreview: false,
             ),

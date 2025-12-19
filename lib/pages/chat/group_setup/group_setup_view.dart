@@ -23,7 +23,7 @@ class GroupSetupPage extends StatelessWidget {
     return GradientScaffold(
       title: StrRes.groupChatSetup,
       showBackButton: true,
-      scrollable: true,
+      scrollable: false, // Disable full scroll
       trailing: CustomButton(
         color: Colors.white,
         icon: CupertinoIcons.qrcode,
@@ -33,6 +33,7 @@ class GroupSetupPage extends StatelessWidget {
       body: Obx(() => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // ===== FIXED HEADER SECTION =====
               // Group Name
               GestureDetector(
                 onTap: logic.isOwnerOrAdmin
@@ -133,89 +134,106 @@ class GroupSetupPage extends StatelessWidget {
               24.verticalSpace,
               const Divider(height: 1, color: Color(0xFFF3F4F6)),
 
-              // Group Members Section
-              if (logic.isJoinedGroup.value) ...[
-                _buildSectionTitle(StrRes.groupMembers),
-                _buildGroupMembersGrid(),
-                24.verticalSpace,
-                const Divider(height: 1, color: Color(0xFFF3F4F6)),
-              ],
+              // ===== SCROLLABLE SECTION =====
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      // Group Members Section
+                      if (logic.isJoinedGroup.value) ...[
+                        _buildSectionTitle(StrRes.groupMembers),
+                        _buildGroupMembersGrid(),
+                        24.verticalSpace,
+                        const Divider(height: 1, color: Color(0xFFF3F4F6)),
+                      ],
 
-              // Menu Sections
-              _buildSectionTitle(StrRes.groupInformation),
-              SettingsMenuItem(
-                icon: CupertinoIcons.bell,
-                label: StrRes.groupAc,
-                onTap: logic.editGroupAnnouncement,
-              ),
-              if (logic.isOwnerOrAdmin)
-                SettingsMenuItem(
-                  icon: CupertinoIcons.person_2,
-                  label: StrRes.onlineInfo,
-                  onTap: logic.viewGroupOnlineInfo,
+                      // Menu Sections
+                      _buildSectionTitle(StrRes.groupInformation),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.bell,
+                        label: StrRes.groupAc,
+                        onTap: logic.editGroupAnnouncement,
+                      ),
+                      if (logic.isOwnerOrAdmin)
+                        SettingsMenuItem(
+                          icon: CupertinoIcons.person_2,
+                          label: StrRes.onlineInfo,
+                          onTap: logic.viewGroupOnlineInfo,
+                        ),
+                      if (logic.showGroupManagement)
+                        SettingsMenuItem(
+                          icon: CupertinoIcons.settings,
+                          label: StrRes.groupManage,
+                          onTap: logic.groupManage,
+                        ),
+
+                      _buildSectionTitle(StrRes.nicknameInGroup),
+                      SettingsMenuItem(
+                          icon: CupertinoIcons.person,
+                          label: StrRes.myGroupMemberNickname,
+                          value: logic.myGroupMembersInfo.value.nickname,
+                          onTap: logic.modifyMyGroupNickname,
+                          isRow: false),
+
+                      _buildSectionTitle(StrRes.chatSettings),
+                      SettingsMenuItem(
+                        label: StrRes.topChat,
+                        hasSwitch: true,
+                        switchValue: logic.isPinned,
+                        onSwitchChanged: (_) => logic.toggleTopChat(),
+                        showArrow: false,
+                      ),
+                      SettingsMenuItem(
+                        label: StrRes.messageNotDisturb,
+                        hasSwitch: true,
+                        switchValue: logic.isNotDisturb,
+                        onSwitchChanged: (_) => logic.toggleNotDisturb(),
+                        showArrow: false,
+                      ),
+
+                      _buildSectionTitle(StrRes.appearance),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.textformat,
+                        label: StrRes.fontSize,
+                        onTap: logic.setFontSize,
+                      ),
+
+                      _buildSectionTitle(StrRes.actions),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.flag,
+                        label: StrRes.report,
+                        onTap: logic.startReport,
+                        color: Colors.amber,
+                      ),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.delete,
+                        label: StrRes.clearChatHistory,
+                        onTap: logic.clearChatHistory,
+                        isWarning: true,
+                      ),
+                      if (!logic.isOwner)
+                        SettingsMenuItem(
+                          icon: CupertinoIcons.square_arrow_left,
+                          label: logic.isJoinedGroup.value
+                              ? StrRes.exitGroup
+                              : StrRes.delete,
+                          onTap: logic.quitGroup,
+                          isWarning: true,
+                        ),
+                      if (logic.isOwner)
+                        SettingsMenuItem(
+                          icon: CupertinoIcons.xmark_circle,
+                          label: StrRes.dismissGroup,
+                          onTap: logic.quitGroup,
+                          isWarning: true,
+                        ),
+
+                      40.verticalSpace,
+                    ],
+                  ),
                 ),
-              if (logic.showGroupManagement)
-                SettingsMenuItem(
-                  icon: CupertinoIcons.settings,
-                  label: StrRes.groupManage,
-                  onTap: logic.groupManage,
-                ),
-
-              _buildSectionTitle(StrRes.nicknameInGroup),
-              SettingsMenuItem(
-                  icon: CupertinoIcons.person,
-                  label: StrRes.myGroupMemberNickname,
-                  value: logic.myGroupMembersInfo.value.nickname,
-                  onTap: logic.modifyMyGroupNickname,
-                  isRow: false),
-
-              _buildSectionTitle(StrRes.chatSettings),
-              SettingsMenuItem(
-                label: StrRes.topChat,
-                hasSwitch: true,
-                switchValue: logic.isPinned,
-                onSwitchChanged: (_) => logic.toggleTopChat(),
-                showArrow: false,
               ),
-              SettingsMenuItem(
-                label: StrRes.messageNotDisturb,
-                hasSwitch: true,
-                switchValue: logic.isNotDisturb,
-                onSwitchChanged: (_) => logic.toggleNotDisturb(),
-                showArrow: false,
-              ),
-
-              _buildSectionTitle(StrRes.actions),
-              SettingsMenuItem(
-                icon: CupertinoIcons.flag,
-                label: StrRes.report,
-                onTap: logic.startReport,
-                color: Colors.amber,
-              ),
-              SettingsMenuItem(
-                icon: CupertinoIcons.delete,
-                label: StrRes.clearChatHistory,
-                onTap: logic.clearChatHistory,
-                isWarning: true,
-              ),
-              if (!logic.isOwner)
-                SettingsMenuItem(
-                  icon: CupertinoIcons.square_arrow_left,
-                  label: logic.isJoinedGroup.value
-                      ? StrRes.exitGroup
-                      : StrRes.delete,
-                  onTap: logic.quitGroup,
-                  isWarning: true,
-                ),
-              if (logic.isOwner)
-                SettingsMenuItem(
-                  icon: CupertinoIcons.xmark_circle,
-                  label: StrRes.dismissGroup,
-                  onTap: logic.quitGroup,
-                  isWarning: true,
-                ),
-
-              40.verticalSpace,
             ],
           )),
     );

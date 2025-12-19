@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
-import '../../../widgets/base_page.dart';
+import '../../../widgets/gradient_scaffold.dart';
 import 'about_us_logic.dart';
 
 class AboutUsPage extends StatelessWidget {
@@ -16,78 +16,29 @@ class AboutUsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-      showAppBar: true,
-      centerTitle: false,
-      showLeading: true,
-      customAppBar: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            StrRes.aboutUs,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w500,
-              fontSize: 23,
-              color: Colors.black,
-            ).copyWith(fontSize: 23.sp),
-          ),
-          Text(
-            StrRes.appInformation,
-            style: const TextStyle(
-              fontFamily: 'FilsonPro',
-              fontWeight: FontWeight.w400,
-              color: Color(0xFFBDBDBD),
-            ).copyWith(fontSize: 12.sp),
-          ),
-        ],
-      ),
-      body: _buildContentContainer(),
-    );
-  }
-
-  Widget _buildContentContainer() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFFFF),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF9CA3AF).withOpacity(0.08),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.only(bottom: 20.h),
-        child: AnimationLimiter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: AnimationConfiguration.toStaggeredList(
-              duration: const Duration(milliseconds: 450),
-              childAnimationBuilder: (widget) => SlideAnimation(
-                verticalOffset: 50.0,
-                curve: Curves.easeOutQuart,
-                child: FadeInAnimation(child: widget),
-              ),
-              children: [
-                20.verticalSpace,
-                _buildAppInfoSection(),
-                if (logic.showContactUs) ...[
-                  18.verticalSpace,
-                  _buildContactUsSection(),
-                ],
-                24.verticalSpace,
-              ],
+    return GradientScaffold(
+      title: StrRes.aboutUs,
+      subtitle: StrRes.appInformation,
+      showBackButton: true,
+      scrollable: true,
+      body: AnimationLimiter(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: AnimationConfiguration.toStaggeredList(
+            duration: const Duration(milliseconds: 450),
+            childAnimationBuilder: (widget) => SlideAnimation(
+              verticalOffset: 50.0,
+              curve: Curves.easeOutQuart,
+              child: FadeInAnimation(child: widget),
             ),
+            children: [
+              _buildAppInfoSection(),
+              if (logic.showContactUs) ...[
+                18.verticalSpace,
+                _buildContactUsSection(),
+              ],
+              24.verticalSpace,
+            ],
           ),
         ),
       ),

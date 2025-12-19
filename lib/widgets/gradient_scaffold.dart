@@ -8,8 +8,11 @@ import 'package:get/get.dart';
 /// A complete scaffold widget with gradient header and body
 /// Unified component - no types, simple API
 class GradientScaffold extends StatelessWidget {
-  /// Main title text (required)
-  final String title;
+  /// Main title text (required if titleWidget is null)
+  final String? title;
+
+  /// Custom widget to replace title/subtitle text (optional)
+  final Widget? titleWidget;
 
   /// Optional subtitle text
   final String? subtitle;
@@ -38,16 +41,14 @@ class GradientScaffold extends StatelessWidget {
   /// Search box widget (overlapping between header and body)
   final Widget? searchBox;
 
-  /// Fixed values for consistency
-  static const double headerHeight = 175;
-  static const double titleFontSize = 20;
+  /// Font sizes
+  static const double titleFontSize = 24;
   static const double subtitleFontSize = 14;
-  static const double bodyTopMargin = 130;
-  static const double bodyTopPadding = 30;
 
   const GradientScaffold({
     super.key,
-    required this.title,
+    this.title,
+    this.titleWidget,
     this.subtitle,
     this.showBackButton = false,
     this.onBack,
@@ -57,29 +58,102 @@ class GradientScaffold extends StatelessWidget {
     this.bodyColor = Colors.white,
     this.avatar,
     this.searchBox,
-  });
+  }) : assert(title != null || titleWidget != null,
+            'Either title or titleWidget must be provided');
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
+    final topPadding = MediaQuery.of(context).padding.top;
 
-    // Build the body content widget
+    // Calculate layout metrics based on content presence
+    // 1. Determine where the text content logically ends
+    double contentEnd = topPadding + 30.h; // Base: StatusBar + Title + Padding
+    if (subtitle != null && subtitle!.isNotEmpty) {
+      contentEnd += 24.h; // Add space for subtitle
+    }else if(showBackButton && (avatar == null && searchBox == null)){
+      contentEnd += 16.h; // Add space for subtitle
+    }else if(showBackButton && (avatar == null && searchBox == null)){
+      contentEnd += 16.h; // Add space for subtitle
+    }
+
+    // 2. Determine where the white card should start (Body Top Margin)
+    double bodyMargin = contentEnd + 20.h; // Default gap
+
+    // If we have overlapping elements (SearchBox or Avatar), we need to adjust
+    // where the card starts so the element overlaps correctly.
+    // Usually we want the element to be centered on the card edge or slightly above.
+    if (searchBox != null) {
+      // SearchBox (height ~56)
+      // We want the text to be visible above the searchbox.
+      // SearchBox Top should be `contentEnd +gap`
+      // Body Margin should be `SearchBox Top + 28` (halfway)
+      bodyMargin = contentEnd + 50;
+    } else if (avatar != null) {
+      // Avatar (height ~80)
+      // Avatar Top should be below text? Or aligned with text?
+      // Usually for "Mine" page, Avatar is centered and overlaps the edge.
+      // Let's place Body Margin well below content to give room.
+      bodyMargin = contentEnd + 60.h;
+    }
+
+    // 3. Header Background Height
+    // Needs to be comfortably taller than bodyMargin to ensure no gaps behind the curve
+    double headerHeight = bodyMargin + 50.h;
+
+    // 4. Overpass Element Positioning
+    double? searchBoxTop;
+    double? avatarTop;
+
+    if (searchBox != null) {
+      // Place SearchBox centered on the Body Margin line
+      // SearchBox Height is 56.h
+      searchBoxTop = bodyMargin - 40.h;
+    }
+
+    if (avatar != null) {
+      // Place Avatar centered on the Body Margin line
+      // Avatar Height is 80.h
+      avatarTop = bodyMargin - 40.h;
+    }
+
+    // 5. Body Padding
+    double bodyTopPadding = 15.h; // Default
+    if (searchBox != null) {
+      bodyTopPadding = 30.h; // Space for the bottom half of searchbox + gap
+    } else if (avatar != null) {
+      bodyTopPadding = 75.h; // Space for bottom half of avatar + gap
+    }
+
+    // Build Body Content
     Widget bodyContent = scrollable
         ? Expanded(
-            child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              child: Column(
-                children: [
-                  SizedBox(height: avatar != null ? 80.h : bodyTopPadding.h),
-                  body,
-                ],
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: bodyTopPadding),
+                        body,
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           )
         : Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: avatar != null ? 80.h : bodyTopPadding.h),
+                SizedBox(height: bodyTopPadding),
                 Expanded(child: body),
               ],
             ),
@@ -87,25 +161,105 @@ class GradientScaffold extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
           // 1. Header Background (Fixed)
-          _buildHeader(primaryColor),
+          // Uses calculated headerHeight
+          Container(
+            height: headerHeight,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  primaryColor.withOpacity(0.7),
+                  primaryColor,
+                  primaryColor.withOpacity(0.9),
+                ],
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: topPadding),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  child: Row(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.center, // Align to top
+                    children: [
+                      if (showBackButton) ...[
+                        GestureDetector(
+                          onTap: onBack ?? () => Get.back(),
+                          child: Container(
+                            padding: EdgeInsets.all(8.w),
+                            color: Colors.transparent,
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                              size: 20.w,
+                            ),
+                          ),
+                        ),
+                        8.horizontalSpace,
+                      ],
+                      Expanded(
+                        child: titleWidget ??
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  title!,
+                                  style: TextStyle(
+                                    fontFamily: 'FilsonPro',
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: titleFontSize.sp,
+                                    color: Colors.white,
+                                    height: 1.2,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                if (subtitle != null &&
+                                    subtitle!.isNotEmpty) ...[
+                                  4.verticalSpace,
+                                  Text(
+                                    subtitle!,
+                                    style: TextStyle(
+                                      fontFamily: 'FilsonPro',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: subtitleFontSize.sp,
+                                      color: Colors.white.withOpacity(0.85),
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                      ),
+                      if (trailing != null) trailing!,
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
 
           // 2. Main Content Card
           Container(
-            margin: EdgeInsets.only(
-                top: searchBox != null
-                    ? bodyTopMargin.h + 12.h
-                    : bodyTopMargin.h),
+            margin: EdgeInsets.only(top: bodyMargin),
             decoration: BoxDecoration(
               color: bodyColor,
               borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
+                  blurRadius: 10.r,
                   offset: const Offset(0, -5),
                 ),
               ],
@@ -120,17 +274,17 @@ class GradientScaffold extends StatelessWidget {
             ),
           ),
 
-          // 3. Avatar (Overlapping) - optional
-          if (avatar != null)
+          // 3. Avatar (Overlapping)
+          if (avatar != null && avatarTop != null)
             Positioned(
-              top: 90.h,
+              top: avatarTop,
               child: avatar!,
             ),
 
-          // 4. Search Box (Overlapping) - optional
-          if (searchBox != null)
+          // 4. Search Box (Overlapping)
+          if (searchBox != null && searchBoxTop != null)
             Positioned(
-              top: (headerHeight - 75).h,
+              top: searchBoxTop,
               left: 20.w,
               right: 20.w,
               child: searchBox!,
@@ -139,212 +293,5 @@ class GradientScaffold extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildHeader(Color primaryColor) {
-    return Container(
-      height: headerHeight.h,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            primaryColor.withOpacity(0.7),
-            primaryColor,
-            primaryColor.withOpacity(0.9),
-          ],
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.only(
-              left: 20.w, right: 20.w, bottom: (headerHeight - 105).h),
-          child: _buildHeaderContent(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeaderContent() {
-    return Row(
-      children: [
-        // Back button (optional)
-        if (showBackButton) ...[
-          GestureDetector(
-            onTap: onBack ?? () => Get.back(),
-            child: Container(
-              padding: EdgeInsets.all(8.w),
-              color: Colors.transparent,
-              child: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: 20.w,
-              ),
-            ),
-          ),
-          12.horizontalSpace,
-        ],
-
-        // Title + Subtitle
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontWeight: FontWeight.w700,
-                  fontSize: titleFontSize.sp,
-                  color: Colors.white,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (subtitle != null && subtitle!.isNotEmpty) ...[
-                Text(
-                  subtitle!,
-                  style: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontWeight: FontWeight.w500,
-                    fontSize: subtitleFontSize.sp,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-
-        // Trailing (optional)
-        if (trailing != null) trailing!,
-      ],
-    );
-  }
 }
 
-/// Standard action button for header trailing
-class HeaderActionButton extends StatelessWidget {
-  final GlobalKey? buttonKey;
-  final VoidCallback onTap;
-  final IconData icon;
-
-  const HeaderActionButton({
-    super.key,
-    this.buttonKey,
-    required this.onTap,
-    this.icon = Icons.grid_view,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      key: buttonKey,
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(10.w),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        child: Icon(
-          icon,
-          color: Colors.white,
-          size: 20.w,
-        ),
-      ),
-    );
-  }
-}
-
-/// Standard search box widget for GradientScaffold
-class GradientSearchBox extends StatelessWidget {
-  final TextEditingController controller;
-  final FocusNode? focusNode;
-  final String? hintText;
-  final ValueChanged<String>? onChanged;
-  final ValueChanged<String>? onSubmitted;
-  final VoidCallback? onClear;
-
-  const GradientSearchBox({
-    super.key,
-    required this.controller,
-    this.focusNode,
-    this.hintText,
-    this.onChanged,
-    this.onSubmitted,
-    this.onClear,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 56.h,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          16.horizontalSpace,
-          Icon(
-            CupertinoIcons.search,
-            size: 24.w,
-            color: const Color(0xFF9CA3AF),
-          ),
-          12.horizontalSpace,
-          Expanded(
-            child: TextField(
-              controller: controller,
-              focusNode: focusNode,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFF374151),
-              ),
-              decoration: InputDecoration(
-                isDense: true,
-                border: InputBorder.none,
-                hintText: hintText,
-                hintStyle: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
-                  color: const Color(0xFF9CA3AF),
-                ),
-                contentPadding: EdgeInsets.zero,
-              ),
-              onChanged: onChanged,
-              onSubmitted: onSubmitted,
-            ),
-          ),
-          if (controller.text.isNotEmpty)
-            GestureDetector(
-              onTap: () {
-                controller.clear();
-                onClear?.call();
-              },
-              child: Padding(
-                padding: EdgeInsets.only(right: 16.w),
-                child: Icon(
-                  Icons.close,
-                  size: 20.w,
-                  color: const Color(0xFF9CA3AF),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}

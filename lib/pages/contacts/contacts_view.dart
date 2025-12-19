@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:openim/widgets/custom_buttom.dart';
 
 import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/friend_item_view.dart';
@@ -77,9 +78,10 @@ class _ContactsPageState extends State<ContactsPage>
           title: StrRes.contacts,
           subtitle:
               '${StrRes.friends}: ${logic.friendListLogic.friendList.length}, ${StrRes.groups}: ${groupListLogic.createdList.length + groupListLogic.joinedList.length}',
-          trailing: HeaderActionButton(
-            buttonKey: _newButtonKey,
+          trailing: CustomButton(
             onTap: () => showNewContactPopup(context, _newButtonKey),
+            icon: Icons.grid_view,
+            color: Colors.white,
           ),
           body: Column(
             children: [

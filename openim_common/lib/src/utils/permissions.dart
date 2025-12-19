@@ -32,33 +32,31 @@ class Permissions {
       case Permission.photos:
         title = '对存储空间/照片权限申请说明';
         message = '便于您在该功能中上传图片/视频及用于更换头像、分享文件、保存附件、意见反馈等操作时读取和写入相册和文件内容。';
-        permission = Permission.photos;
         break;
 
       case Permission.storage:
+      case Permission.manageExternalStorage:
         title = '对存储空间/照片权限申请说明';
         message = '便于您在该功能中上传图片/视频及用于更换头像、分享文件、保存附件、意见反馈等操作时读取和写入相册和文件内容。';
-        permission = Permission.storage;
         break;
 
       case Permission.camera:
         title = '对相机/摄像头权限申请说明';
         message = '便于您使用该功能中拍照上传您的照片/视频及用于更换头像、意见反馈、保存相册、扫描二维码、进行视频通话等场景中使用';
-        permission = Permission.camera;
         break;
       case Permission.microphone:
         title = '对麦克风权限申请说明';
         message = '便于您进行语音通话、录制语音消息、参与语音会议等操作，我们需要获取麦克风权限。';
-        permission = Permission.microphone;
         break;
       default:
         title = '权限申请说明';
         message = '需要获取相关权限以便提供更好的服务。';
-        permission = Permission.photos;
         break;
     }
 
-    if (await permission.status.isGranted || await permission.status.isPermanentlyDenied || await permission.status.isPermanentlyDenied) {
+    // Skip if permission is already granted or permanently denied
+    if (await permission.status.isGranted ||
+        await permission.status.isPermanentlyDenied) {
       return;
     }
 
@@ -97,18 +95,28 @@ class Permissions {
   }
 
   static void camera(Function()? onGranted) async {
+    // Check if permission is already granted - if so, skip explanation and just call callback
+    if (await Permission.camera.status.isGranted) {
+      onGranted?.call();
+      return;
+    }
+
+    // Show explanation only if permission is not yet granted
     if (Platform.isAndroid) {
       checkAndShowPermissionExplanation(Permission.camera);
     }
-    if (await Permission.camera.request().isGranted) {
-      if (Platform.isAndroid) {
-        Get.closeCurrentSnackbar();
-      }
+
+    final status = await Permission.camera.request();
+
+    // Always close the snackbar after permission request completes
+    if (Platform.isAndroid) {
+      Get.closeCurrentSnackbar();
+    }
+
+    if (status.isGranted) {
       // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
-    }
-    if (await Permission.camera.isPermanentlyDenied ||
-        await Permission.camera.isDenied) {
+    } else if (status.isPermanentlyDenied || status.isDenied) {
       // The user opted to never again see the permission request dialog for this
       // app. The only way to change the permission's status now is to let the
       // user manually enable it in the system settings.
@@ -121,9 +129,7 @@ class Permissions {
       onGranted?.call();
       return;
     }
-    if (Platform.isAndroid) {
-      checkAndShowPermissionExplanation(Permission.storage);
-    }
+
     final androidInfo = await DeviceInfoPlugin().androidInfo;
     late Permission permisson;
 
@@ -132,14 +138,25 @@ class Permissions {
     } else {
       permisson = Permission.manageExternalStorage;
     }
-    if (await permisson.request().isGranted) {
-      if (Platform.isAndroid) {
-        Get.closeCurrentSnackbar();
-      }
+
+    // Check if permission is already granted - if so, skip explanation and just call callback
+    if (await permisson.status.isGranted) {
+      onGranted?.call();
+      return;
+    }
+
+    // Show explanation only if permission is not yet granted
+    checkAndShowPermissionExplanation(permisson);
+
+    final status = await permisson.request();
+
+    // Always close the snackbar after permission request completes
+    Get.closeCurrentSnackbar();
+
+    if (status.isGranted) {
       // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
-    }
-    if (await permisson.isPermanentlyDenied || await permisson.isDenied) {
+    } else if (status.isPermanentlyDenied || status.isDenied) {
       // The user opted to never again see the permission request dialog for this
       // app. The only way to change the permission's status now is to let the
       // user manually enable it in the system settings.

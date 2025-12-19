@@ -27,9 +27,10 @@ class AddContactsBySearchPage extends StatelessWidget {
           ? StrRes.searchAddFriends
           : StrRes.searchJoinGroups,
       showBackButton: true,
-      trailing: HeaderActionButton(
+      trailing: CustomButton(
         icon: CupertinoIcons.qrcode_viewfinder,
         onTap: AppNavigator.startScan,
+        color: Colors.white,
       ),
       searchBox: _buildSearchBox(),
       body: _buildContent(context),

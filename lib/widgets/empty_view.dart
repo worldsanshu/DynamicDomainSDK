@@ -46,6 +46,7 @@ class EmptyView extends StatelessWidget {
             24.verticalSpace,
             Text(
               message.isNotEmpty ? message : StrRes.noGroupRequests,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'FilsonPro',
                 fontSize: 16.sp,

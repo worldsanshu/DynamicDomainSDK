@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -21,9 +22,10 @@ class ChatAnalyticsView extends StatelessWidget {
           title: StrRes.chatAnalytics,
           subtitle: StrRes.usageAnalyticsInsights,
           showBackButton: true,
-          trailing: HeaderActionButton(
+          trailing: CustomButton(
             onTap: logic.refreshData,
             icon: CupertinoIcons.refresh,
+            color: Colors.white,
           ),
           body: logic.isLoading.value ? _buildLoadingView() : _buildContent(),
         ));
