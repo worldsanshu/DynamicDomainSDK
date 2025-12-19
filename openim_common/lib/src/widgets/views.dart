@@ -30,7 +30,7 @@ class IMViews {
   // ignore: unused_field
   static final ImagePicker _picker = ImagePicker();
 
-  static Future showToast(String msg, {int type = 0}) {
+  static Future showToast(String msg, {int type = 0}) async {
     /// type: 0 - error, 1 - success, 2 - warning
     ToastType toastType = type == 1
         ? ToastType.success

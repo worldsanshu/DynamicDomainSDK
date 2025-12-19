@@ -24,6 +24,45 @@ class InviteCodeLogic extends GetxController {
 
   final Set<String> _validInviteCodesCache = {};
 
+  // Rate limiting
+  final List<DateTime> _requestTimestamps = [];
+  DateTime? _blockedUntil;
+  static const int _maxRequests = 5;
+  static const Duration _timeWindow = Duration(seconds: 30);
+  static const Duration _blockDuration = Duration(minutes: 2);
+
+  bool _checkRateLimit() {
+    final now = DateTime.now();
+
+    // Check if currently blocked
+    if (_blockedUntil != null && now.isBefore(_blockedUntil!)) {
+      IMViews.showToast(StrRes.tooMuchRequestValidationCode);
+      return false;
+    }
+
+    // Clear block if expired
+    if (_blockedUntil != null && now.isAfter(_blockedUntil!)) {
+      _blockedUntil = null;
+      _requestTimestamps.clear();
+    }
+
+    // Remove old timestamps outside the time window
+    _requestTimestamps.removeWhere(
+      (timestamp) => now.difference(timestamp) > _timeWindow,
+    );
+
+    // Check if too many requests
+    if (_requestTimestamps.length >= _maxRequests) {
+      _blockedUntil = now.add(_blockDuration);
+      IMViews.showToast(StrRes.tooMuchRequestValidationCode);
+      return false;
+    }
+
+    // Add current request timestamp
+    _requestTimestamps.add(now);
+    return true;
+  }
+
   void onSubmit() async {
     if (!formKey.currentState!.validate()) {
       return;
@@ -31,6 +70,11 @@ class InviteCodeLogic extends GetxController {
 
     final inviteCode = inviteCodeController.text;
     if (!_validInviteCodesCache.contains(inviteCode) && inviteCode.isNotEmpty) {
+      // Check rate limit before making API call
+      if (!_checkRateLimit()) {
+        return;
+      }
+
       try {
         final valid = await LoadingView.singleton.wrap(
           asyncFunction: () => GatewayApi.checkInvitationCode(
@@ -41,7 +85,7 @@ class InviteCodeLogic extends GetxController {
           IMViews.showToast(StrRes.enterpriseCodeNotExist);
           return;
         }
-          _validInviteCodesCache.add(inviteCode);
+        _validInviteCodesCache.add(inviteCode);
       } catch (_) {
         return;
       }
