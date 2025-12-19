@@ -79,6 +79,7 @@ class _ContactsPageState extends State<ContactsPage>
           subtitle:
               '${StrRes.friends}: ${logic.friendListLogic.friendList.length}, ${StrRes.groups}: ${groupListLogic.createdList.length + groupListLogic.joinedList.length}',
           trailing: CustomButton(
+            key: _newButtonKey,
             onTap: () => showNewContactPopup(context, _newButtonKey),
             icon: Icons.grid_view,
             color: Colors.white,
@@ -502,34 +503,6 @@ class _ContactsPageState extends State<ContactsPage>
                 slivers: [
                   // My Groups section
                   if (filteredMyGroups.isNotEmpty) ...[
-                    if (_selectedGroupFilter == GroupFilterType.all)
-                      SliverToBoxAdapter(
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            left: 16.w,
-                            right: 16.w,
-                            top: 15.h,
-                            bottom: 5.h,
-                          ),
-                          color: Colors.white,
-                          child: Text(
-                            StrRes.myGroup,
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF212121),
-                              shadows: [
-                                Shadow(
-                                  color: Colors.white.withOpacity(0.9),
-                                  offset: const Offset(0.5, 0.5),
-                                  blurRadius: 0.5,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
@@ -543,34 +516,6 @@ class _ContactsPageState extends State<ContactsPage>
 
                   // Joined Groups section
                   if (filteredJoinedGroups.isNotEmpty) ...[
-                    if (_selectedGroupFilter == GroupFilterType.all)
-                      SliverToBoxAdapter(
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            left: 16.w,
-                            right: 16.w,
-                            top: 15.h,
-                            bottom: 5.h,
-                          ),
-                          color: Colors.white,
-                          child: Text(
-                            StrRes.joinedGroup,
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF212121),
-                              shadows: [
-                                Shadow(
-                                  color: Colors.white.withOpacity(0.9),
-                                  offset: const Offset(0.5, 0.5),
-                                  blurRadius: 0.5,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
@@ -768,7 +713,7 @@ class _ContactsPageState extends State<ContactsPage>
           sessionType: groupInfo.sessionType,
         ),
         child: Padding(
-          padding: EdgeInsets.all(16.w),
+          padding: EdgeInsets.all(12.w),
           child: Row(
             children: [
               // Group Avatar

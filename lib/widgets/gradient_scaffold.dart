@@ -73,7 +73,7 @@ class GradientScaffold extends StatelessWidget {
       contentEnd += 24.h; // Add space for subtitle
     }else if(showBackButton && (avatar == null && searchBox == null)){
       contentEnd += 16.h; // Add space for subtitle
-    }else if(showBackButton && (avatar == null && searchBox == null)){
+    }else if(showBackButton && (avatar == null && searchBox != null)){
       contentEnd += 16.h; // Add space for subtitle
     }
 

@@ -48,9 +48,10 @@ class _ConversationPageState extends State<ConversationPage> {
           title: '${logic.titleText} (${logic.conversationCount.value})',
           subtitle: logic.getUnreadText,
           trailing: CustomButton(
+            key: _newButtonKey,
             onTap: () => showNewContactPopup(context, _newButtonKey),
             icon: Icons.grid_view,
-              color: Colors.white,
+            color: Colors.white,
           ),
           body: Column(
             children: [
