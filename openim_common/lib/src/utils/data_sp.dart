@@ -231,11 +231,11 @@ class DataSp {
   }
 
   /// Save pending group application status update
-  /// Key format: "groupID_userID" -> handleResult (1=accepted, -1=rejected)
+  /// Key format: "groupID_userID_reqTime" -> handleResult (1=accepted, -1=rejected)
   static Future<bool>? putGroupApplicationPendingUpdate(
-      String groupID, String userID, int handleResult) {
+      String groupID, String userID, int handleResult, int? reqTime) {
     final updates = getGroupApplicationPendingUpdates();
-    final key = '${groupID}_$userID';
+    final key = '${groupID}_${userID}_${reqTime ?? 0}';
     updates[key] = handleResult;
     return SpUtil().putObject(getKey(_groupApplicationPendingUpdates), updates);
   }
@@ -250,6 +250,22 @@ class DataSp {
   /// Clear all pending group application updates
   static Future<bool>? clearGroupApplicationPendingUpdates() {
     return SpUtil().remove(getKey(_groupApplicationPendingUpdates));
+  }
+
+  /// Remove a specific pending group application update (when server has synced)
+  static Future<bool>? removeGroupApplicationPendingUpdate(
+      String groupID, String userID, int? reqTime) {
+    final updates = getGroupApplicationPendingUpdates();
+    final key = '${groupID}_${userID}_${reqTime ?? 0}';
+    if (updates.containsKey(key)) {
+      updates.remove(key);
+      if (updates.isEmpty) {
+        return clearGroupApplicationPendingUpdates();
+      }
+      return SpUtil()
+          .putObject(getKey(_groupApplicationPendingUpdates), updates);
+    }
+    return Future.value(true);
   }
 
   static Future<bool>? putLockScreenPassword(String password) {

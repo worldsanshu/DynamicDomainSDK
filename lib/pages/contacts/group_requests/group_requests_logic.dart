@@ -70,6 +70,15 @@ class GroupRequestsLogic extends GetxController {
         return 0;
       });
 
+      // Debug log to check SDK data
+      for (var item in allList) {
+        Logger.print(
+          '[GroupRequests] groupID=${item.groupID}, userID=${item.userID}, '
+          'reqTime=${item.reqTime}, handleResult=${item.handleResult}, '
+          'nickname=${item.nickname}',
+        );
+      }
+
       var map = <String, List<String>>{};
       var inviterList = <String>[];
       // 统计未查看的群申请数量
@@ -131,9 +140,16 @@ class GroupRequestsLogic extends GetxController {
     final pendingUpdates = DataSp.getGroupApplicationPendingUpdates();
     if (pendingUpdates.isNotEmpty) {
       for (var item in list) {
-        final key = '${item.groupID}_${item.userID}';
-        if (pendingUpdates.containsKey(key) && item.handleResult != 0) {
-          item.handleResult = pendingUpdates[key];
+        // Key includes reqTime to distinguish between different requests from same user
+        final key = '${item.groupID}_${item.userID}_${item.reqTime}';
+        // Apply pending update only if SDK still shows as unhandled (handleResult == 0)
+        // This means server hasn't synced yet, so use our local state
+        if (pendingUpdates.containsKey(key) && item.handleResult == 0) {
+          item.handleResult = pendingUpdates[key]!;
+        } else if (pendingUpdates.containsKey(key) && item.handleResult != 0) {
+          // Server has synced, remove from pending updates
+          DataSp.removeGroupApplicationPendingUpdate(
+              item.groupID!, item.userID!, item.reqTime);
         }
       }
     }
@@ -181,6 +197,7 @@ class GroupRequestsLogic extends GetxController {
     required String groupID,
     required String userID,
     required int handleResult,
+    int? reqTime,
   }) async {
     // Update local list immediately for instant UI feedback
     final index = list.indexWhere(
@@ -192,11 +209,12 @@ class GroupRequestsLogic extends GetxController {
       list.refresh();
     }
 
-    // Save to pending updates in local storage
+    // Save to pending updates in local storage (with reqTime for uniqueness)
     await DataSp.putGroupApplicationPendingUpdate(
       groupID,
       userID,
       handleResult,
+      reqTime,
     );
   }
 
@@ -217,6 +235,7 @@ class GroupRequestsLogic extends GetxController {
         groupID: info.groupID!,
         userID: info.userID!,
         handleResult: 1,
+        reqTime: info.reqTime,
       );
       IMViews.showToast(StrRes.approved, type: 1);
     } catch (e) {
@@ -247,6 +266,7 @@ class GroupRequestsLogic extends GetxController {
         groupID: info.groupID!,
         userID: info.userID!,
         handleResult: -1,
+        reqTime: info.reqTime,
       );
 
       IMViews.showToast(StrRes.rejectSuccessfully, type: 1);

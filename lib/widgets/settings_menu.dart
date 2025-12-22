@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 /// A section container for grouping settings menu items
 /// Used in mine_view, about_view, blacklist_view, account_settings, etc.
@@ -268,7 +269,7 @@ class SettingsMenuItem extends StatelessWidget {
         height: 30.h,
         decoration: BoxDecoration(
           color: switchValue == true
-              ? const Color(0xFF1510F0)
+              ? Theme.of(Get.context!).primaryColor
               : const Color(0xFFE2E8F0),
           borderRadius: BorderRadius.circular(15.r),
         ),

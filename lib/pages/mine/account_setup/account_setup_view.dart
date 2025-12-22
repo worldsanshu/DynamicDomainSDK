@@ -31,27 +31,30 @@ class AccountSetupPage extends StatelessWidget {
             SectionTitle(title: StrRes.notificationSettings),
             SettingsMenuSection(
               items: [
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.bell_slash,
                   label: StrRes.notDisturbMode,
                   hasSwitch: true,
                   switchValue: logic.isGlobalNotDisturb,
                   onSwitchChanged: (_) => logic.toggleNotDisturbMode(),
+                  showArrow: false,
                 ),
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.music_note,
                   label: StrRes.allowRing,
                   hasSwitch: true,
                   switchValue: logic.isAllowBeep,
                   onSwitchChanged: (_) => logic.toggleBeep(),
+                  showArrow: false,
                 ),
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.device_phone_portrait,
                   label: StrRes.allowVibrate,
                   hasSwitch: true,
                   switchValue: logic.isAllowVibration,
                   onSwitchChanged: (_) => logic.toggleVibration(),
                   showDivider: false,
+                  showArrow: false,
                 ),
               ],
             ),
@@ -62,19 +65,20 @@ class AccountSetupPage extends StatelessWidget {
             SectionTitle(title: StrRes.privacySettings),
             SettingsMenuSection(
               items: [
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.person_add,
                   label: StrRes.allowAddMeFried,
                   hasSwitch: true,
                   switchValue: logic.isAllowAddFriend,
                   onSwitchChanged: (_) => logic.toggleForbidAddMeToFriend(),
+                  showArrow: false,
                 ),
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.nosign,
                   label: StrRes.blacklist,
                   onTap: logic.blacklist,
                 ),
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.globe,
                   label: StrRes.languageSetup,
                   value: logic.curLanguage.value,
@@ -90,23 +94,24 @@ class AccountSetupPage extends StatelessWidget {
             SectionTitle(title: StrRes.securitySettings),
             SettingsMenuSection(
               items: [
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.lock,
                   label: StrRes.unlockSettings,
                   onTap: logic.unlockSetup,
                 ),
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.lock_rotation,
                   label: StrRes.changePassword,
                   onTap: logic.changePwd,
                 ),
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.person_crop_circle_badge_exclam,
                   label: StrRes.teenMode,
                   hasSwitch: true,
                   switchValue: logic.teenModeEnabled.value,
                   onSwitchChanged: (_) => logic.toggleTeenMode(),
                   showDivider: false,
+                  showArrow: false,
                 ),
               ],
             ),
@@ -120,13 +125,13 @@ class AccountSetupPage extends StatelessWidget {
             ),
             SettingsMenuSection(
               items: [
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.trash,
                   label: StrRes.clearChatHistory,
                   onTap: logic.clearChatHistory,
                   isWarning: true,
                 ),
-                _buildMenuItem(
+                SettingsMenuItem(
                   icon: CupertinoIcons.person_badge_minus,
                   label: StrRes.deleteAccount,
                   onTap: logic.deleteAccount,
@@ -138,51 +143,6 @@ class AccountSetupPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildIconContainer(IconData icon, {bool isWarning = false}) {
-    return Container(
-      width: 36.w,
-      height: 36.w,
-      decoration: BoxDecoration(
-        color: isWarning
-            ? const Color(0xFFEF4444).withOpacity(0.1)
-            : const Color(0xFFF3F4F6),
-        borderRadius: BorderRadius.circular(10.r),
-      ),
-      child: Center(
-        child: Icon(
-          icon,
-          size: 20.w,
-          color: isWarning ? const Color(0xFFEF4444) : const Color(0xFF424242),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String label,
-    String? value,
-    bool hasSwitch = false,
-    bool? switchValue,
-    Function(bool)? onSwitchChanged,
-    VoidCallback? onTap,
-    bool isWarning = false,
-    bool showDivider = true,
-  }) {
-    return SettingsMenuItem(
-      iconWidget: _buildIconContainer(icon, isWarning: isWarning),
-      label: label,
-      value: value,
-      hasSwitch: hasSwitch,
-      switchValue: switchValue,
-      onSwitchChanged: onSwitchChanged,
-      onTap: onTap,
-      isWarning: isWarning,
-      showDivider: showDivider,
-      showArrow: !hasSwitch && onTap != null,
     );
   }
 }

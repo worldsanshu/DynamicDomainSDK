@@ -38,6 +38,9 @@ class ChatSetupLogic extends GetxController {
   late StreamSubscription ccSub;
   late StreamSubscription fcSub;
 
+  // Flag to prevent spam clicking on create group button
+  bool _isCreatingGroup = false;
+
   String get conversationID => conversationInfo.value.conversationID;
 
   bool get isPinned => conversationInfo.value.isPinned == true;
@@ -153,6 +156,10 @@ class ChatSetupLogic extends GetxController {
   }
 
   Future<void> createGroup() async {
+    // Prevent spam clicking - if already showing dialog, return early
+    if (_isCreatingGroup) return;
+    _isCreatingGroup = true;
+
     try {
       final result = await GatewayApi.getRealNameAuthInfo();
       final status = result['status'] ?? 0;
@@ -161,6 +168,7 @@ class ChatSetupLogic extends GetxController {
           title: StrRes.realNameAuthRequiredForGroup,
           rightText: StrRes.goToRealNameAuth,
         ));
+        _isCreatingGroup = false; // Reset flag after dialog closes
         if (confirm == true) AppNavigator.startRealNameAuth();
         return;
       }
@@ -169,9 +177,12 @@ class ChatSetupLogic extends GetxController {
         title: StrRes.realNameAuthRequiredForGroup,
         rightText: StrRes.goToRealNameAuth,
       ));
+      _isCreatingGroup = false; // Reset flag after dialog closes
       if (confirm == true) AppNavigator.startRealNameAuth();
       return;
     }
+
+    _isCreatingGroup = false; // Reset flag before navigating
 
     AppNavigator.startCreateGroup(defaultCheckedList: [
       UserInfo(

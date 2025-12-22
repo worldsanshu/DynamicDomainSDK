@@ -77,6 +77,30 @@ class AccountSetupLogic extends GetxController {
     imLogic.userInfo.update((val) {
       val?.globalRecvMsgOpt = status;
     });
+
+    // When enabling DND mode, automatically disable sound and vibration
+    if (status == 2) {
+      // Disable sound if currently enabled
+      if (isAllowBeep) {
+        await ChatApis.updateUserInfo(
+          allowBeep: 2, // 2 = disabled
+          userID: OpenIM.iMManager.userID,
+        );
+        imLogic.userInfo.update((val) {
+          val?.allowBeep = 2;
+        });
+      }
+      // Disable vibration if currently enabled
+      if (isAllowVibration) {
+        await ChatApis.updateUserInfo(
+          allowVibration: 2, // 2 = disabled
+          userID: OpenIM.iMManager.userID,
+        );
+        imLogic.userInfo.update((val) {
+          val?.allowVibration = 2;
+        });
+      }
+    }
   }
 
   void toggleBeep() async {

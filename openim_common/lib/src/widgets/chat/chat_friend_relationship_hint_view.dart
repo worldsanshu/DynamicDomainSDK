@@ -20,7 +20,11 @@ class ChatFriendRelationshipAbnormalHintView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (blockedByFriend) {
-      return StrRes.blockedByFriendHint.toText..style = Styles.ts_8E9AB0_12sp;
+      return Container(
+        width: double.infinity,
+        alignment: Alignment.center,
+        child: StrRes.blockedByFriendHint.toText..style = Styles.ts_8E9AB0_12sp,
+      );
     } else if (deletedByFriend) {
       return Container(
         constraints: BoxConstraints(maxWidth: maxWidth),

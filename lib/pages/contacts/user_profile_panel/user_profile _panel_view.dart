@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 
-import '../../../widgets/custom_buttom.dart';
 import '../../../widgets/gradient_scaffold.dart';
 import '../../../widgets/settings_menu.dart';
 import 'user_profile _panel_logic.dart';
@@ -22,11 +21,12 @@ class UserProfilePanelPage extends StatelessWidget {
     return GradientScaffold(
       title: StrRes.profile,
       showBackButton: true,
-      scrollable: true,
+      scrollable: false, // Disable full scroll to fix header
       avatar: _buildAvatar(),
       body: Obx(() => Column(
             children: [
-              // User Info
+              // ===== FIXED HEADER SECTION =====
+              // User Info (Fixed - not scrollable)
               Text(
                 logic.getShowName(),
                 style: TextStyle(
@@ -64,41 +64,6 @@ class UserProfilePanelPage extends StatelessWidget {
                   ),
                 ),
 
-              24.verticalSpace,
-
-              // Action Buttons Row
-              if (!logic.isMyself && logic.isFriendship)
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      if (logic.showAudioAndVideoCall) ...[
-                        _buildActionButtonWithCustomButtom(
-                          context: context,
-                          icon: CupertinoIcons.phone,
-                          label: StrRes.audioCall,
-                          onTap: () => logic.trtcLogic
-                              .callAudio(logic.userInfo.value.userID!),
-                        ),
-                        _buildActionButtonWithCustomButtom(
-                          context: context,
-                          icon: CupertinoIcons.videocam,
-                          label: StrRes.videoCall,
-                          onTap: () => logic.trtcLogic
-                              .callVideo(logic.userInfo.value.userID!),
-                        ),
-                      ],
-                      _buildActionButtonWithCustomButtom(
-                        context: context,
-                        icon: CupertinoIcons.chat_bubble,
-                        label: StrRes.sendMessage,
-                        onTap: logic.toChat,
-                      ),
-                    ],
-                  ),
-                ),
-
               if (!logic.isMyself &&
                   logic.isAllowAddFriend &&
                   !logic.isFriendship &&
@@ -113,19 +78,35 @@ class UserProfilePanelPage extends StatelessWidget {
               24.verticalSpace,
               const Divider(height: 1, color: Color(0xFFF3F4F6)),
 
-              // Menu List
-              if (logic.isGroupMemberPage&& !logic.isMyself ) ...[
-                _buildSectionTitle(StrRes.groupInformation),
-                _buildGroupInfoSection(),
-              ],
-              if (!logic.isMyself) ...[
-                if (logic.isFriendship || logic.isBlacklist) ...[
-                  _buildSectionTitle(StrRes.actions),
-                ],
-                _buildActionsSection(),
-              ],
+              // ===== SCROLLABLE SECTION =====
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      // Quick Actions Section (Message, Audio Call, Video Call)
+                      if (!logic.isMyself && logic.isFriendship) ...[
+                        _buildSectionTitle(StrRes.quickActions),
+                        _buildQuickActionsSection(context),
+                      ],
 
-              40.verticalSpace,
+                      // Menu List
+                      if (logic.isGroupMemberPage && !logic.isMyself) ...[
+                        _buildSectionTitle(StrRes.groupInformation),
+                        _buildGroupInfoSection(),
+                      ],
+                      if (!logic.isMyself) ...[
+                        if (logic.isFriendship || logic.isBlacklist) ...[
+                          _buildSectionTitle(StrRes.actions),
+                        ],
+                        _buildActionsSection(),
+                      ],
+
+                      40.verticalSpace,
+                    ],
+                  ),
+                ),
+              ),
             ],
           )),
     );
@@ -156,33 +137,39 @@ class UserProfilePanelPage extends StatelessWidget {
         ));
   }
 
-  Widget _buildActionButtonWithCustomButtom({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
+  Widget _buildQuickActionsSection(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    return Column(
-      children: [
-        CustomButton(
-          onTap: onTap,
-          icon: icon,
-          color: primaryColor,
-          padding: EdgeInsets.all(16.w),
+    return _buildMenuSection([
+      SettingsMenuItem(
+        icon: CupertinoIcons.chat_bubble,
+        color: primaryColor,
+        label: StrRes.sendMessage,
+        onTap: logic.toChat,
+        showArrow: true,
+        showDivider: logic.showAudioAndVideoCall,
+        isRow: true,
+      ),
+      if (logic.showAudioAndVideoCall) ...[
+        SettingsMenuItem(
+          icon: CupertinoIcons.phone,
+          color: const Color(0xFF10B981),
+          label: StrRes.audioCall,
+          onTap: () => logic.trtcLogic.callAudio(logic.userInfo.value.userID!),
+          showArrow: true,
+          showDivider: true,
+          isRow: true,
         ),
-        8.verticalSpace,
-        Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'FilsonPro',
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF374151),
-          ),
+        SettingsMenuItem(
+          icon: CupertinoIcons.videocam,
+          color: const Color(0xFF3B82F6),
+          label: StrRes.videoCall,
+          onTap: () => logic.trtcLogic.callVideo(logic.userInfo.value.userID!),
+          showArrow: true,
+          showDivider: false,
+          isRow: true,
         ),
       ],
-    );
+    ]);
   }
 
   Widget _buildAddFriendButton(BuildContext context) {
@@ -195,15 +182,11 @@ class UserProfilePanelPage extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 24.w),
           padding: EdgeInsets.symmetric(vertical: 12.h),
           decoration: BoxDecoration(
-            color: isPending
-                ? const Color(0xFFD1D5DB)
-                : primaryColor,
+            color: isPending ? const Color(0xFFD1D5DB) : primaryColor,
             borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
-                color: (isPending
-                        ? const Color(0xFFD1D5DB)
-                        : primaryColor)
+                color: (isPending ? const Color(0xFFD1D5DB) : primaryColor)
                     .withOpacity(0.3),
                 offset: const Offset(0, 4),
                 blurRadius: 10,
@@ -214,9 +197,7 @@ class UserProfilePanelPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                isPending
-                    ? CupertinoIcons.clock
-                    : CupertinoIcons.person_add,
+                isPending ? CupertinoIcons.clock : CupertinoIcons.person_add,
                 color: Colors.white,
                 size: 20.w,
               ),

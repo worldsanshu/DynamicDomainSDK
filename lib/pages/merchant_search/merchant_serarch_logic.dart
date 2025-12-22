@@ -70,7 +70,7 @@ class MerchantSearchLogic extends GetxController {
       LoadingView.singleton.wrap(asyncFunction: () async {
         try {
           await GatewayApi.bindMerchant(code: rightCode);
-          IMViews.showToast(StrRes.bindSuccess);
+          IMViews.showToast(StrRes.bindSuccess,type: 1);
           merchantCodeCtrl.text = '';
           Get.back(result: true);
         } catch (error) {

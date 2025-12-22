@@ -6,8 +6,7 @@ import 'package:openim/routes/app_navigator.dart';
 class ResetPasswordLogic extends GetxController {
   // Form key for validation
   final formKey = GlobalKey<FormState>();
-    bool fromLogin = false;
-
+  bool fromLogin = false;
 
   // Controllers
   final phoneNumberCtrl = TextEditingController();
@@ -27,7 +26,7 @@ class ResetPasswordLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
-        fromLogin = Get.arguments?['fromLogin'] ?? false;
+    fromLogin = Get.arguments?['fromLogin'] ?? false;
 
     // Add listeners for real-time validation
     phoneNumberCtrl.addListener(_validateForm);
@@ -70,17 +69,32 @@ class ResetPasswordLogic extends GetxController {
 
   /// Validate form and update button state
   void _validateForm() {
-    final phoneValid = phoneNumberCtrl.text.trim().isNotEmpty;
-    final passwordValid = passwordCtrl.text.trim().isNotEmpty;
-    final confirmPasswordValid = confirmPasswordCtrl.text.trim().isNotEmpty;
-    final smsCodeValid = smsCodeCtrl.text.trim().isNotEmpty;
+    final phone = phoneNumberCtrl.text.trim();
+    final password = passwordCtrl.text;
+    final confirmPassword = confirmPasswordCtrl.text;
+    final smsCode = smsCodeCtrl.text.trim();
+
+    // Phone validation - clean and check
+    String cleanPhone = phone.replaceAll(RegExp(r'[\s\-]'), '');
+    if (cleanPhone.startsWith('+86')) {
+      cleanPhone = cleanPhone.substring(3);
+    } else if (cleanPhone.startsWith('86')) {
+      cleanPhone = cleanPhone.substring(2);
+    }
+    final phoneValid = phone.isNotEmpty && IMUtils.isChinaMobile(cleanPhone);
+
+    // Password format validation (8-20 chars, letters and numbers)
+    final passwordValid = IMUtils.isValidPassword(password);
+
+    // Confirm password must match
+    final confirmPasswordValid =
+        confirmPassword.isNotEmpty && confirmPassword == password;
+
+    // SMS code validation (usually 4-6 digits)
+    final smsCodeValid = smsCode.isNotEmpty && smsCode.length >= 4;
 
     isButtonEnabled.value =
         phoneValid && passwordValid && confirmPasswordValid && smsCodeValid;
-
-    // Keep validators in sync: whenever either password field changes,
-    // re-run form validation so the confirm password field reflects
-    // the latest value even if it was edited first.
   }
 
   Future<bool> onSendVerificationCode() async {
@@ -109,7 +123,7 @@ class ResetPasswordLogic extends GetxController {
         ),
       );
       if (result == true) {
-        IMViews.showToast(StrRes.verificationCodeSent,type: 1);
+        IMViews.showToast(StrRes.verificationCodeSent, type: 1);
         return true;
       }
     } catch (error) {
@@ -148,7 +162,7 @@ class ResetPasswordLogic extends GetxController {
     );
 
     if (result) {
-      IMViews.showToast(StrRes.resetSuccessful,type: 1);
+      IMViews.showToast(StrRes.resetSuccessful, type: 1);
       // Navigate back to login screen after successful password reset
       AppNavigator.startLogin();
     } else {

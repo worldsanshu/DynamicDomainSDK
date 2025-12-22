@@ -150,7 +150,7 @@ class MerchantListLogic extends GetxController
         print('===BIND=== API call successful');
       });
       print('===BIND=== Showing success toast');
-      IMViews.showToast(StrRes.bindSuccess);
+      IMViews.showToast(StrRes.bindSuccess,type: 1);
       clearSearch();
       refreshData();
     } catch (e) {
