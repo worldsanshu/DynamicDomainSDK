@@ -8,7 +8,8 @@ import 'package:openim_common/openim_common.dart';
 
 import '../../widgets/custom_buttom.dart';
 import '../../widgets/gradient_scaffold.dart';
-import '../../../widgets/menu_item_widgets.dart';
+import '../../widgets/settings_menu.dart';
+import '../../widgets/section_title.dart';
 import 'mine_logic.dart';
 
 class MinePage extends StatelessWidget {
@@ -117,56 +118,68 @@ class MinePage extends StatelessWidget {
               child: Column(
                 children: [
                   // Menu List
-                  _buildSectionTitle(StrRes.aboutSection),
-                  MenuItemWidget(
-                    icon: CupertinoIcons.person_crop_circle_badge_checkmark,
-                    label: StrRes.realNameAuth,
-                    onTap: logic.startRealNameAuth,
-                  ),
-                  // My Company - conditionally displayed
-                  Obx(() {
-                    if (logic.showMyCompanyEntry == true) {
-                      return const SizedBox.shrink();
-                    }
-                    return MenuItemWidget(
-                      icon: CupertinoIcons.building_2_fill,
-                      label: StrRes.myCompany,
-                      onTap: logic.startMerchantList,
-                    );
-                  }),
-                  MenuItemWidget(
-                    icon: CupertinoIcons.shield,
-                    label: StrRes.privacyPolicy,
-                    onTap: logic.privacyPolicy,
-                  ),
-                  MenuItemWidget(
-                    icon: CupertinoIcons.doc_text,
-                    label: StrRes.serviceAgreement,
-                    onTap: logic.serviceAgreement,
-                  ),
-                  MenuItemWidget(
-                    icon: CupertinoIcons.info,
-                    label: StrRes.aboutUs,
-                    onTap: logic.aboutUs,
+                  SectionTitle(title: StrRes.aboutSection),
+                  SettingsMenuSection(
+                    items: [
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.person_crop_circle_badge_checkmark,
+                        label: StrRes.realNameAuth,
+                        onTap: logic.startRealNameAuth,
+                      ),
+                      // My Company - conditionally displayed
+                      Obx(() {
+                        if (logic.showMyCompanyEntry == true) {
+                          return const SizedBox.shrink();
+                        }
+                        return SettingsMenuItem(
+                          icon: CupertinoIcons.building_2_fill,
+                          label: StrRes.myCompany,
+                          onTap: logic.startMerchantList,
+                        );
+                      }),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.shield,
+                        label: StrRes.privacyPolicy,
+                        onTap: logic.privacyPolicy,
+                      ),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.doc_text,
+                        label: StrRes.serviceAgreement,
+                        onTap: logic.serviceAgreement,
+                      ),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.info,
+                        label: StrRes.aboutUs,
+                        onTap: logic.aboutUs,
+                        showDivider: false,
+                      ),
+                    ],
                   ),
 
-                  _buildSectionTitle(StrRes.systemSection),
-                  MenuItemWidget(
-                    icon: CupertinoIcons.chart_bar,
-                    label: StrRes.chatAnalytics,
-                    onTap: logic.startChatAnalytics,
-                  ),
-                  MenuItemWidget(
-                    icon: CupertinoIcons.delete,
-                    label: StrRes.clearCache,
-                    onTap: logic.clearCache,
-                    textColor: const Color(0xFFEF4444),
-                  ),
-                  MenuItemWidget(
-                    icon: Icons.logout,
-                    label: StrRes.logout,
-                    onTap: logic.logout,
-                    textColor: const Color(0xFFEF4444),
+                  20.verticalSpace,
+
+                  SectionTitle(title: StrRes.systemSection),
+                  SettingsMenuSection(
+                    items: [
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.chart_bar,
+                        label: StrRes.chatAnalytics,
+                        onTap: logic.startChatAnalytics,
+                      ),
+                      SettingsMenuItem(
+                        icon: CupertinoIcons.delete,
+                        label: StrRes.clearCache,
+                        onTap: logic.clearCache,
+                        isWarning: true,
+                      ),
+                      SettingsMenuItem(
+                        icon: Icons.logout,
+                        label: StrRes.logout,
+                        onTap: logic.logout,
+                        isWarning: true,
+                        showDivider: false,
+                      ),
+                    ],
                   ),
                   40.verticalSpace,
                 ],
@@ -174,22 +187,6 @@ class MinePage extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.only(left: 24.w, top: 24.h, bottom: 8.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF9CA3AF),
-        ),
       ),
     );
   }

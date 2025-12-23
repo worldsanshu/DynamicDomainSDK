@@ -21,12 +21,7 @@ class SendVerificationApplicationPage extends StatelessWidget {
         logic.isEnterGroup ? StrRes.acceptMeJoin : StrRes.addMeAsFriend;
     return TouchCloseSoftKeyboard(
       child: GradientScaffold(
-        title: logic.isEnterGroup
-            ? StrRes.groupVerification
-            : StrRes.friendVerification,
-        subtitle: logic.isEnterGroup
-            ? StrRes.sendEnterGroupApplication
-            : StrRes.sendToBeFriendApplication,
+        title: StrRes.sendRequest,
         showBackButton: true,
         bodyColor: const Color(0xFFF9FAFB),
         trailing: CustomButton(

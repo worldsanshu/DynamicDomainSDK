@@ -9,6 +9,7 @@ import 'package:openim_common/openim_common.dart';
 
 import '../../../widgets/gradient_scaffold.dart';
 import '../../../widgets/settings_menu.dart';
+import '../../../widgets/section_title.dart';
 import 'user_profile _panel_logic.dart';
 
 class UserProfilePanelPage extends StatelessWidget {
@@ -86,18 +87,18 @@ class UserProfilePanelPage extends StatelessWidget {
                     children: [
                       // Quick Actions Section (Message, Audio Call, Video Call)
                       if (!logic.isMyself && logic.isFriendship) ...[
-                        _buildSectionTitle(StrRes.quickActions),
+                        SectionTitle(title: StrRes.quickActions),
                         _buildQuickActionsSection(context),
                       ],
 
                       // Menu List
                       if (logic.isGroupMemberPage && !logic.isMyself) ...[
-                        _buildSectionTitle(StrRes.groupInformation),
+                        SectionTitle(title: StrRes.groupInformation),
                         _buildGroupInfoSection(),
                       ],
                       if (!logic.isMyself) ...[
                         if (logic.isFriendship || logic.isBlacklist) ...[
-                          _buildSectionTitle(StrRes.actions),
+                          SectionTitle(title: StrRes.actions),
                         ],
                         _buildActionsSection(),
                       ],
@@ -216,22 +217,6 @@ class UserProfilePanelPage extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.only(left: 24.w, top: 24.h, bottom: 8.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF9CA3AF),
-        ),
-      ),
-    );
   }
 
   Widget _buildGroupInfoSection() => _buildMenuSection([

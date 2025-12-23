@@ -9,6 +9,7 @@ import 'package:openim_common/openim_common.dart';
 import '../../../widgets/custom_buttom.dart';
 import '../../../widgets/gradient_scaffold.dart';
 import '../../../widgets/settings_menu.dart';
+import '../../../widgets/section_title.dart';
 import 'chat_setup_logic.dart';
 
 class ChatSetupPage extends StatelessWidget {
@@ -113,7 +114,7 @@ class ChatSetupPage extends StatelessWidget {
                   child: Column(
                     children: [
                       // Menu Sections
-                      _buildSectionTitle(StrRes.chatSettings),
+                      SectionTitle(title: StrRes.chatSettings),
                       SettingsMenuItem(
                         label: StrRes.topContacts,
                         hasSwitch: true,
@@ -129,7 +130,7 @@ class ChatSetupPage extends StatelessWidget {
                         showArrow: false,
                       ),
 
-                      _buildSectionTitle(StrRes.appearance),
+                      SectionTitle(title: StrRes.appearance),
                       SettingsMenuItem(
                         icon: CupertinoIcons.photo,
                         label: StrRes.setChatBackground,
@@ -141,7 +142,7 @@ class ChatSetupPage extends StatelessWidget {
                         onTap: logic.setFontSize,
                       ),
 
-                      _buildSectionTitle(StrRes.actions),
+                      SectionTitle(title: StrRes.actions),
                       SettingsMenuItem(
                         icon: CupertinoIcons.person_2,
                         label: StrRes.createGroup,
@@ -196,21 +197,5 @@ class ChatSetupPage extends StatelessWidget {
             ),
           ),
         ));
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.only(left: 24.w, top: 24.h, bottom: 8.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF9CA3AF),
-        ),
-      ),
-    );
   }
 }

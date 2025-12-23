@@ -8,6 +8,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
+import 'package:openim/widgets/section_title.dart';
 import 'group_online_info_logic.dart';
 
 class GroupOnlineInfoPage extends StatelessWidget {
@@ -68,7 +69,7 @@ class GroupOnlineInfoPage extends StatelessWidget {
                 if (!logic.showInfos.value) ...[
                   SliverToBoxAdapter(
                     child: (logic.memberList.isNotEmpty)
-                        ? _buildSectionTitle(StrRes.groupMember)
+                        ? SectionTitle(title: StrRes.groupMember)
                         : SizedBox(height: 8.h),
                   ),
                   SliverList(
@@ -99,28 +100,6 @@ class GroupOnlineInfoPage extends StatelessWidget {
             ),
           ),
         ));
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 15.sp,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF212121),
-          shadows: [
-            Shadow(
-              color: Colors.white.withOpacity(0.9),
-              offset: const Offset(0.5, 0.5),
-              blurRadius: 0.5,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildMemberTile(GroupMembersInfo info) {

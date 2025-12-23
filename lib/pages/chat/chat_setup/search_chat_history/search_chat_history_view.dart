@@ -13,6 +13,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:openim/constants/app_color.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim/widgets/empty_view.dart';
+import 'package:openim/widgets/section_title.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:pull_to_refresh_new/pull_to_refresh.dart';
 import 'package:search_keyword_text/search_keyword_text.dart';
@@ -276,34 +277,12 @@ class SearchChatHistoryPage extends StatelessWidget {
               child: FadeInAnimation(child: widget),
             ),
             children: [
-              _buildSectionTitle(StrRes.quicklyFindChatHistory),
+              SectionTitle(title: StrRes.quicklyFindChatHistory),
               _buildQuickActionsSection(),
             ],
           ),
         ),
       );
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 15.sp,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF212121),
-          shadows: [
-            Shadow(
-              color: Colors.white.withOpacity(0.9),
-              offset: const Offset(0.5, 0.5),
-              blurRadius: 0.5,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildQuickActionsSection() {
     return Container(

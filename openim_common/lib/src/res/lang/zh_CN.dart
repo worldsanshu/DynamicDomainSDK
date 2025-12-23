@@ -373,6 +373,7 @@ const Map<String, String> zh_CN = {
   "sendToBeFriendApplication": "发送好友申请",
   "sendSuccessfully": "发送成功",
   "sendFailed": "发送失败",
+  "sendRequest": "发送请求",
   'canNotAddFriends': '该用户已设置不可添加！',
   "mutedAll": "全体禁言",
   "tenMinutes": "10分钟",

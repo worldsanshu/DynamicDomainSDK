@@ -9,6 +9,7 @@ import 'package:sprintf/sprintf.dart';
 import '../../../widgets/custom_buttom.dart';
 import '../../../widgets/gradient_scaffold.dart';
 import '../../../widgets/settings_menu.dart';
+import '../../../widgets/section_title.dart';
 import 'group_setup_logic.dart';
 
 class GroupSetupPage extends StatelessWidget {
@@ -142,14 +143,14 @@ class GroupSetupPage extends StatelessWidget {
                     children: [
                       // Group Members Section
                       if (logic.isJoinedGroup.value) ...[
-                        _buildSectionTitle(StrRes.groupMembers),
+                        SectionTitle(title: StrRes.groupMembers),
                         _buildGroupMembersGrid(),
                         24.verticalSpace,
                         const Divider(height: 1, color: Color(0xFFF3F4F6)),
                       ],
 
                       // Menu Sections
-                      _buildSectionTitle(StrRes.groupInformation),
+                      SectionTitle(title: StrRes.groupInformation),
                       SettingsMenuItem(
                         icon: CupertinoIcons.bell,
                         label: StrRes.groupAc,
@@ -168,7 +169,7 @@ class GroupSetupPage extends StatelessWidget {
                           onTap: logic.groupManage,
                         ),
 
-                      _buildSectionTitle(StrRes.nicknameInGroup),
+                      SectionTitle(title: StrRes.nicknameInGroup),
                       SettingsMenuItem(
                           icon: CupertinoIcons.person,
                           label: StrRes.myGroupMemberNickname,
@@ -176,7 +177,7 @@ class GroupSetupPage extends StatelessWidget {
                           onTap: logic.modifyMyGroupNickname,
                           isRow: false),
 
-                      _buildSectionTitle(StrRes.chatSettings),
+                      SectionTitle(title: StrRes.chatSettings),
                       SettingsMenuItem(
                         label: StrRes.topChat,
                         hasSwitch: true,
@@ -192,14 +193,14 @@ class GroupSetupPage extends StatelessWidget {
                         showArrow: false,
                       ),
 
-                      _buildSectionTitle(StrRes.appearance),
+                      SectionTitle(title: StrRes.appearance),
                       SettingsMenuItem(
                         icon: CupertinoIcons.textformat,
                         label: StrRes.fontSize,
                         onTap: logic.setFontSize,
                       ),
 
-                      _buildSectionTitle(StrRes.actions),
+                      SectionTitle(title: StrRes.actions),
                       SettingsMenuItem(
                         icon: CupertinoIcons.flag,
                         label: StrRes.report,
@@ -296,22 +297,6 @@ class GroupSetupPage extends StatelessWidget {
             ],
           ),
         ));
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.only(left: 24.w, top: 24.h, bottom: 8.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF9CA3AF),
-        ),
-      ),
-    );
   }
 
   Widget _buildGroupMembersGrid() {

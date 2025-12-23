@@ -10,6 +10,7 @@ import 'package:openim_common/openim_common.dart';
 
 import 'friend_setup_logic.dart';
 import '../../../../widgets/base_page.dart';
+import '../../../../widgets/section_title.dart';
 
 class FriendSetupPage extends StatelessWidget {
   final logic = Get.find<FriendSetupLogic>();
@@ -82,40 +83,18 @@ class FriendSetupPage extends StatelessWidget {
               ),
               children: [
                 20.verticalSpace,
-                _buildSectionTitle(StrRes.settings),
+                SectionTitle(title: StrRes.settings),
                 _buildFriendSettingsSection(),
                 18.verticalSpace,
-                _buildSectionTitle(StrRes.privacySettings),
+                SectionTitle(title: StrRes.privacySettings),
                 _buildPrivacySection(),
                 18.verticalSpace,
-                _buildSectionTitle(StrRes.dangerZone),
+                SectionTitle(title: StrRes.dangerZone),
                 _buildDangerZoneSection(),
                 24.verticalSpace,
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 15.sp,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF212121),
-          shadows: [
-            Shadow(
-              color: Colors.white.withOpacity(0.9),
-              offset: const Offset(0.5, 0.5),
-              blurRadius: 0.5,
-            ),
-          ],
         ),
       ),
     );

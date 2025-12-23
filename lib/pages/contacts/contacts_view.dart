@@ -74,131 +74,135 @@ class _ContactsPageState extends State<ContactsPage>
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
 
-    return Obx(() => GradientScaffold(
-          title: StrRes.contacts,
-          subtitle:
-              '${StrRes.friends}: ${logic.friendListLogic.friendList.length}, ${StrRes.groups}: ${groupListLogic.createdList.length + groupListLogic.joinedList.length}',
-          trailing: CustomButton(
-            key: _newButtonKey,
-            onTap: () => showNewContactPopup(context, _newButtonKey),
-            icon: Icons.grid_view,
-            color: Colors.white,
-          ),
-          body: Column(
-            children: [
-              // Tab Bar
-              TabBar(
-                controller: _tabController,
-                indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(
-                    color: primaryColor,
-                    width: 3.0,
-                  ),
-                  insets: EdgeInsets.symmetric(horizontal: 16.0),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                indicatorPadding: EdgeInsets.zero,
-                dividerColor: Colors.transparent,
-                splashFactory: NoSplash.splashFactory,
-                overlayColor: WidgetStateProperty.all(Colors.transparent),
-                labelColor: primaryColor,
-                unselectedLabelColor: const Color(0xFF9CA3AF),
-                labelStyle: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-                unselectedLabelStyle: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-                tabs: [
-                  Tab(
-                    child: Obx(() => Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(StrRes.friends),
-                            if (logic.friendApplicationCount > 0) ...[
-                              5.horizontalSpace,
-                              Container(
-                                constraints: BoxConstraints(
-                                    minWidth: 20.w, minHeight: 20.h),
-                                padding: EdgeInsets.symmetric(horizontal: 6.w),
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFEF4444),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    logic.friendApplicationCount > 99
-                                        ? StrRes.moreThan99
-                                        : logic.friendApplicationCount
-                                            .toString(),
-                                    style: TextStyle(
-                                      fontFamily: 'FilsonPro',
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
-                        )),
-                  ),
-                  Tab(
-                    child: Obx(() => Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(StrRes.groups),
-                            if (logic.groupApplicationCount > 0) ...[
-                              5.horizontalSpace,
-                              Container(
-                                constraints: BoxConstraints(
-                                    minWidth: 20.w, minHeight: 20.h),
-                                padding: EdgeInsets.symmetric(horizontal: 6.w),
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFEF4444),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    logic.groupApplicationCount > 99
-                                        ? StrRes.moreThan99
-                                        : logic.groupApplicationCount
-                                            .toString(),
-                                    style: TextStyle(
-                                      fontFamily: 'FilsonPro',
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
-                        )),
-                  ),
-                ],
-              ),
-              const Divider(height: 1, color: Color(0xFFF3F4F6)),
-
-              // Tab Bar View
-              Expanded(
-                child: TabBarView(
+    return TouchCloseSoftKeyboard(
+      child: Obx(() => GradientScaffold(
+            title: StrRes.contacts,
+            subtitle:
+                '${StrRes.friends}: ${logic.friendListLogic.friendList.length}, ${StrRes.groups}: ${groupListLogic.createdList.length + groupListLogic.joinedList.length}',
+            trailing: CustomButton(
+              key: _newButtonKey,
+              onTap: () => showNewContactPopup(context, _newButtonKey),
+              icon: Icons.grid_view,
+              color: Colors.white,
+            ),
+            body: Column(
+              children: [
+                // Tab Bar
+                TabBar(
                   controller: _tabController,
-                  children: [
-                    _buildFriendsTab(),
-                    _buildGroupsTab(),
+                  indicator: UnderlineTabIndicator(
+                    borderSide: BorderSide(
+                      color: primaryColor,
+                      width: 3.0,
+                    ),
+                    insets: EdgeInsets.symmetric(horizontal: 16.0),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                  indicatorPadding: EdgeInsets.zero,
+                  dividerColor: Colors.transparent,
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: WidgetStateProperty.all(Colors.transparent),
+                  labelColor: primaryColor,
+                  unselectedLabelColor: const Color(0xFF9CA3AF),
+                  labelStyle: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    fontFamily: 'FilsonPro',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  tabs: [
+                    Tab(
+                      child: Obx(() => Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(StrRes.friends),
+                              if (logic.friendApplicationCount > 0) ...[
+                                5.horizontalSpace,
+                                Container(
+                                  constraints: BoxConstraints(
+                                      minWidth: 20.w, minHeight: 20.h),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 6.w),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFFEF4444),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      logic.friendApplicationCount > 99
+                                          ? StrRes.moreThan99
+                                          : logic.friendApplicationCount
+                                              .toString(),
+                                      style: TextStyle(
+                                        fontFamily: 'FilsonPro',
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          )),
+                    ),
+                    Tab(
+                      child: Obx(() => Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(StrRes.groups),
+                              if (logic.groupApplicationCount > 0) ...[
+                                5.horizontalSpace,
+                                Container(
+                                  constraints: BoxConstraints(
+                                      minWidth: 20.w, minHeight: 20.h),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 6.w),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFFEF4444),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      logic.groupApplicationCount > 99
+                                          ? StrRes.moreThan99
+                                          : logic.groupApplicationCount
+                                              .toString(),
+                                      style: TextStyle(
+                                        fontFamily: 'FilsonPro',
+                                        fontSize: 10.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          )),
+                    ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        ));
+                const Divider(height: 1, color: Color(0xFFF3F4F6)),
+
+                // Tab Bar View
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _buildFriendsTab(),
+                      _buildGroupsTab(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )),
+    );
   }
 
   Widget _buildFriendsTab() {
@@ -216,8 +220,10 @@ class _ContactsPageState extends State<ContactsPage>
               final user = item.user;
               final name = user?.nickname ?? '';
               final remark = user?.remark ?? '';
+              final userID = user?.userID ?? '';
               return name.toLowerCase().contains(searchQuery) ||
-                  remark.toLowerCase().contains(searchQuery);
+                  remark.toLowerCase().contains(searchQuery) ||
+                  userID.toLowerCase().contains(searchQuery);
             }).toList();
 
       SuspensionUtil.setShowSuspensionStatus(filteredList);
@@ -471,18 +477,20 @@ class _ContactsPageState extends State<ContactsPage>
             final filteredMyGroups =
                 (showMyGroups ? myGroups : <GroupInfo>[]).where((group) {
               if (searchQuery.isEmpty) return true;
-              return (group.groupName ?? '')
-                  .toLowerCase()
-                  .contains(searchQuery);
+              final groupName = (group.groupName ?? '').toLowerCase();
+              final groupID = group.groupID.toLowerCase();
+              return groupName.contains(searchQuery) ||
+                  groupID.contains(searchQuery);
             }).toList();
 
             final filteredJoinedGroups =
                 (showJoinedGroups ? joinedGroups : <GroupInfo>[])
                     .where((group) {
               if (searchQuery.isEmpty) return true;
-              return (group.groupName ?? '')
-                  .toLowerCase()
-                  .contains(searchQuery);
+              final groupName = (group.groupName ?? '').toLowerCase();
+              final groupID = group.groupID.toLowerCase();
+              return groupName.contains(searchQuery) ||
+                  groupID.contains(searchQuery);
             }).toList();
 
             if (filteredMyGroups.isEmpty && filteredJoinedGroups.isEmpty) {

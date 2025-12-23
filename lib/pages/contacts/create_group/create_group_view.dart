@@ -11,6 +11,7 @@ import 'package:openim_common/openim_common.dart';
 import 'package:sprintf/sprintf.dart';
 import '../../../widgets/custom_buttom.dart';
 import '../../../widgets/gradient_scaffold.dart';
+import '../../../widgets/section_title.dart';
 
 import 'create_group_logic.dart';
 
@@ -45,37 +46,15 @@ class CreateGroupPage extends StatelessWidget {
                 child: FadeInAnimation(child: widget),
               ),
               children: [
-                _buildSectionTitle(StrRes.groupInformation),
+                SectionTitle(title: StrRes.groupInformation),
                 _buildGroupBaseInfoView(),
                 18.verticalSpace,
-                _buildSectionTitle(StrRes.groupMembers),
+                SectionTitle(title: StrRes.groupMembers),
                 _buildGroupMemberView(),
                 24.verticalSpace,
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 15.sp,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFF212121),
-          shadows: [
-            Shadow(
-              color: Colors.white.withOpacity(0.9),
-              offset: const Offset(0.5, 0.5),
-              blurRadius: 0.5,
-            ),
-          ],
         ),
       ),
     );

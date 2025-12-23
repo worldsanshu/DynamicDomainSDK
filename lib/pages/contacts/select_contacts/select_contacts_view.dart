@@ -529,9 +529,16 @@ class SelectedContactsListView extends StatelessWidget {
     String? name;
     String? faceURL;
     bool isGroup = false;
-    name = SelectContactsLogic.parseName(info);
-    faceURL = SelectContactsLogic.parseFaceURL(info);
-    if (info is ConversationInfo) {
+
+    // For ISUserInfo, use remark if available, otherwise nickname
+    if (info is ISUserInfo) {
+      name = (info.remark != null && info.remark!.isNotEmpty)
+          ? info.remark
+          : info.nickname;
+      faceURL = info.faceURL;
+    } else if (info is ConversationInfo) {
+      name = info.showName;
+      faceURL = info.faceURL;
       isGroup = !info.isSingleChat;
     } else if (info is GroupInfo) {
       isGroup = true;
@@ -542,6 +549,9 @@ class SelectedContactsListView extends StatelessWidget {
       faceURL = info.faceURL;
     } else if (info is TagInfo) {
       name = info.tagName;
+    } else {
+      name = SelectContactsLogic.parseName(info);
+      faceURL = SelectContactsLogic.parseFaceURL(info);
     }
 
     return Padding(

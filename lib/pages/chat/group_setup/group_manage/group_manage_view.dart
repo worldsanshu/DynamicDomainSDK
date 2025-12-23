@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:openim/widgets/section_title.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 
@@ -59,10 +60,10 @@ class GroupManagePage extends StatelessWidget {
                       20.verticalSpace,
 
                       // Group Control Section
-                      _buildSectionTitle(
-                        StrRes.groupControl,
-                        Icons.volume_off_outlined,
-                        const Color(0xFFEF4444),
+                      SectionTitle(
+                        title: StrRes.groupControl,
+                        icon: Icons.volume_off_outlined,
+                        color: const Color(0xFFEF4444),
                       ),
                       8.verticalSpace,
                       _buildMenuSection([
@@ -79,10 +80,10 @@ class GroupManagePage extends StatelessWidget {
                       20.verticalSpace,
 
                       // Member Settings Section
-                      _buildSectionTitle(
-                        StrRes.memberSettings,
-                        Icons.people_outline_rounded,
-                        const Color(0xFF3B82F6),
+                      SectionTitle(
+                        title: StrRes.memberSettings,
+                        icon: Icons.people_outline_rounded,
+                        color: const Color(0xFF3B82F6),
                       ),
                       8.verticalSpace,
                       _buildMenuSection([
@@ -116,10 +117,10 @@ class GroupManagePage extends StatelessWidget {
                         20.verticalSpace,
 
                         // Owner Settings Section
-                        _buildSectionTitle(
-                          StrRes.ownerSettings,
-                          Icons.swap_horiz_rounded,
-                          const Color(0xFFF59E0B),
+                        SectionTitle(
+                          title: StrRes.ownerSettings,
+                          icon: Icons.swap_horiz_rounded,
+                          color: const Color(0xFFF59E0B),
                         ),
                         8.verticalSpace,
                         _buildMenuSection([
@@ -141,39 +142,6 @@ class GroupManagePage extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title, IconData icon, Color color) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Row(
-        children: [
-          Container(
-            width: 32.w,
-            height: 32.w,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            child: Icon(
-              icon,
-              size: 22.w,
-              color: color,
-            ),
-          ),
-          10.horizontalSpace,
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: 'FilsonPro',
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF374151),
-            ),
-          ),
-        ],
       ),
     );
   }

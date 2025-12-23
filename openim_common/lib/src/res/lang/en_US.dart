@@ -392,6 +392,7 @@ const Map<String, String> en_US = {
   "sendToBeFriendApplication": "Send Friend Request",
   "sendSuccessfully": "Sent Successfully",
   "sendFailed": "Send Failed",
+  "sendRequest": "Send Request",
   'canNotAddFriends': 'This user has set not to be added!',
   "mutedAll": "Mute All",
   "tenMinutes": "10 Minutes",

@@ -710,6 +710,8 @@ class StrRes {
 
   static String get sendFailed => 'sendFailed'.tr;
 
+  static String get sendRequest => 'sendRequest'.tr;
+
   static String get canNotAddFriends => 'canNotAddFriends'.tr;
 
   static String get mutedAll => 'mutedAll'.tr;
