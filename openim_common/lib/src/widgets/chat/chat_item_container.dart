@@ -139,7 +139,7 @@ class ChatItemContainer extends StatelessWidget {
                   ctx.findAncestorRenderObjectOfType<RenderRepaintBoundary>();
               if (boundary != null) {
                 await MessageOverlayHelper.show(
-                  context: context,
+                  context: ctx,
                   captureBoundary: boundary,
                   isISend: this.isISend,
                   menus: this.menus ?? allMenus,

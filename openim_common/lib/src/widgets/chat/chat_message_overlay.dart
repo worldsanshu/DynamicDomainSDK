@@ -33,14 +33,23 @@ class MessageOverlayHelper {
   }) async {
     if (_isVisible) return;
 
+    // Check if context is valid before capturing
+    if (!context.mounted) return;
+
+    // Get overlay reference BEFORE any async operations
+    final OverlayState? overlay;
+    try {
+      overlay = Overlay.of(context, rootOverlay: true);
+    } catch (e) {
+      debugPrint('Error getting overlay: $e');
+      return;
+    }
+
     // Capture the message widget first
     final imageBytes = await _captureWidget(captureBoundary);
 
     // Check if context is still valid after async operation
     if (!context.mounted) return;
-
-    // Get overlay before creating entry
-    final overlay = Overlay.of(context, rootOverlay: true);
 
     _overlayEntry = OverlayEntry(
       builder: (ctx) => MessageOverlay(
@@ -56,18 +65,16 @@ class MessageOverlayHelper {
 
     _isVisible = true;
 
-    // Use post frame callback to avoid element tree conflicts
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      try {
-        if (_overlayEntry != null && _isVisible) {
-          overlay.insert(_overlayEntry!);
-        }
-      } catch (e) {
-        debugPrint('Error inserting overlay: $e');
-        _isVisible = false;
-        _overlayEntry = null;
+    // Insert overlay immediately
+    try {
+      if (_overlayEntry != null && overlay != null) {
+        overlay.insert(_overlayEntry!);
       }
-    });
+    } catch (e) {
+      debugPrint('Error inserting overlay: $e');
+      _isVisible = false;
+      _overlayEntry = null;
+    }
   }
 
   static void hide() {
