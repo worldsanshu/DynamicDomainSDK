@@ -324,7 +324,7 @@ const Map<String, String> en_US = {
   "addFriend": "Add Friend",
   "addFriendHint": "Add by ID/phone number",
   "createGroup": "Create Group",
-  "createGroupHint": "Create a group, fully utilize NCK",
+  "createGroupHint": "Create a group, fully utilize CNL",
   "addGroup": "Add Group",
   "addGroupHint": "Ask the admin or members for the ID",
   "searchIDAddFriend": "Search ID to Add Friend",
@@ -782,7 +782,7 @@ const Map<String, String> en_US = {
   "onlineLast7Days": "7 Days Online",
 
   // Login and registration screen translations
-  "loginTitle": "Welcome to NCK",
+  "loginTitle": "Welcome to CNL",
   "loginSubtitle": "Log in to stay connected",
   "noAccountYetQuestion": "Don't have an account?",
   "goToRegister": " Go register",
@@ -920,7 +920,7 @@ const Map<String, String> en_US = {
 
   // New translations for untranslated strings
   "appDescription":
-      "NCK is a lightweight and efficient instant messaging app, designed for both enterprises and individuals, offering a secure, seamless, and reliable communication experience.",
+      "CNL is a lightweight and efficient instant messaging app, designed for both enterprises and individuals, offering a secure, seamless, and reliable communication experience.",
   "restrictedUseReason": "Restricted use due to: %s",
   "enterAppealDetails": "Please enter detailed appeal content",
   "phoneLabel": "Phone",
@@ -1003,6 +1003,7 @@ const Map<String, String> en_US = {
   // Search date picker
   "selectSearchDate": "Select Search Date",
   // Real-name Authentication translations
+  "authentication": "Authentication",
   "realNameAuth": "Real-name Authentication",
   "identityVerification": "Identity Verification",
   "profileAndSettings": "Profile & Settings",

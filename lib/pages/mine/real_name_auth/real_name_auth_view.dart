@@ -20,14 +20,13 @@ class RealNameAuthView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GradientScaffold(
-      title: StrRes.realNameAuth,
-      subtitle: StrRes.identityVerification,
+      title: StrRes.authentication,
+      subtitle: StrRes.realNameAuth,
       showBackButton: true,
       trailing: CustomButton(
-        icon: CupertinoIcons.refresh,
-        onTap: logic.loadAuthInfo,
-        color:Colors.white
-      ),
+          icon: CupertinoIcons.refresh,
+          onTap: logic.loadAuthInfo,
+          color: Colors.white),
       scrollable: true,
       body: Obx(
         () => logic.isLoading.value

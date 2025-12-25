@@ -48,15 +48,28 @@ class AppTextFormField extends StatefulWidget {
 
 class _AppTextFormFieldState extends State<AppTextFormField> {
   late FocusNode _internalFocusNode;
+  final _formFieldKey = GlobalKey<FormFieldState>();
+  bool _hasFocusedOnce = false;
 
   @override
   void initState() {
     super.initState();
     _internalFocusNode = widget.focusNode ?? FocusNode();
+    _internalFocusNode.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    if (_internalFocusNode.hasFocus) {
+      _hasFocusedOnce = true;
+    } else if (_hasFocusedOnce) {
+      // Validate when losing focus after having been focused
+      _formFieldKey.currentState?.validate();
+    }
   }
 
   @override
   void dispose() {
+    _internalFocusNode.removeListener(_onFocusChange);
     // Only dispose if we created the FocusNode (not passed from parent)
     if (widget.focusNode == null) {
       _internalFocusNode.dispose();
@@ -67,7 +80,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
   @override
   Widget build(BuildContext context) {
     final focusNode = widget.focusNode ?? _internalFocusNode;
-    
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -85,22 +98,24 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
         ),
       ),
       child: TextFormField(
+        key: _formFieldKey,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
         focusNode: focusNode,
-        autovalidateMode: AutovalidateMode.onUnfocus,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (value) => widget.validator(value),
         onChanged: widget.onChanged,
         onFieldSubmitted: widget.onFieldSubmitted,
         maxLength: widget.maxLength,
         controller: widget.controller,
         decoration: InputDecoration(
-           counterText: '', 
+          counterText: '',
           label: AnimatedBuilder(
-            animation: Listenable.merge([focusNode, widget.controller ?? FocusNode()]),
+            animation:
+                Listenable.merge([focusNode, widget.controller ?? FocusNode()]),
             builder: (context, _) {
-              final isFloating =
-                  focusNode.hasFocus == true || (widget.controller?.text.isNotEmpty ?? false);
+              final isFloating = focusNode.hasFocus == true ||
+                  (widget.controller?.text.isNotEmpty ?? false);
 
               return RichText(
                 text: TextSpan(
@@ -115,16 +130,15 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
                   ),
                   children: [
                     if (widget.isRequired)
-                    TextSpan(
-                      text: ' *',
-                      style: TextStyle(color: Colors.red),
-                    ),
+                      TextSpan(
+                        text: ' *',
+                        style: TextStyle(color: Colors.red),
+                      ),
                   ],
                 ),
               );
             },
           ),
-
           hintText: widget.hint,
           hintStyle: TextStyle(
             fontFamily: 'FilsonPro',
@@ -143,8 +157,8 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
           isDense: widget.isDense ?? true,
           filled: true,
           fillColor: Colors.transparent,
-          contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
-
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(14),

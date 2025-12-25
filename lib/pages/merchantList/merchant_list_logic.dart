@@ -54,6 +54,9 @@ class MerchantListLogic extends GetxController
   @override
   void onInit() {
     fromLogin.value = Get.arguments['fromLogin'] ?? false;
+    searchController.addListener(() {
+      onSearchChanged(searchController.text);
+    });
     refreshData();
     super.onInit();
   }
@@ -86,7 +89,7 @@ class MerchantListLogic extends GetxController
     } else {
       searchedMerchant.value = null;
     }
-  } 
+  }
 
   Future<void> _searchMerchantByCode(String code) async {
     try {
@@ -150,7 +153,7 @@ class MerchantListLogic extends GetxController
         print('===BIND=== API call successful');
       });
       print('===BIND=== Showing success toast');
-      IMViews.showToast(StrRes.bindSuccess,type: 1);
+      IMViews.showToast(StrRes.bindSuccess, type: 1);
       clearSearch();
       refreshData();
     } catch (e) {

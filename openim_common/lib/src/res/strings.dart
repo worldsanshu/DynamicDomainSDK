@@ -1575,6 +1575,7 @@ class StrRes {
   // Search date picker
   static String get selectSearchDate => 'selectSearchDate'.tr;
   // Real-name Authentication strings
+  static String get authentication => 'authentication'.tr;
   static String get realNameAuth => 'realNameAuth'.tr;
   static String get identityVerification => 'identityVerification'.tr;
   static String get profileAndSettings => 'profileAndSettings'.tr;

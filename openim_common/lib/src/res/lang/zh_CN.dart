@@ -962,6 +962,7 @@ const Map<String, String> zh_CN = {
   "selectSearchDate": "选择搜索日期",
 
   // Real-name Authentication translations
+  "authentication": "身份认证",
   "realNameAuth": "实名认证",
   "identityVerification": "身份验证",
   "profileAndSettings": "个人资料与设置",
