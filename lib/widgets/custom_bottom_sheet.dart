@@ -1,7 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -17,34 +16,8 @@ import 'custom_buttom.dart';
 /// - Customizable title with primary color
 /// - Flexible body content
 /// - Optional confirm and cancel buttons
-///
-/// Example usage:
-/// ```dart
-/// CustomBottomSheet.show(
-///   title: 'Change Password',
-///   icon: CupertinoIcons.lock,
-///   body: YourCustomWidget(),
-///   onConfirm: () {
-///     // Handle confirm action
-///   },
-///   confirmText: 'Save',
-///   showCancelButton: true,
-/// );
-/// ```
 class CustomBottomSheet {
   /// Shows a custom bottom sheet with the specified configuration
-  ///
-  /// Parameters:
-  /// - [title]: The title text displayed at the top
-  /// - [icon]: Optional icon displayed next to the title
-  /// - [body]: The main content widget
-  /// - [onConfirm]: Callback when confirm button is tapped
-  /// - [confirmText]: Text for the confirm button (defaults to "Confirm")
-  /// - [showCancelButton]: Whether to show a cancel button (defaults to false)
-  /// - [onCancel]: Optional callback when cancel button is tapped
-  /// - [cancelText]: Text for the cancel button (defaults to "Cancel")
-  /// - [isDismissible]: Whether the bottom sheet can be dismissed by tapping outside (defaults to true)
-  /// - [enableDrag]: Whether the bottom sheet can be dragged to dismiss (defaults to true)
   static Future<T?> show<T>({
     String? title,
     IconData? icon,
@@ -148,60 +121,16 @@ class CustomBottomSheet {
                 // Buttons section
                 if (onConfirm != null || showCancelButton) ...[
                   SizedBox(height: 24.h),
-                  if (showCancelButton && onConfirm != null)
-                    // Both cancel and confirm buttons - each 37.5% width
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Cancel Button
-                        FractionallySizedBox(
-                          widthFactor: 0.375,
-                          child: CustomButton(
-                            onTap: onCancel ?? () => Get.back(),
-                            title: cancelText ?? StrRes.cancel,
-                            color: Colors.blueGrey,
-                            expand: true,
-                          ),
-                        ),
-                        16.horizontalSpace,
-                        // Confirm Button
-                        FractionallySizedBox(
-                          widthFactor: 0.375,
-                          child: CustomButton(
-                            onTap: onConfirm,
-                            title: confirmText ?? 'Confirm',
-                            color: Get.theme.primaryColor,
-                            expand: true,
-                          ),
-                        ),
-                      ],
-                    )
-                  else if (onConfirm != null)
-                    // Only confirm button - 37.5% width, centered
-                    Center(
-                      child: FractionallySizedBox(
-                        widthFactor: 0.375,
-                        child: CustomButton(
-                          onTap: onConfirm,
-                          title: confirmText ?? 'Confirm',
-                          color: Get.theme.primaryColor,
-                          expand: true,
-                        ),
-                      ),
-                    )
-                  else if (showCancelButton)
-                    // Only cancel button - 37.5% width, centered
-                    Center(
-                      child: FractionallySizedBox(
-                        widthFactor: 0.375,
-                        child: CustomButton(
-                          onTap: onCancel ?? () => Get.back(),
-                          title: cancelText ?? StrRes.cancel,
-                          color: Colors.blueGrey,
-                          expand: true,
-                        ),
-                      ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: _buildButtons(
+                      onConfirm: onConfirm,
+                      confirmText: confirmText,
+                      showCancelButton: showCancelButton,
+                      onCancel: onCancel,
+                      cancelText: cancelText,
                     ),
+                  ),
                 ],
 
                 SizedBox(height: 30.h),
@@ -215,5 +144,64 @@ class CustomBottomSheet {
       isDismissible: isDismissible,
       enableDrag: enableDrag,
     );
+  }
+
+  static Widget _buildButtons({
+    VoidCallback? onConfirm,
+    String? confirmText,
+    bool showCancelButton = false,
+    VoidCallback? onCancel,
+    String? cancelText,
+  }) {
+    if (showCancelButton && onConfirm != null) {
+      // Both cancel and confirm buttons
+      return Row(
+        children: [
+          Expanded(
+            child: CustomButton(
+              onTap: onCancel ?? () => Get.back(),
+              title: cancelText ?? StrRes.cancel,
+              color: Colors.blueGrey,
+              expand: true,
+            ),
+          ),
+          16.horizontalSpace,
+          Expanded(
+            child: CustomButton(
+              onTap: onConfirm,
+              title: confirmText ?? StrRes.confirm,
+              color: Get.theme.primaryColor,
+              expand: true,
+            ),
+          ),
+        ],
+      );
+    } else if (onConfirm != null) {
+      // Only confirm button - centered
+      return Center(
+        child: SizedBox(
+          width: 150.w,
+          child: CustomButton(
+            onTap: onConfirm,
+            title: confirmText ?? StrRes.confirm,
+            color: Get.theme.primaryColor,
+            expand: true,
+          ),
+        ),
+      );
+    } else {
+      // Only cancel button - centered
+      return Center(
+        child: SizedBox(
+          width: 150.w,
+          child: CustomButton(
+            onTap: onCancel ?? () => Get.back(),
+            title: cancelText ?? StrRes.cancel,
+            color: Colors.blueGrey,
+            expand: true,
+          ),
+        ),
+      );
+    }
   }
 }
