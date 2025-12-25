@@ -2081,8 +2081,37 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
         if (list.isEmpty) {
           return;
         }
-        final ids =
-            (list as List<GroupMembersInfo>).map((v) => v.userID!).toList();
+
+        final selectedMembers = list as List<GroupMembersInfo>;
+        final onlineUserIds = onlineInfoLogic.onlineUserId;
+
+        // Separate online and offline members
+        final onlineMembers = selectedMembers
+            .where((m) => onlineUserIds.contains(m.userID))
+            .toList();
+        final offlineMembers = selectedMembers
+            .where((m) => !onlineUserIds.contains(m.userID))
+            .toList();
+
+        // If all selected members are offline
+        if (onlineMembers.isEmpty) {
+          final offlineNames = offlineMembers
+              .map((m) => m.nickname ?? m.userID ?? 'Unknown')
+              .join(', ');
+          IMViews.showToast('${StrRes.allMembersOffline}: $offlineNames');
+          return;
+        }
+
+        // If some members are offline, show toast and proceed with online members
+        if (offlineMembers.isNotEmpty) {
+          final offlineNames = offlineMembers
+              .map((m) => m.nickname ?? m.userID ?? 'Unknown')
+              .join(', ');
+          IMViews.showToast('${StrRes.membersOffline}: $offlineNames');
+        }
+
+        // Proceed with online members only
+        final ids = onlineMembers.map((v) => v.userID!).toList();
         ids.insert(0, imLogic.userInfo.value.userID!);
         int randomRoomId = math.Random().nextInt(90000000) + 10000000;
         trtcLogic.callGroupAudio(ids, randomRoomId, groupInfo!.groupID);
@@ -2106,8 +2135,37 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
         if (list.isEmpty) {
           return;
         }
-        final ids =
-            (list as List<GroupMembersInfo>).map((v) => v.userID!).toList();
+
+        final selectedMembers = list as List<GroupMembersInfo>;
+        final onlineUserIds = onlineInfoLogic.onlineUserId;
+
+        // Separate online and offline members
+        final onlineMembers = selectedMembers
+            .where((m) => onlineUserIds.contains(m.userID))
+            .toList();
+        final offlineMembers = selectedMembers
+            .where((m) => !onlineUserIds.contains(m.userID))
+            .toList();
+
+        // If all selected members are offline
+        if (onlineMembers.isEmpty) {
+          final offlineNames = offlineMembers
+              .map((m) => m.nickname ?? m.userID ?? 'Unknown')
+              .join(', ');
+          IMViews.showToast('${StrRes.allMembersOffline}: $offlineNames');
+          return;
+        }
+
+        // If some members are offline, show toast and proceed with online members
+        if (offlineMembers.isNotEmpty) {
+          final offlineNames = offlineMembers
+              .map((m) => m.nickname ?? m.userID ?? 'Unknown')
+              .join(', ');
+          IMViews.showToast('${StrRes.membersOffline}: $offlineNames');
+        }
+
+        // Proceed with online members only
+        final ids = onlineMembers.map((v) => v.userID!).toList();
         ids.insert(0, imLogic.userInfo.value.userID!);
         int randomRoomId = math.Random().nextInt(90000000) + 10000000;
         trtcLogic.callGroupVideo(ids, randomRoomId, groupInfo!.groupID);

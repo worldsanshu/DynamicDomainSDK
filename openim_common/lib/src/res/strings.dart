@@ -1450,6 +1450,8 @@ class StrRes {
   static String get loadingChatData => 'loadingChatData'.tr;
   static String get onlineStatus => 'onlineStatus'.tr;
   static String get offlineStatus => 'offlineStatus'.tr;
+  static String get membersOffline => 'membersOffline'.tr;
+  static String get allMembersOffline => 'allMembersOffline'.tr;
   static String get totalMessages => 'totalMessages'.tr;
   static String get sent => 'sent'.tr;
   static String get conversations => 'conversations'.tr;

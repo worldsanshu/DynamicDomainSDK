@@ -895,6 +895,8 @@ const Map<String, String> en_US = {
   "loadingChatData": "Loading chat data...",
   "onlineStatus": "● Online",
   "offlineStatus": "● Offline",
+  "membersOffline": "The following members are offline",
+  "allMembersOffline": "All selected members are offline, cannot make call",
   "totalMessages": "Total Messages",
   "sent": "Sent",
   "conversations": "Conversations",

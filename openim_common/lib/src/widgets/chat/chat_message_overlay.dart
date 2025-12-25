@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openim_common/openim_common.dart';
 
@@ -38,6 +39,9 @@ class MessageOverlayHelper {
     // Check if context is still valid after async operation
     if (!context.mounted) return;
 
+    // Get overlay before creating entry
+    final overlay = Overlay.of(context, rootOverlay: true);
+
     _overlayEntry = OverlayEntry(
       builder: (ctx) => MessageOverlay(
         messageImage: imageBytes,
@@ -51,14 +55,30 @@ class MessageOverlayHelper {
     );
 
     _isVisible = true;
-    Overlay.of(context).insert(_overlayEntry!);
+
+    // Use post frame callback to avoid element tree conflicts
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      try {
+        if (_overlayEntry != null && _isVisible) {
+          overlay.insert(_overlayEntry!);
+        }
+      } catch (e) {
+        debugPrint('Error inserting overlay: $e');
+        _isVisible = false;
+        _overlayEntry = null;
+      }
+    });
   }
 
   static void hide() {
     if (!_isVisible) return;
-    _overlayEntry?.remove();
-    _overlayEntry = null;
     _isVisible = false;
+    try {
+      _overlayEntry?.remove();
+    } catch (e) {
+      debugPrint('Error removing overlay: $e');
+    }
+    _overlayEntry = null;
   }
 
   static bool get isVisible => _isVisible;

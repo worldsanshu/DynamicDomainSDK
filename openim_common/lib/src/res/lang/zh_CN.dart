@@ -858,6 +858,8 @@ const Map<String, String> zh_CN = {
   "loadingChatData": "正在加载聊天数据...",
   "onlineStatus": "● 在线",
   "offlineStatus": "● 离线",
+  "membersOffline": "以下成员不在线",
+  "allMembersOffline": "所有选择的成员都不在线，无法发起通话",
   "totalMessages": "总消息",
   "sent": "已发送",
   "conversations": "会话数",
