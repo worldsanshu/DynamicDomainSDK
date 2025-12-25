@@ -240,13 +240,13 @@ class _ChatItemViewState extends State<ChatItemView> {
   bool get _isISend => _message.sendID == OpenIM.iMManager.userID;
 
   bool get _isChecked => widget.checkedList.contains(_message);
-  late StreamSubscription<bool> _keyboardSubs;
+  StreamSubscription<bool>? _keyboardSubs;
   StreamSubscription<bool>? _closeMenuSubs;
 
   @override
   void dispose() {
     _popupCtrl.dispose();
-    _keyboardSubs.cancel();
+    _keyboardSubs?.cancel();
     _closeMenuSubs?.cancel();
     super.dispose();
   }
@@ -254,7 +254,6 @@ class _ChatItemViewState extends State<ChatItemView> {
   @override
   void initState() {
     final keyboardVisibilityCtrl = KeyboardVisibilityController();
-   
 
     _closeMenuSubs = widget.closePopMenuSubject?.listen((value) {
       if (value == true) {

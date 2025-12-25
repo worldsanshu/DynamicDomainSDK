@@ -6,8 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:openim/pages/mine/edit_my_info/edit_my_info_logic.dart';
-import 'package:openim/routes/app_navigator.dart';
 import 'package:openim/widgets/custom_bottom_sheet.dart';
 import 'package:openim/widgets/qr_code_bottom_sheet.dart';
 import 'package:openim_common/openim_common.dart';
@@ -100,6 +98,7 @@ class MyInfoLogic extends GetxController {
         }
       },
       confirmText: StrRes.confirm,
+      showCancelButton: true,
       isDismissible: true,
     );
   }
@@ -122,20 +121,119 @@ class MyInfoLogic extends GetxController {
     );
   }
 
-  void editEnglishName() => AppNavigator.startEditMyInfo(
-        attr: EditAttr.englishName,
+  // Note: englishName and telephone not supported by API, keeping stubs for compatibility
+  void editEnglishName() {
+    IMViews.showToast('Feature not supported');
+  }
+
+  void editTel() {
+    IMViews.showToast('Feature not supported');
+  }
+
+  void editMobile() => _showEditFieldBottomSheet(
+        title: StrRes.phoneNumber,
+        currentValue: imLogic.userInfo.value.phoneNumber ?? '',
+        hintText: StrRes.enterYourPhoneNumber,
+        keyboardType: TextInputType.phone,
+        maxLength: 20,
+        onSave: (value) => _updateMobile(value),
       );
 
-  void editTel() => AppNavigator.startEditMyInfo(
-        attr: EditAttr.telephone,
+  void editEmail() => _showEditFieldBottomSheet(
+        title: StrRes.emailAddress,
+        currentValue: imLogic.userInfo.value.email ?? '',
+        hintText: StrRes.enterYourEmailAddress,
+        keyboardType: TextInputType.emailAddress,
+        maxLength: 30,
+        onSave: (value) => _updateEmail(value),
       );
 
-  void editMobile() => AppNavigator.startEditMyInfo(
-        attr: EditAttr.mobile,
-      );
+  void _showEditFieldBottomSheet({
+    required String title,
+    required String currentValue,
+    required String hintText,
+    required Function(String) onSave,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLength = 20,
+  }) {
+    final controller = TextEditingController();
+    controller.text = currentValue;
 
-  void editEmail() =>
-      AppNavigator.startEditMyInfo(attr: EditAttr.email, maxLength: 30);
+    CustomBottomSheet.show(
+      title: title,
+      icon: CupertinoIcons.pencil,
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              hintText,
+              style: TextStyle(
+                fontFamily: 'FilsonPro',
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF6B7280),
+              ),
+            ),
+            12.verticalSpace,
+            TextField(
+              controller: controller,
+              autofocus: true,
+              maxLength: maxLength,
+              keyboardType: keyboardType,
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: TextStyle(
+                  fontFamily: 'FilsonPro',
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF9CA3AF),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide:
+                      const BorderSide(color: Color(0xFF3B82F6), width: 2),
+                ),
+                filled: true,
+                fillColor: const Color(0xFFF9FAFB),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                counterText: '',
+              ),
+              style: TextStyle(
+                fontFamily: 'FilsonPro',
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF111827),
+              ),
+            ),
+          ],
+        ),
+      ),
+      onConfirm: () {
+        final newValue = controller.text.trim();
+        if (newValue.isNotEmpty && newValue != currentValue) {
+          Get.back();
+          onSave(newValue);
+        } else {
+          Get.back();
+        }
+      },
+      confirmText: StrRes.confirm,
+      showCancelButton: true,
+      isDismissible: true,
+    );
+  }
 
   void openUpdateAvatarSheet() {
     IMViews.openPhotoSheet(
@@ -193,6 +291,7 @@ class MyInfoLogic extends GetxController {
         _updateBirthday(selectedDate.millisecondsSinceEpoch ~/ 1000);
       },
       confirmText: StrRes.confirm,
+      showCancelButton: true,
       isDismissible: true,
     );
   }
@@ -347,6 +446,38 @@ class MyInfoLogic extends GetxController {
         IMViews.showToast(StrRes.birthdayUpdatedSuccessfully, type: 1);
       }).catchError((error) {
         IMViews.showToast(StrRes.birthdayUpdateFailed);
+        throw error;
+      }),
+    );
+  }
+
+  void _updateMobile(String value) {
+    LoadingView.singleton.wrap(
+      asyncFunction: () => ChatApis.updateUserInfo(
+              userID: OpenIM.iMManager.userID, phoneNumber: value)
+          .then((_) {
+        imLogic.userInfo.update((val) {
+          val?.phoneNumber = value;
+        });
+        IMViews.showToast(StrRes.phoneUpdatedSuccessfully, type: 1);
+      }).catchError((error) {
+        IMViews.showToast(StrRes.phoneUpdateFailed);
+        throw error;
+      }),
+    );
+  }
+
+  void _updateEmail(String value) {
+    LoadingView.singleton.wrap(
+      asyncFunction: () =>
+          ChatApis.updateUserInfo(userID: OpenIM.iMManager.userID, email: value)
+              .then((_) {
+        imLogic.userInfo.update((val) {
+          val?.email = value;
+        });
+        IMViews.showToast(StrRes.emailUpdatedSuccessfully, type: 1);
+      }).catchError((error) {
+        IMViews.showToast(StrRes.emailUpdateFailed);
         throw error;
       }),
     );

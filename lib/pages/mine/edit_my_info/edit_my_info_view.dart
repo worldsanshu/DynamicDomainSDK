@@ -83,7 +83,7 @@ class EditMyInfoPage extends StatelessWidget {
                 20.verticalSpace,
                 _buildInputSection(),
                 18.verticalSpace,
-                _buildSaveButton(),
+                _buildActionButtons(),
                 24.verticalSpace,
               ],
             ),
@@ -222,15 +222,50 @@ class EditMyInfoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSaveButton() {
+  Widget _buildActionButtons() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
-      width: double.infinity,
-      child: CustomButton(
-        onTap: logic.save,
-        title: StrRes.save,
-        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
-        color: Colors.white,
+      child: Row(
+        children: [
+          // Cancel Button
+          Expanded(
+            child: GestureDetector(
+              onTap: () => Get.back(),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: const Color(0xFFE5E7EB),
+                    width: 1,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    StrRes.cancel,
+                    style: TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF6B7280),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          16.horizontalSpace,
+          // Save Button
+          Expanded(
+            child: CustomButton(
+              onTap: logic.save,
+              title: StrRes.save,
+              padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }

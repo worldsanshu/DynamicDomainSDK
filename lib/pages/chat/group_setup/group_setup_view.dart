@@ -288,7 +288,7 @@ class GroupSetupPage extends StatelessWidget {
                       ],
                     ),
                     child: Icon(
-                      CupertinoIcons.play,
+                      CupertinoIcons.camera_fill,
                       size: 16.w,
                       color: Colors.white,
                     ),
