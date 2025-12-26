@@ -856,7 +856,7 @@ class _ConversationPageState extends State<ConversationPage> {
       child: Material(
         color: Colors.transparent,
         child: GestureDetector(
-          onLongPress: () => _showMessagePreview(info),
+          // onLongPress: () => _showMessagePreview(info),
           child: InkWell(
             onTap: () => logic.toChat(conversationInfo: info),
             child: Row(
