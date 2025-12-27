@@ -30,6 +30,7 @@ class ReportSubmitLogic extends GetxController {
           maxAssets: 5,
           requestType: RequestType.image,
           selectedAssets: selectedAssets,
+          limitedPermissionOverlayPredicate: (state) => false,
         ),
       );
 

@@ -369,9 +369,10 @@ class ChatSetupLogic extends GetxController {
     Permissions.photos(() async {
       final List<AssetEntity>? assets = await AssetPicker.pickAssets(
         Get.context!,
-        pickerConfig: const AssetPickerConfig(
+        pickerConfig: AssetPickerConfig(
           maxAssets: 1,
           requestType: RequestType.image,
+          limitedPermissionOverlayPredicate: (state) => false,
         ),
       );
       if (null != assets) {
@@ -405,7 +406,7 @@ class ChatSetupLogic extends GetxController {
         case AssetType.image:
           chatLogic?.changeBackground(result);
           Get.back();
-          IMViews.showToast(StrRes.setSuccessfully,type: 1);
+          IMViews.showToast(StrRes.setSuccessfully, type: 1);
           break;
         default:
           break;

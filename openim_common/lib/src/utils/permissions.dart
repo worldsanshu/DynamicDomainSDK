@@ -224,6 +224,13 @@ class Permissions {
       if (androidInfo.version.sdkInt <= 32) {
         storage(onGranted);
       } else {
+        // Check if permission is already granted or limited - skip request if so
+        final currentStatus = await Permission.photos.status;
+        if (isPermissionAccepted(currentStatus)) {
+          onGranted?.call();
+          return;
+        }
+
         checkAndShowPermissionExplanation(Permission.photos);
         final permissions = [Permission.photos, Permission.videos];
         final results = await permissions.request();
@@ -242,6 +249,13 @@ class Permissions {
         }
       }
     } else {
+      // iOS: Check if permission is already granted or limited - skip request if so
+      final currentStatus = await Permission.photos.status;
+      if (isPermissionAccepted(currentStatus)) {
+        onGranted?.call();
+        return;
+      }
+
       final permissions = [Permission.photos, Permission.videos];
       final results = await permissions.request();
 

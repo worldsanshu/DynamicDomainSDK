@@ -103,6 +103,7 @@ class _QrcodeViewState extends State<QrcodeView>
       pickerConfig: AssetPickerConfig(
         maxAssets: 1,
         requestType: RequestType.image,
+        limitedPermissionOverlayPredicate: (state) => false,
         selectPredicate: (_, entity, isSelected) async {
           if (entity.type == AssetType.image) {
             return true;

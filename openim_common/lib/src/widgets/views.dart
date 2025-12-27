@@ -271,6 +271,8 @@ class IMViews {
                                       pickerConfig: AssetPickerConfig(
                                           requestType: RequestType.image,
                                           maxAssets: 1,
+                                          limitedPermissionOverlayPredicate:
+                                              (state) => false,
                                           selectPredicate:
                                               (_, entity, isSelected) async {
                                             if (await allowSendImageType(

@@ -1153,6 +1153,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(Get.context!,
         pickerConfig: AssetPickerConfig(
             maxAssets: maxImageSendCount,
+            limitedPermissionOverlayPredicate: (state) => false,
             selectPredicate: (_, entity, isSelected) async {
               if (entity.type == AssetType.image) {
                 if (await allowSendImageType(entity)) {
