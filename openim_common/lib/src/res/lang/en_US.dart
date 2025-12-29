@@ -467,6 +467,8 @@ const Map<String, String> en_US = {
   "little": "Small",
   "standard": "Standard",
   "big": "Large",
+  "fontPreviewHello": "Hello! 👋",
+  "fontPreviewReply": "Hello to you too!",
   'thirtySeconds': '30 Seconds',
   'fiveMinutes': '5 Minutes',
   "clearAll": "Clear All",

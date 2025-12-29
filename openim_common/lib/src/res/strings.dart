@@ -850,6 +850,10 @@ class StrRes {
 
   static String get big => 'big'.tr;
 
+  static String get fontPreviewHello => 'fontPreviewHello'.tr;
+
+  static String get fontPreviewReply => 'fontPreviewReply'.tr;
+
   static String get thirtySeconds => 'thirtySeconds'.tr;
 
   static String get fiveMinutes => 'fiveMinutes'.tr;

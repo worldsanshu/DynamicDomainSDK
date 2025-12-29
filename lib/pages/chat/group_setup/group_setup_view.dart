@@ -205,7 +205,7 @@ class GroupSetupPage extends StatelessWidget {
                         icon: CupertinoIcons.flag,
                         label: StrRes.report,
                         onTap: logic.startReport,
-                        color: Colors.amber,
+                        isWarning: true,
                       ),
                       SettingsMenuItem(
                         icon: CupertinoIcons.delete,

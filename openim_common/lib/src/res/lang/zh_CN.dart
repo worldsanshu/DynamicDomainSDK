@@ -443,6 +443,8 @@ const Map<String, String> zh_CN = {
   "little": "小",
   "standard": "标准",
   "big": "大",
+  "fontPreviewHello": "Xin chào! 👋",
+  "fontPreviewReply": "Cũng chào bạn!",
   'thirtySeconds': '30秒',
   'fiveMinutes': '5分钟',
   "clearAll": "清空",

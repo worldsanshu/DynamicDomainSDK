@@ -617,23 +617,7 @@ class AccountSetupLogic extends GetxController {
 
           items.add(
             SettingsMenuItem(
-              iconWidget: Container(
-                padding: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Get.theme.primaryColor.withOpacity(0.1),
-                      Get.theme.primaryColor.withOpacity(0.05),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Icon(
-                  CupertinoIcons.lock,
-                  size: 20.w,
-                  color: Get.theme.primaryColor,
-                ),
-              ),
+              icon: CupertinoIcons.lock,
               label: StrRes.password,
               hasSwitch: true,
               switchValue: unlockLogic.passwordEnabled.value,
@@ -794,18 +778,13 @@ class AccountSetupLogic extends GetxController {
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Get.theme.primaryColor.withOpacity(0.1),
-                      Get.theme.primaryColor.withOpacity(0.05),
-                    ],
-                  ),
+                  color: Colors.black.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
                   icon,
                   size: 22.w,
-                  color: Get.theme.primaryColor,
+                  color: Colors.black,
                 ),
               ),
               12.horizontalSpace,

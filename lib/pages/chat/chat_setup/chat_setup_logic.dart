@@ -5,13 +5,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:openim/core/controller/client_config_controller.dart';
 import 'package:openim/pages/chat/chat_setup/search_chat_history/multimedia/multimedia_logic.dart';
 import 'package:openim/widgets/custom_bottom_sheet.dart';
 import 'package:openim/widgets/font_size_bottom_sheet.dart';
+import 'package:openim/widgets/settings_menu.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
@@ -265,103 +266,38 @@ class ChatSetupLogic extends GetxController {
     CustomBottomSheet.show(
       title: StrRes.setChatBackground,
       icon: CupertinoIcons.photo_fill,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildOptionItem(
-              icon: CupertinoIcons.photo,
-              title: StrRes.selectAssetsFromAlbum,
-              color: const Color(0xFF34D399),
-              onTap: () {
-                Get.back();
-                _onTapAlbum();
-              },
-            ),
-            16.verticalSpace,
-            _buildOptionItem(
-              icon: CupertinoIcons.camera,
-              title: StrRes.selectAssetsFromCamera,
-              color: const Color(0xFF4F42FF),
-              onTap: () {
-                Get.back();
-                _onTapCamera();
-              },
-            ),
-            16.verticalSpace,
-            _buildOptionItem(
-              icon: CupertinoIcons.refresh,
-              title: StrRes.setDefaultBackground,
-              color: const Color(0xFFFBBF24),
-              onTap: () {
-                Get.back();
-                _recoverBackground();
-              },
-            ),
-          ],
-        ),
+      body: SettingsMenuSection(
+        items: [
+          SettingsMenuItem(
+            icon: CupertinoIcons.photo,
+            label: StrRes.selectAssetsFromAlbum,
+            onTap: () {
+              Get.back();
+              _onTapAlbum();
+            },
+            showDivider: true,
+          ),
+          SettingsMenuItem(
+            icon: CupertinoIcons.camera,
+            label: StrRes.selectAssetsFromCamera,
+            onTap: () {
+              Get.back();
+              _onTapCamera();
+            },
+            showDivider: true,
+          ),
+          SettingsMenuItem(
+            icon: CupertinoIcons.refresh,
+            label: StrRes.setDefaultBackground,
+            onTap: () {
+              Get.back();
+              _recoverBackground();
+            },
+            showDivider: false,
+          ),
+        ],
       ),
       isDismissible: true,
-    );
-  }
-
-  Widget _buildOptionItem({
-    required IconData icon,
-    required String title,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: const Color(0xFFF3F4F6)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF9CA3AF).withOpacity(0.05),
-              offset: const Offset(0, 4),
-              blurRadius: 12,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Icon(
-                icon,
-                size: 24.w,
-                color: color,
-              ),
-            ),
-            16.horizontalSpace,
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1F2937),
-                ),
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 20.w,
-              color: const Color(0xFFD1D5DB),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

@@ -158,6 +158,7 @@ class ChatSetupPage extends StatelessWidget {
                         icon: CupertinoIcons.flag,
                         label: StrRes.report,
                         onTap: logic.startReport,
+                        isWarning: true,
                       ),
                       SettingsMenuItem(
                         icon: CupertinoIcons.delete,

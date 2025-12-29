@@ -23,19 +23,6 @@ class GroupManagePage extends StatelessWidget {
       title: StrRes.groupManage,
       subtitle: StrRes.groupSettingsPrivacy,
       showBackButton: true,
-      trailing: Container(
-        width: 44.w,
-        height: 44.w,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        child: Icon(
-          Icons.admin_panel_settings_outlined,
-          color: Colors.white,
-          size: 22.w,
-        ),
-      ),
       scrollable: true,
       body: ClipRRect(
         borderRadius: BorderRadius.vertical(
@@ -58,14 +45,8 @@ class GroupManagePage extends StatelessWidget {
                       child: FadeInAnimation(child: widget),
                     ),
                     children: [
-                      20.verticalSpace,
-
                       // Group Control Section
-                      SectionTitle(
-                        title: StrRes.groupControl,
-                        icon: Icons.volume_off_outlined,
-                        color: const Color(0xFFEF4444),
-                      ),
+                      SectionTitle(title: StrRes.groupControl),
                       8.verticalSpace,
                       SettingsMenuSection(
                         items: [
@@ -84,11 +65,7 @@ class GroupManagePage extends StatelessWidget {
                       20.verticalSpace,
 
                       // Member Settings Section
-                      SectionTitle(
-                        title: StrRes.memberSettings,
-                        icon: Icons.people_outline_rounded,
-                        color: const Color(0xFF3B82F6),
-                      ),
+                      SectionTitle(title: StrRes.memberSettings),
                       8.verticalSpace,
                       SettingsMenuSection(
                         items: [
@@ -127,11 +104,7 @@ class GroupManagePage extends StatelessWidget {
                         20.verticalSpace,
 
                         // Owner Settings Section
-                        SectionTitle(
-                          title: StrRes.ownerSettings,
-                          icon: Icons.swap_horiz_rounded,
-                          color: const Color(0xFFF59E0B),
-                        ),
+                        SectionTitle(title: StrRes.ownerSettings),
                         8.verticalSpace,
                         SettingsMenuSection(
                           items: [

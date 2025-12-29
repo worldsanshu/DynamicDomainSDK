@@ -84,7 +84,7 @@ class FontSizeBottomSheet {
                           ],
                         ),
                         child: Obx(() => Text(
-                              'Xin chào! 👋',
+                              StrRes.fontPreviewHello,
                               style: TextStyle(
                                 fontFamily: 'FilsonPro',
                                 fontSize: 15.sp,
@@ -133,7 +133,7 @@ class FontSizeBottomSheet {
                           ],
                         ),
                         child: Obx(() => Text(
-                              'Cũng chào bạn!',
+                              StrRes.fontPreviewReply,
                               style: TextStyle(
                                 fontFamily: 'FilsonPro',
                                 fontSize: 15.sp,
@@ -236,9 +236,11 @@ class FontSizeBottomSheet {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildQuickButton('Nhỏ', 0.85, factor, primaryColor),
-                    _buildQuickButton('Mặc định', 1.0, factor, primaryColor),
-                    _buildQuickButton('Lớn', 1.2, factor, primaryColor),
+                    _buildQuickButton(
+                        StrRes.little, 0.85, factor, primaryColor),
+                    _buildQuickButton(
+                        StrRes.standard, 1.0, factor, primaryColor),
+                    _buildQuickButton(StrRes.big, 1.2, factor, primaryColor),
                   ],
                 ),
               ],
