@@ -25,7 +25,8 @@ class AddContactsBySearchLogic extends GetxController {
   int pageNo = 0;
 
   final clientConfigLogic = Get.find<ClientConfigController>();
-  get friendSearchConfig => FriendSearchConfig.fromKey(clientConfigLogic.friendSearchMode);
+  get friendSearchConfig =>
+      FriendSearchConfig.fromKey(clientConfigLogic.friendSearchMode);
 
   @override
   void onClose() {
@@ -179,21 +180,7 @@ class AddContactsBySearchLogic extends GetxController {
       return sprintf(StrRes.searchGroupNameIs, [getShowName(info)]);
     }
 
-    UserFullInfo userFullInfo = info;
-    String? tips, content;
-    if (int.tryParse(searchKey) != null) {
-      if (searchKey.length == 11) {
-        tips = StrRes.phoneNumber;
-        content = userFullInfo.phoneNumber ?? searchKey;
-      } else {
-        tips = StrRes.userID;
-        content = userFullInfo.userID;
-      }
-    } else {
-      tips = StrRes.searchNicknameIs;
-      content = getShowName(info);
-    }
-    return "$tips:$content";
+    return getShowName(info) ?? '';
   }
 }
 

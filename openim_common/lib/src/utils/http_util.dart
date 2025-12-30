@@ -276,12 +276,7 @@ class HttpUtil {
           onCompletion?.call();
           final result = await ImageGallerySaverPlus.saveFile(cachePath);
           if (result != null) {
-            var tips = StrRes.saveSuccessfully;
-            if (Platform.isAndroid) {
-              final filePath = result['filePath'].split('//').last;
-              tips = '${StrRes.saveSuccessfully}:$filePath';
-            }
-            IMViews.showToast(tips, type: 1);
+            IMViews.showToast(StrRes.saveSuccessfully, type: 1);
           }
         }
       },
@@ -295,12 +290,7 @@ class HttpUtil {
       var result =
           await ImageGallerySaverPlus.saveImage(Uint8List.fromList(uint8list));
       if (result != null) {
-        var tips = StrRes.saveSuccessfully;
-        if (Platform.isAndroid) {
-          final filePath = result['filePath'].split('//').last;
-          tips = '${StrRes.saveSuccessfully}:$filePath';
-        }
-        IMViews.showToast(tips, type: 1);
+        IMViews.showToast(StrRes.saveSuccessfully, type: 1);
       }
     }
   }
@@ -319,12 +309,7 @@ class HttpUtil {
         // File already exists, save it to gallery
         final result = await ImageGallerySaverPlus.saveFile(cachePath);
         if (result != null) {
-          var tips = StrRes.saveSuccessfully;
-          if (Platform.isAndroid) {
-            final filePath = result['filePath'].split('//').last;
-            tips = '${StrRes.saveSuccessfully}:$filePath';
-          }
-          IMViews.showToast(tips, type: 1);
+          IMViews.showToast(StrRes.saveSuccessfully, type: 1);
         }
         onCompletion?.call();
         return;
@@ -341,12 +326,7 @@ class HttpUtil {
             try {
               final result = await ImageGallerySaverPlus.saveFile(cachePath);
               if (result != null) {
-                var tips = StrRes.saveSuccessfully;
-                if (Platform.isAndroid) {
-                  final filePath = result['filePath'].split('//').last;
-                  tips = '${StrRes.saveSuccessfully}:$filePath';
-                }
-                IMViews.showToast(tips, type: 1);
+                IMViews.showToast(StrRes.saveSuccessfully, type: 1);
               } else {
                 IMViews.showToast(StrRes.saveFailed);
               }
@@ -376,12 +356,7 @@ class HttpUtil {
 
       final result = await ImageGallerySaverPlus.saveFile(file.path);
       if (result != null && showToast) {
-        var tips = StrRes.saveSuccessfully;
-        if (Platform.isAndroid) {
-          final filePath = result['filePath'].split('//').last;
-          tips = '${StrRes.saveSuccessfully}:$filePath';
-        }
-        IMViews.showToast(tips, type: 1);
+        IMViews.showToast(StrRes.saveSuccessfully, type: 1);
       } else if (showToast) {
         IMViews.showToast(StrRes.saveFailed);
       }

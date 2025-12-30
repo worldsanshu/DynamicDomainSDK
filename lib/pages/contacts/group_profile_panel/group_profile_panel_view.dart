@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:common_utils/common_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -33,45 +34,42 @@ class GroupProfilePanelPage extends StatelessWidget {
                       _buildBaseInfo(),
                       16.verticalSpace,
                       if (logic.members.isNotEmpty) _buildGroupMemberList(),
-                      16.verticalSpace,
-                      _buildGroupID(),
                       30.verticalSpace,
                       Obx(() {
                         final isPending = logic.hasPendingRequest.value;
                         return GestureDetector(
                           onTap: isPending ? null : () => logic.enterGroup(),
                           child: Container(
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.symmetric(horizontal: 40.w),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20.w, vertical: 16.h),
-                            decoration: BoxDecoration(
-                              color: isPending
-                                  ? const Color(0xFFD1D5DB)
-                                  : Theme.of(Get.context!).primaryColor,
-                              borderRadius: BorderRadius.circular(16.r),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  offset: const Offset(0, -4),
-                                  blurRadius: 16,
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              logic.isJoined.value
-                                  ? StrRes.enterGroup
-                                  : isPending
-                                      ? StrRes.requested
-                                      : StrRes.applyJoin,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16.sp,
-                                  fontFamily: "FilsonPro",
-                                  ))
-                            ),
-                          );
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.symmetric(horizontal: 40.w),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w, vertical: 16.h),
+                              decoration: BoxDecoration(
+                                color: isPending
+                                    ? const Color(0xFFD1D5DB)
+                                    : Theme.of(Get.context!).primaryColor,
+                                borderRadius: BorderRadius.circular(16.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    offset: const Offset(0, -4),
+                                    blurRadius: 16,
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                  logic.isJoined.value
+                                      ? StrRes.enterGroup
+                                      : isPending
+                                          ? StrRes.requested
+                                          : StrRes.applyJoin,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16.sp,
+                                    fontFamily: "FilsonPro",
+                                  ))),
+                        );
                       }),
                     ],
                   ),
@@ -140,6 +138,30 @@ class GroupProfilePanelPage extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                  8.verticalSpace,
+                  GestureDetector(
+                    onTap: () =>
+                        IMUtils.copy(text: logic.groupInfo.value.groupID),
+                    child: Row(
+                      children: [
+                        Text(
+                          logic.groupInfo.value.groupID,
+                          style: TextStyle(
+                            fontFamily: 'FilsonPro',
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF6B7280),
+                          ),
+                        ),
+                        6.horizontalSpace,
+                        Icon(
+                          CupertinoIcons.doc_on_doc,
+                          size: 14.sp,
+                          color: Theme.of(Get.context!).primaryColor,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -232,52 +254,6 @@ class GroupProfilePanelPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.r),
                 );
               },
-            ),
-          ],
-        ),
-      );
-
-  Widget _buildGroupID() => Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF9CA3AF).withOpacity(0.06),
-              offset: const Offset(0, 2),
-              blurRadius: 6.r,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Text(
-              StrRes.groupID,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFF374151),
-              ),
-            ),
-            const Spacer(),
-            Text(
-              logic.groupInfo.value.groupID,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 14.sp,
-                color: const Color(0xFF9CA3AF),
-              ),
-            ),
-            8.horizontalSpace,
-            GestureDetector(
-              onTap: () => IMUtils.copy(text: logic.groupInfo.value.groupID),
-              child: Icon(
-                Icons.copy_rounded,
-                size: 16.w,
-                color: const Color(0xFF9CA3AF),
-              ),
             ),
           ],
         ),

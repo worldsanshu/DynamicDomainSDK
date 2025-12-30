@@ -12,7 +12,7 @@ void showNewContactPopup(BuildContext context, GlobalKey buttonKey) {
   final RenderBox button =
       buttonKey.currentContext!.findRenderObject() as RenderBox;
   final Offset buttonPosition = button.localToGlobal(Offset.zero);
-  final menuWidth = 200.w;
+  final menuWidth = 225.w;
   final double left = buttonPosition.dx + button.size.width - menuWidth;
   final double top = buttonPosition.dy + button.size.height + 4;
 

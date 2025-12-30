@@ -480,6 +480,11 @@ class AppNavigator {
       excludeIDList: excludeIDs, // Hide already-selected users from the list
     );
 
+    // Verify that result is not null before proceeding
+    if (result == null) {
+      return null;
+    }
+
     // Convert UserInfo to Map for proper serialization
     final defaultCheckedMaps = defaultCheckedList
         .map((u) => {

@@ -42,9 +42,7 @@ class AddContactsBySearchPage extends StatelessWidget {
       enabled: true,
       controller: logic.searchCtrl,
       focusNode: logic.focusNode,
-      hintText: logic.isSearchUser
-          ? StrRes.searchByPhoneAndUid
-          : StrRes.searchIDAddGroup,
+      hintText: StrRes.search,
       onSubmitted: (_) => logic.search(),
       onCleared: () {
         logic.searchCtrl.clear();
