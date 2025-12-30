@@ -231,8 +231,14 @@ class MatchTextView extends StatelessWidget {
     }
   }
 
-  static String stripHtmlIfNeeded(String text) {
-    return text.replaceAll(RegExp(r'<[^>]*>|&[^;]+;|[]'), ' ');
+ static String stripHtmlIfNeeded(String text) {
+    if (text.isEmpty) return text;
+ 
+    return text.replaceAll(RegExp(
+      r'<\s*\/?\s*[a-zA-Z0-9_-]+\s*[^>]*\/?\s*>',
+      caseSensitive: false,
+      multiLine: true,
+    ), ' ');
   }
 }
 

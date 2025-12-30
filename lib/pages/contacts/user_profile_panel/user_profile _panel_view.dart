@@ -106,7 +106,14 @@ class UserProfilePanelPage extends StatelessWidget {
                         _buildGroupInfoSection(),
                       ],
                       if (!logic.isMyself) ...[
-                        if (logic.isFriendship || logic.isBlacklist) ...[
+                        if (logic.isFriendship ||
+                            logic.isBlacklist ||
+                            (logic.isGroupMemberPage &&
+                                !logic.notAllowLookGroupMemberProfiles.value) ||
+                            (logic.iAmOwner.value &&
+                                logic.groupMembersInfo != null) ||
+                            (logic.iHasMutePermissions.value &&
+                                logic.groupMembersInfo != null)) ...[
                           SectionTitle(title: StrRes.actions),
                         ],
                         _buildActionsSection(),

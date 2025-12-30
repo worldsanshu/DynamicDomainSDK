@@ -168,8 +168,6 @@ class SettingsMenuItem extends StatelessWidget {
               fontSize: 15.sp,
               color: _textColor,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ),
         // Value / Switch / Arrow
@@ -178,17 +176,17 @@ class SettingsMenuItem extends StatelessWidget {
         else ...[
           if (value != null)
             Container(
-              constraints: BoxConstraints(maxWidth: 0.5.sw),
+              constraints: BoxConstraints(maxWidth: 0.4.sw),
               child: Text(
                 value!,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: 'FilsonPro',
                   fontWeight: FontWeight.w400,
                   fontSize: 14.sp,
                   color: const Color(0xFF9CA3AF),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.right,
               ),
             ),
