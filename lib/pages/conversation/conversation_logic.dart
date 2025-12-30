@@ -1014,7 +1014,9 @@ class ConversationLogic extends SuperController {
     ConversationInfo? conversationInfo,
     Message? searchMessage,
   }) async {
-    try {if (conversationInfo == null) {conversationInfo = await _createConversation(
+    try {
+      if (conversationInfo == null) {
+        conversationInfo = await _createConversation(
           sourceID: userID ?? groupID!,
           sessionType: userID == null ? sessionType! : ConversationType.single,
         );

@@ -116,17 +116,27 @@ class AppNavigator {
       'searchMessage': searchMessage,
     };
 
-    return offUntilHome
-        ? Get.offNamedUntil(
-            AppRoutes.chat,
-            (route) => route.settings.name == AppRoutes.home,
-            arguments: arguments,
-          )
-        : Get.toNamed(
-            AppRoutes.chat,
-            arguments: arguments,
-            preventDuplicates: false,
-          );
+    if (offUntilHome) {
+      // Two-step approach to avoid GetX argument mixing bug with offNamedUntil
+      // Step 1: Pop all routes until we reach home
+      Get.until((route) => route.settings.name == AppRoutes.home);
+
+      // Give time for routes to settle and arguments to clear
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      // Step 2: Push chat route with correct arguments
+      return Get.toNamed(
+        AppRoutes.chat,
+        arguments: arguments,
+        preventDuplicates: false,
+      );
+    } else {
+      return Get.toNamed(
+        AppRoutes.chat,
+        arguments: arguments,
+        preventDuplicates: false,
+      );
+    }
   }
 
   static startMyQrcode() => Get.toNamed(AppRoutes.myQrcode);

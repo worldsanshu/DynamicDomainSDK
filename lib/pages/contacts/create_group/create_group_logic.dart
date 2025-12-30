@@ -78,25 +78,10 @@ class CreateGroupLogic extends GetxController {
 
   completeCreation() async {
     try {
-      print('=== completeCreation START ===');
-
-      print('allList length: ${allList.length}');
-      print('currentUserID: ${OpenIM.iMManager.userID}');
-
       if (allList.isEmpty) {
-        print('allList is EMPTY → stop');
         IMViews.showToast(StrRes.createGroupMinMemberHint);
         return;
       }
-
-      final memberIDs = allList
-          .where((e) => e.userID != OpenIM.iMManager.userID)
-          .map((e) => e.userID!)
-          .toList();
-
-      print('memberUserIDs to send: $memberIDs');
-
-      print('=== CALL createGroup ===');
       var info = await LoadingView.singleton.wrap(
         asyncFunction: () => OpenIM.iMManager.groupManager.createGroup(
           groupInfo: GroupInfo(
@@ -105,47 +90,22 @@ class CreateGroupLogic extends GetxController {
             faceURL: faceURL.value,
             groupType: GroupType.work,
           ),
-          memberUserIDs: memberIDs,
+          memberUserIDs: allList
+              .where((e) => e.userID != OpenIM.iMManager.userID)
+              .map((e) => e.userID!)
+              .toList(),
         ),
       );
 
-      print('=== createGroup RESULT ===');
-      print('groupID: ${info.groupID}');
-      print('sessionType: ${info.sessionType}');
-      print('groupName: $groupName');
-      print('faceURL: ${faceURL.value}');
-
-      print('=== TRY getOneConversation (immediate) ===');
-      final conversationInfo =
-          await OpenIM.iMManager.conversationManager.getOneConversation(
-        sourceID: info.groupID,
-        sessionType: ConversationType.superGroup,
-      );
-
-      print('conversationInfo is null: ${conversationInfo == null}');
-      print('conversationID: ${conversationInfo?.conversationID}');
-      print('conversationInfo: $conversationInfo');
-
-      print('=== CALL toChat ===');
       conversationLogic.toChat(
-        // offUntilHome: false,
+        offUntilHome: true,
         groupID: info.groupID,
         nickname: groupName,
         faceURL: faceURL.value,
         sessionType: info.sessionType,
-        conversationInfo: conversationInfo,
       );
-
-      print('=== completeCreation END ===');
-    } catch (e, stackTrace) {
-      print('=== ERROR in completeCreation ===');
-      print('Error type: ${e.runtimeType}');
-      print('Error: $e');
-      print('Stack trace: $stackTrace');
-
+    } catch (e) {
       if (e is PlatformException) {
-        print('PlatformException code: ${e.code}');
-        print('PlatformException message: ${e.message}');
         if (e.code == '1805') {
           IMViews.showToast(StrRes.systemMaintenance);
           return;

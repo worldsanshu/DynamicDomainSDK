@@ -135,6 +135,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
   bool _isReceivedMessageWhenSyncing = false;
   bool _isStartSyncing = false;
   bool _isFirstLoad = true;
+  bool _isInitialized = false;
 
   final copyTextMap = <String?, String?>{};
   final revokedTextMessage = <String, String>{};
@@ -152,6 +153,8 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
   bool get isSingleChat => null != userID && userID!.trim().isNotEmpty;
 
   bool get isGroupChat => null != groupID && groupID!.trim().isNotEmpty;
+
+  bool get isInitialized => _isInitialized;
 
   String get memberStr {
     final canShowCount = isGroupChat &&
@@ -240,7 +243,25 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     // timeDilation = 10.0;
     chatInputBoxStateKey = GlobalKey();
     var arguments = Get.arguments;
-    conversationInfo = arguments['conversationInfo'];
+    print('=== ChatLogic.onInit ===');
+    print('Arguments received: $arguments');
+    final convInfo = arguments?['conversationInfo'];
+    if (convInfo == null) {
+      Logger.print('ERROR: conversationInfo is null in ChatLogic.onInit()');
+      print('=== ChatLogic.onInit ERROR ===');
+      print('arguments: $arguments');
+      // Initialize with a placeholder to prevent LateInitializationError during build
+      conversationInfo = ConversationInfo(conversationID: '');
+      _isInitialized = false;
+      // Schedule navigation back after build is complete
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        IMViews.showToast('Failed to open chat: conversation not found');
+        Get.back();
+      });
+      return;
+    }
+    _isInitialized = true;
+    conversationInfo = convInfo;
     searchMessage = arguments['searchMessage'];
     nickname.value = conversationInfo.showName ?? '';
     faceUrl.value = conversationInfo.faceURL ?? '';
@@ -1658,6 +1679,14 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
       MessageOverlayHelper.hide();
     } catch (e) {
       Logger.print('Error hiding message overlay: $e');
+    }
+
+    // Skip cleanup if initialization failed
+    if (!_isInitialized) {
+      inputCtrl.dispose();
+      focusNode.dispose();
+      super.onClose();
+      return;
     }
 
     sendTypingMsg();

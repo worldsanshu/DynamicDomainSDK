@@ -10,5 +10,6 @@
   "launch": {
     "version": "0.2.0",
     "configurations": []
-  }
+  },
+  "cmake.sourceDirectory": "/Users/mac/Documents/openim-flutter-cnl/linux"
 }
