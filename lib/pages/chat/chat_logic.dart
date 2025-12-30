@@ -1978,8 +1978,11 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
 
         // Build mention string for newly selected members only
         var mentionStr = '';
-        if (finalSelectedIDs.isNotEmpty) {
-          mentionStr = finalSelectedIDs.map((id) => '@$id').join(' ') + ' ';
+        final newIDs = finalSelectedIDs
+            .where((id) => !defaultUserIDs.contains(id))
+            .toList();
+        if (newIDs.isNotEmpty) {
+          mentionStr = newIDs.map((id) => '@$id').join(' ') + ' ';
         }
 
         // Insert mention at cursor position (preserving text before and after)

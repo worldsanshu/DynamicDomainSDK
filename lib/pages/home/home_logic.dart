@@ -318,7 +318,6 @@ class HomeLogic extends SuperController with UpgradeManger {
       DataSp.removeLoginCertificate();
       Get.find<PushController>().logout();
       AppNavigator.startInviteCode();
-      IMViews.showToast(StrRes.accountException);
     });
 
     super.onInit();

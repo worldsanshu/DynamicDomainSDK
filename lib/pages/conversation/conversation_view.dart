@@ -45,15 +45,16 @@ class _ConversationPageState extends State<ConversationPage> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => GradientScaffold(
-          title: '${logic.titleText} (${logic.conversationCount.value})',
-          subtitle: logic.getUnreadText,
-          trailing: CustomButton(
-            key: _newButtonKey,
-            onTap: () => showNewContactPopup(context, _newButtonKey),
-            icon: Icons.grid_view,
-            color: Colors.white,
-          ),
-          body: Column(
+        title: '${logic.titleText} (${logic.conversationCount.value})',
+        subtitle: logic.getUnreadText,
+        trailing: CustomButton(
+          key: _newButtonKey,
+          onTap: () => showNewContactPopup(context, _newButtonKey),
+          icon: Icons.grid_view,
+          color: Colors.white,
+        ),
+        body: Center(
+          child: Column(
             children: [
               // Network unavailable banner
               if (!logic.isConnected.value) _buildNetworkUnavailableBanner(),
@@ -65,7 +66,7 @@ class _ConversationPageState extends State<ConversationPage> {
               ),
             ],
           ),
-        ));
+        )));
   }
 
   Widget _buildAnnouncementList() {

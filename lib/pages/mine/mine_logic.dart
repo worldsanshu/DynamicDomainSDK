@@ -109,7 +109,8 @@ class MineLogic extends GetxController {
     if (EasyLoading.isShow) {
       EasyLoading.dismiss();
     }
-    Get.snackbar(StrRes.accountWarn, tips ?? StrRes.accountException);
+
+    IMViews.showToast(tips??StrRes.accountException, type:2);
     await DataSp.removeLoginCertificate();
     pushLogic.logout();
     trtcLogic.logout();
