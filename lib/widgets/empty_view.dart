@@ -22,40 +22,42 @@ class EmptyView extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           24.verticalSpace,
-            Container(
-              width: 120.w,
-              height: 120.h,
-              decoration: BoxDecoration(
-                color: primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(
-                  color: primaryColor.withOpacity(0.2),
-                  width: 1.5,
-                ),
-              ),
-              child: Center(
-                child: Icon(
-                  icon,
-                  size: 60.w,
-                  color: primaryColor,
-                ),
+          Container(
+            width: 120.w,
+            height: 120.h,
+            decoration: BoxDecoration(
+              color: primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: primaryColor.withOpacity(0.2),
+                width: 1.5,
               ),
             ),
-            24.verticalSpace,
-            Text(
-              message.isNotEmpty ? message : StrRes.noGroupRequests,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: const Color(0xFF6B7280),
+            child: Center(
+              child: Icon(
+                icon,
+                size: 60.w,
+                color: primaryColor,
               ),
             ),
-          ],
-        ),
+          ),
+          24.verticalSpace,
+          Text(
+            message.isNotEmpty ? message : StrRes.noGroupRequests,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'FilsonPro',
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF6B7280),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

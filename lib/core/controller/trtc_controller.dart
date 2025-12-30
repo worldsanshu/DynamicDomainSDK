@@ -37,8 +37,8 @@ class TRTCController extends GetxController {
         final targetId = _genTrtcUserId(userId);
         try {
           final result = await TUICallKit.instance.call(targetId, type);
-          if (result.code == '-1001') {
-            IMViews.showToast(StrRes.callFail);
+          if (result.code.isNotEmpty) {
+            IMViews.showToast(result.message ?? StrRes.callFail);
           }
           _logResult('单人通话', result);
         } catch (e) {
@@ -51,8 +51,8 @@ class TRTCController extends GetxController {
         final targetId = _genTrtcUserId(userId);
         try {
           final result = await TUICallKit.instance.call(targetId, type);
-           if (result.code == '-1001') {
-            IMViews.showToast(StrRes.callFail);
+          if (result.code.isNotEmpty) {
+            IMViews.showToast(result.message ?? StrRes.callFail);
           }
           _logResult('单人通话', result);
         } catch (e) {
@@ -86,9 +86,17 @@ class TRTCController extends GetxController {
         final params = TUICallParams()
           ..chatGroupId = groupId
           ..roomId = TUIRoomId(intRoomId: roomId, strRoomId: '');
-        final result =
-            await TUICallKit.instance.calls(trtcUserIds, type, params);
-        _logResult('群组通话', result);
+        try {
+          final result =
+              await TUICallKit.instance.calls(trtcUserIds, type, params);
+          if (result.code.isNotEmpty) {
+            IMViews.showToast(result.message ?? StrRes.callFail);
+          }
+          _logResult('群组通话', result);
+        } catch (e) {
+          IMViews.showToast(StrRes.callFail);
+          debugPrint('群组通话失败: $e');
+        }
       });
     } else {
       Permissions.cameraAndMicrophone(() async {
@@ -96,9 +104,17 @@ class TRTCController extends GetxController {
         final params = TUICallParams()
           ..chatGroupId = groupId
           ..roomId = TUIRoomId(intRoomId: roomId, strRoomId: '');
-        final result =
-            await TUICallKit.instance.calls(trtcUserIds, type, params);
-        _logResult('群组通话', result);
+        try {
+          final result =
+              await TUICallKit.instance.calls(trtcUserIds, type, params);
+          if (result.code.isNotEmpty) {
+            IMViews.showToast(result.message ?? StrRes.callFail);
+          }
+          _logResult('群组通话', result);
+        } catch (e) {
+          IMViews.showToast(StrRes.callFail);
+          debugPrint('群组通话失败: $e');
+        }
       });
     }
   }
