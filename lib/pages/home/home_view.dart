@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
                       right: 10.w,
                       child: Container(
                         constraints:
-                            BoxConstraints(minWidth: 24.w, minHeight: 24.h),
+                            BoxConstraints(minWidth: 20.w, minHeight: 20.h),
                         padding: EdgeInsets.symmetric(horizontal: 6.w),
                         decoration: const BoxDecoration(
                           color: Color(0xFFEF4444),
@@ -91,7 +91,7 @@ class HomePage extends StatelessWidget {
                                 : logic.unreadMsgCount.value.toString(),
                             style: TextStyle(
                               fontFamily: 'FilsonPro',
-                              fontSize: 12.sp,
+                              fontSize: 10.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),
@@ -127,7 +127,7 @@ class HomePage extends StatelessWidget {
                       right: 10.w,
                       child: Container(
                         constraints:
-                            BoxConstraints(minWidth: 24.w, minHeight: 24.h),
+                            BoxConstraints(minWidth: 20.w, minHeight: 20.h),
                         padding: EdgeInsets.symmetric(horizontal: 6.w),
                         decoration: const BoxDecoration(
                           color: Color(0xFFEF4444),
@@ -140,7 +140,7 @@ class HomePage extends StatelessWidget {
                                 : logic.unhandledCount.value.toString(),
                             style: TextStyle(
                               fontFamily: 'FilsonPro',
-                              fontSize: 12.sp,
+                              fontSize: 10.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),

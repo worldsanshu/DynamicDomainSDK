@@ -46,7 +46,7 @@ class MerchantListView extends StatelessWidget {
 
         return AnimationLimiter(
           child: ListView.builder(
-            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 30.h),
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 30.h),
             itemCount: filteredList.length,
             itemBuilder: (context, index) {
               final merchant = filteredList[index];

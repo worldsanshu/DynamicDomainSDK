@@ -92,7 +92,7 @@ class FriendRequestsPage extends StatelessWidget {
 
                 return AnimationLimiter(
                   child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
                     itemCount: filteredList.length,
                     itemBuilder: (_, index) =>
                         AnimationConfiguration.staggeredList(
@@ -126,35 +126,40 @@ class FriendRequestsPage extends StatelessWidget {
   Widget _buildTab(String value, String label, Color primaryColor) {
     return Expanded(
       child: Obx(
-        () => GestureDetector(
-          onTap: () => logic.selectedTab.value = value,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 10.h),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: logic.selectedTab.value == value
-                      ? primaryColor
-                      : Colors.transparent,
-                  width: 2,
-                ),
+        () {
+          final isSelected = logic.selectedTab.value == value;
+          return GestureDetector(
+            onTap: () => logic.selectedTab.value = value,
+            behavior: HitTestBehavior.translucent,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              child: Column(
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontFamily: 'FilsonPro',
+                      fontSize: 14.sp,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                      color:
+                          isSelected ? primaryColor : const Color(0xFF9CA3AF),
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Container(
+                    height: 3.h,
+                    width: 30.w,
+                    decoration: BoxDecoration(
+                      color: isSelected ? primaryColor : Colors.transparent,
+                      borderRadius: BorderRadius.circular(1.5.r),
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Center(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: logic.selectedTab.value == value
-                      ? primaryColor
-                      : const Color(0xFF9CA3AF),
-                ),
-              ),
-            ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

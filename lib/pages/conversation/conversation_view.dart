@@ -1,7 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -192,64 +190,29 @@ class _ConversationPageState extends State<ConversationPage> {
           }
         });
 
-        return Stack(
+        return Column(
           children: [
-            if (!logic.isAIChatMode.value)
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildFriendsCarousel(),
-                  if (!logic.isInChina.value && Platform.isIOS)
-                    _buildAISearchField(),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.zero,
-                      child: filteredList.isEmpty
-                          ? EmptyView(
-                              message: StrRes.noConversationsYet,
-                              icon: Ionicons.chatbubble_ellipses_outline,
-                            )
-                          : ListView.builder(
-                              itemExtent: 86.0,
-                              padding: EdgeInsets.zero,
-                              controller: logic.scrollController,
-                              itemCount: filteredList.length,
-                              itemBuilder: (context, index) {
-                                return _buildConversationItemView(
-                                    filteredList[index]);
-                              },
-                            ),
-                    ),
-                  ),
-                ],
+            _buildFriendsCarousel(),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.zero,
+                child: filteredList.isEmpty
+                    ? EmptyView(
+                        message: StrRes.noConversationsYet,
+                        icon: Ionicons.chatbubble_ellipses_outline,
+                      )
+                    : ListView.builder(
+                        itemExtent: 86.0,
+                        padding: EdgeInsets.zero,
+                        controller: logic.scrollController,
+                        itemCount: filteredList.length,
+                        itemBuilder: (context, index) {
+                          return _buildConversationItemView(
+                              filteredList[index]);
+                        },
+                      ),
               ),
-            // AI Chat Interface
-            if (logic.isAIChatMode.value)
-              Positioned.fill(
-                child: _buildAIChatInterface(),
-              ),
-
-            // Close button when in AI mode
-            if (logic.isAIChatMode.value)
-              Positioned(
-                top: 0.h,
-                left: 16.w,
-                child: GestureDetector(
-                  onTap: logic.exitAIChatMode,
-                  child: Container(
-                    padding: EdgeInsets.all(8.w),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF3F4F6),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Icon(
-                      CupertinoIcons.back,
-                      size: 20.w,
-                      color: const Color(0xFF374151),
-                    ),
-                  ),
-                ),
-              ),
+            ),
           ],
         );
       }),
@@ -370,437 +333,30 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
-  Widget _buildAISearchField() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-      child: TextField(
-        controller: logic.aiTextController,
-        focusNode: logic.aiFocusNode,
-        readOnly: true,
-        onTap: () {
-          if (!logic.isAIChatMode.value) {
-            logic.toggleAIChatMode();
-          }
-        },
-        style: TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 14.sp,
-          color: const Color(0xFF212121),
-        ),
-        decoration: InputDecoration(
-          hintText: StrRes.typeYourMessage,
-          hintStyle: TextStyle(
-            fontFamily: 'FilsonPro',
-            fontSize: 14.sp,
-            color: const Color(0xFFBDBDBD),
-          ),
-          prefixIcon: Icon(
-            CupertinoIcons.sparkles,
-            color: const Color(0xFF8B5CF6),
-            size: 20.w,
-          ),
-          filled: true,
-          fillColor: const Color(0xFFF8F9FA),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.r),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.r),
-            borderSide: const BorderSide(
-              color: Color(0xFFE5E7EB),
-              width: 1,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.r),
-            borderSide: const BorderSide(
-              color: Color(0xFF8B5CF6),
-              width: 2,
-            ),
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 12.h,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAIChatInterface() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.r),
-          topRight: Radius.circular(20.r),
-        ),
-      ),
-      child: Column(
-        children: [
-          // Header
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          CupertinoIcons.sparkles,
-                          color: const Color(0xFF8B5CF6),
-                          size: 24.w,
-                        ),
-                        8.horizontalSpace,
-                        Text(
-                          StrRes.aiAssistant,
-                          style: TextStyle(
-                            fontFamily: 'FilsonPro',
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF212121),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                // Clear history button
-                Obx(() => logic.aiChatMessages.isNotEmpty
-                    ? GestureDetector(
-                        onTap: () async {
-                          final confirm = await Get.dialog(
-                            CustomDialog(
-                              title: StrRes.clearAIChatHistory,
-                              content: StrRes.clearAIChatHistoryConfirm,
-                            ),
-                          );
-                          if (confirm == true) {
-                            await logic.clearAIChatHistory();
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 6.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFEE2E2),
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(
-                              color: const Color(0xFFEF4444).withOpacity(0.3),
-                              width: 1,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                CupertinoIcons.trash,
-                                color: const Color(0xFFEF4444),
-                                size: 16.w,
-                              ),
-                              4.horizontalSpace,
-                              Text(
-                                StrRes.delete,
-                                style: TextStyle(
-                                  fontFamily: 'FilsonPro',
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xFFEF4444),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink()),
-              ],
-            ),
-          ),
-
-          // Divider
-          const Divider(height: 1, color: Color(0xFFE5E7EB)),
-
-          // Chat messages
-          Expanded(
-            child: Obx(() {
-              if (logic.aiChatMessages.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        CupertinoIcons.chat_bubble_2,
-                        size: 64.w,
-                        color: const Color(0xFFE5E7EB),
-                      ),
-                      16.verticalSpace,
-                      Text(
-                        StrRes.startConversationWithAI,
-                        style: TextStyle(
-                          fontFamily: 'FilsonPro',
-                          fontSize: 16.sp,
-                          color: const Color(0xFFBDBDBD),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              return ListView.builder(
-                controller: logic.aiScrollController,
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                reverse: false,
-                itemCount: logic.aiChatMessages.length +
-                    (logic.isAIThinking.value ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == logic.aiChatMessages.length &&
-                      logic.isAIThinking.value) {
-                    return _buildThinkingIndicator();
-                  }
-
-                  final message = logic.aiChatMessages[index];
-                  return _buildChatBubble(message);
-                },
-              );
-            }),
-          ),
-
-          // Input area
-          Container(
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10.r,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: logic.aiTextController,
-                    maxLines: null,
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => logic.sendMessageToAI(),
-                    style: TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontSize: 14.sp,
-                      color: const Color(0xFF212121),
-                    ),
-                    decoration: InputDecoration(
-                      hintText: StrRes.typeYourMessage,
-                      hintStyle: TextStyle(
-                        fontFamily: 'FilsonPro',
-                        fontSize: 14.sp,
-                        color: const Color(0xFFBDBDBD),
-                      ),
-                      filled: true,
-                      fillColor: const Color(0xFFF8F9FA),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.r),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 10.h,
-                      ),
-                    ),
-                  ),
-                ),
-                12.horizontalSpace,
-                Obx(() => Material(
-                      color: logic.isAIThinking.value
-                          ? const Color(0xFFBDBDBD)
-                          : const Color(0xFF8B5CF6),
-                      borderRadius: BorderRadius.circular(20.r),
-                      child: InkWell(
-                        onTap: logic.isAIThinking.value
-                            ? null
-                            : logic.sendMessageToAI,
-                        borderRadius: BorderRadius.circular(20.r),
-                        child: SizedBox(
-                          width: 44.w,
-                          height: 44.h,
-                          child: Center(
-                            child: Icon(
-                              CupertinoIcons.arrow_up,
-                              color: Colors.white,
-                              size: 20.w,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChatBubble(Map<String, dynamic> message) {
-    final isUser = message['isUser'] as bool;
-    final text = message['message'] as String;
-    final isError = message['isError'] ?? false;
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: 16.h),
-      child: Row(
-        mainAxisAlignment:
-            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (!isUser) ...[
-            Container(
-              width: 32.w,
-              height: 32.h,
-              decoration: BoxDecoration(
-                color: const Color(0xFF8B5CF6).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Icon(
-                CupertinoIcons.sparkles,
-                color: const Color(0xFF8B5CF6),
-                size: 16.w,
-              ),
-            ),
-            8.horizontalSpace,
-          ],
-          Flexible(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-              decoration: BoxDecoration(
-                color: isUser
-                    ? const Color(0xFF8B5CF6)
-                    : isError
-                        ? const Color(0xFFFEE2E2)
-                        : const Color(0xFFF3F4F6),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontFamily: 'FilsonPro',
-                  fontSize: 14.sp,
-                  color: isUser
-                      ? Colors.white
-                      : isError
-                          ? const Color(0xFFEF4444)
-                          : const Color(0xFF212121),
-                ),
-              ),
-            ),
-          ),
-          if (isUser) ...[
-            8.horizontalSpace,
-            AvatarView(
-              url: logic.imLogic.userInfo.value.faceURL,
-              text: logic.imLogic.userInfo.value.nickname,
-              width: 35.w,
-              height: 35.h,
-              textStyle: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-              isCircle: true,
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildThinkingIndicator() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 16.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 32.w,
-            height: 32.h,
-            decoration: BoxDecoration(
-              color: const Color(0xFF8B5CF6).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Icon(
-              CupertinoIcons.sparkles,
-              color: const Color(0xFF8B5CF6),
-              size: 16.w,
-            ),
-          ),
-          8.horizontalSpace,
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF3F4F6),
-              borderRadius: BorderRadius.circular(16.r),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildDot(0),
-                4.horizontalSpace,
-                _buildDot(1),
-                4.horizontalSpace,
-                _buildDot(2),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDot(int index) {
-    return AnimatedDot(index: index);
-  }
-
   String _sanitizeText(String text) {
     if (text.isEmpty) return text;
     try {
-      // Remove invalid UTF-16 surrogate pairs and problematic characters
       final buffer = StringBuffer();
       for (int i = 0; i < text.length; i++) {
         final codeUnit = text.codeUnitAt(i);
-        // Check for valid characters
         if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
-          // High surrogate - check if followed by low surrogate
           if (i + 1 < text.length) {
             final nextCodeUnit = text.codeUnitAt(i + 1);
             if (nextCodeUnit >= 0xDC00 && nextCodeUnit <= 0xDFFF) {
-              // Valid surrogate pair
               buffer.writeCharCode(codeUnit);
               buffer.writeCharCode(nextCodeUnit);
-              i++; // Skip the low surrogate
+              i++;
               continue;
             }
           }
-          // Invalid high surrogate, skip it
           continue;
         } else if (codeUnit >= 0xDC00 && codeUnit <= 0xDFFF) {
-          // Orphan low surrogate, skip it
           continue;
         }
         buffer.writeCharCode(codeUnit);
       }
       return buffer.toString();
     } catch (e) {
-      // If all else fails, return empty string
       return '';
     }
   }

@@ -26,6 +26,8 @@ class CustomDialog extends StatelessWidget {
     this.onTapLeft,
     this.onTapRight,
     this.primaryColor,
+    this.icon,
+    this.iconSize,
   });
 
   final String? title;
@@ -38,6 +40,8 @@ class CustomDialog extends StatelessWidget {
   final Function()? onTapLeft;
   final Function()? onTapRight;
   final Color? primaryColor;
+  final IconData? icon;
+  final double? iconSize;
 
   @override
   Widget build(BuildContext context) {
@@ -116,9 +120,9 @@ class CustomDialog extends StatelessWidget {
                               color: btnColor.withOpacity(0.08),
                             ),
                             child: Icon(
-                              CupertinoIcons.bell,
+                              icon ?? CupertinoIcons.bell,
                               color: btnColor,
-                              size: 32.w,
+                              size: iconSize ?? 32.w,
                             ),
                           ),
 

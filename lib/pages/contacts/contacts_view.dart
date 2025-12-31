@@ -89,13 +89,11 @@ class _ContactsPageState extends State<ContactsPage>
                 // Tab Bar
                 TabBar(
                   controller: _tabController,
-                  indicator: UnderlineTabIndicator(
-                    borderSide: BorderSide(
-                      color: primaryColor,
-                      width: 3.0,
-                    ),
-                    insets: EdgeInsets.symmetric(horizontal: 16.0),
-                    borderRadius: BorderRadius.circular(2),
+                  indicator: FixedUnderlineTabIndicator(
+                    width: 30.w,
+                    height: 3.h,
+                    color: primaryColor,
+                    radius: 1.5.r,
                   ),
                   indicatorPadding: EdgeInsets.zero,
                   dividerColor: Colors.transparent,
@@ -642,7 +640,7 @@ class _ContactsPageState extends State<ContactsPage>
                   if (count > 0)
                     Container(
                       constraints:
-                          BoxConstraints(minWidth: 24.w, minHeight: 24.h),
+                          BoxConstraints(minWidth: 20.w, minHeight: 20.h),
                       padding: EdgeInsets.symmetric(horizontal: 6.w),
                       decoration: const BoxDecoration(
                         color: Color(0xFFEF4444),
@@ -653,7 +651,7 @@ class _ContactsPageState extends State<ContactsPage>
                           count > 99 ? StrRes.moreThan99 : count.toString(),
                           style: TextStyle(
                             fontFamily: 'FilsonPro',
-                            fontSize: 12.sp,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
@@ -789,5 +787,50 @@ class FriendListItem with ISuspensionBean {
       return tag;
     }
     return '🔍';
+  }
+}
+
+class FixedUnderlineTabIndicator extends Decoration {
+  final double width;
+  final double height;
+  final Color color;
+  final double radius;
+
+  const FixedUnderlineTabIndicator({
+    required this.width,
+    required this.height,
+    required this.color,
+    this.radius = 0,
+  });
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) {
+    return _FixedUnderlinePainter(this, onChanged);
+  }
+}
+
+class _FixedUnderlinePainter extends BoxPainter {
+  final FixedUnderlineTabIndicator decoration;
+
+  _FixedUnderlinePainter(this.decoration, VoidCallback? onChanged)
+      : super(onChanged);
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    assert(configuration.size != null);
+    final Rect rect = offset & configuration.size!;
+    final double dx = rect.center.dx - (decoration.width / 2);
+    final double dy = rect.bottom - decoration.height;
+
+    final RRect rrect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(dx, dy, decoration.width, decoration.height),
+      Radius.circular(decoration.radius),
+    );
+
+    final Paint paint = Paint()
+      ..color = decoration.color
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRRect(rrect, paint);
   }
 }

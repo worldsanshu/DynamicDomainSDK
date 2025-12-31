@@ -266,6 +266,21 @@ const Map<String, String> zh_CN = {
   "amapMap": "高德地图",
   "tencentMap": "腾讯地图",
 
+  // Permission explanation strings
+  "permissionStorageTitle": "对存储空间/照片权限申请说明",
+  "permissionStorageMessage":
+      "便于您在该功能中上传图片/视频及用于更换头像、分享文件、保存附件、意见反馈等操作时读取和写入相册和文件内容。",
+
+  "permissionCameraTitle": "对相机/摄像头权限申请说明",
+  "permissionCameraMessage":
+      "便于您使用该功能中拍照上传您的照片/视频及用于更换头像、意见反馈、保存相册、扫描二维码、进行视频通话等场景中使用。",
+
+  "permissionMicrophoneTitle": "对麦克风权限申请说明",
+  "permissionMicrophoneMessage": "便于您进行语音通话、录制语音消息、参与语音会议等操作，我们需要获取麦克风权限。",
+
+  "permissionDefaultTitle": "权限申请说明",
+  "permissionDefaultMessage": "需要获取相关权限以便提供更好的服务。",
+
   "offlineMessage": "你收到了一条新消息",
   "offlineCallMessage": "你收到了一条通话邀请消息",
   "logoutHint": "您确定要退出登录吗？",

@@ -148,6 +148,15 @@ class StrRes {
   static String get forbiddenDetails => 'forbiddenDetails'.tr;
   static String get noSupportedApp => 'noSupportedApp'.tr;
   static String get noPermissionAccess => 'noPermissionAccess'.tr;
+  static String get permissionStorageTitle => 'permissionStorageTitle'.tr;
+  static String get permissionStorageMessage => 'permissionStorageMessage'.tr;
+  static String get permissionCameraTitle => 'permissionCameraTitle'.tr;
+  static String get permissionCameraMessage => 'permissionCameraMessage'.tr;
+  static String get permissionMicrophoneTitle => 'permissionMicrophoneTitle'.tr;
+  static String get permissionMicrophoneMessage =>
+      'permissionMicrophoneMessage'.tr;
+  static String get permissionDefaultTitle => 'permissionDefaultTitle'.tr;
+  static String get permissionDefaultMessage => 'permissionDefaultMessage'.tr;
   static String get fileInvalid => 'fileInvalid'.tr;
   static String get personalizedAdDescription => 'personalizedAdDescription'.tr;
   static String get personalizedAdContent => 'personalizedAdContent'.tr;

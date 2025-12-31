@@ -7,9 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:sprintf/sprintf.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum PermissionType { photos, storage, camera, microphone }
 
@@ -24,172 +23,160 @@ class Permissions {
     return await Permission.storage.isGranted;
   }
 
-  static void checkAndShowPermissionExplanation(Permission permission) async {
+  static void checkAndShowPermissionExplanation(Permission permission,
+      {bool forceShow = false}) async {
     String title;
     String message;
 
     switch (permission) {
       case Permission.photos:
-        title = StrRes.permStoragePhotoTitle;
-        message = StrRes.permStoragePhotoMessage;
+        title = StrRes.permissionStorageTitle;
+        message = StrRes.permissionStorageMessage;
+        permission = Permission.photos;
         break;
 
       case Permission.storage:
-      case Permission.manageExternalStorage:
-        title = StrRes.permStoragePhotoTitle;
-        message = StrRes.permStoragePhotoMessage;
+        title = StrRes.permissionStorageTitle;
+        message = StrRes.permissionStorageMessage;
+        permission = Permission.storage;
         break;
 
       case Permission.camera:
-        title = StrRes.permCameraTitle;
-        message = StrRes.permCameraMessage;
+        title = StrRes.permissionCameraTitle;
+        message = StrRes.permissionCameraMessage;
+        permission = Permission.camera;
         break;
       case Permission.microphone:
-        title = StrRes.permMicrophoneTitle;
-        message = StrRes.permMicrophoneMessage;
+        title = StrRes.permissionMicrophoneTitle;
+        message = StrRes.permissionMicrophoneMessage;
+        permission = Permission.microphone;
         break;
       default:
-        title = StrRes.permDefaultTitle;
-        message = StrRes.permDefaultMessage;
+        title = StrRes.permissionDefaultTitle;
+        message = StrRes.permissionDefaultMessage;
+        permission = Permission.photos;
         break;
     }
 
-    // Skip if permission is already granted or permanently denied
-    if (await permission.status.isGranted ||
-        await permission.status.isPermanentlyDenied) {
-      return;
-    }
-
-    Get.snackbar(
-      title,
-      message,
-      backgroundColor: Colors.white,
-      colorText: Colors.black87,
-      borderRadius: 8,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      snackPosition: SnackPosition.TOP,
-      icon: const Icon(Icons.info_outline, color: Colors.black87, size: 20),
-      shouldIconPulse: false,
-      animationDuration: const Duration(milliseconds: 300),
-      snackStyle: SnackStyle.FLOATING,
-      padding: const EdgeInsets.all(12),
-      titleText: Text(
+    // if (await permission.status.isGranted ||
+    //     await permission.status.isPermanentlyDenied ||
+    //     await permission.status.isPermanentlyDenied) {
+    //   return;
+    // }
+    if ((await permission.isDenied || await permission.isPermanentlyDenied) &&
+            (permission == Permission.photos
+                ? (await Permission.storage.isDenied) ||
+                    (await Permission.storage.isPermanentlyDenied)
+                : true) ||
+        forceShow) {
+      Get.snackbar(
         title,
-        style: const TextStyle(
-          fontFamily: 'FilsonPro',
-          fontWeight: FontWeight.bold,
-          fontSize: 15,
-          color: Colors.black87,
-        ),
-      ),
-      messageText: Text(
         message,
-        style: const TextStyle(
-          fontFamily: 'FilsonPro',
-          fontSize: 14,
-          color: Colors.black54,
+        backgroundColor: Colors.white,
+        colorText: Colors.black87,
+        borderRadius: 8,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        snackPosition: SnackPosition.TOP,
+        icon: const Icon(Icons.info_outline, color: Colors.black87, size: 20),
+        shouldIconPulse: false,
+        animationDuration: const Duration(milliseconds: 300),
+        snackStyle: SnackStyle.FLOATING,
+        padding: const EdgeInsets.all(12),
+        titleText: Text(
+          title,
+          style: const TextStyle(
+            fontFamily: 'SFPro',
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            color: Colors.black87,
+          ),
         ),
-      ),
-      duration: null,
-    );
+        messageText: Text(
+          message,
+          style: const TextStyle(
+            fontFamily: 'SFPro',
+            fontSize: 14,
+            color: Colors.black54,
+          ),
+        ),
+        duration: null,
+      );
+    }
   }
 
   static void camera(Function()? onGranted) async {
-    // Check if permission is already granted - if so, skip explanation and just call callback
-    if (await Permission.camera.status.isGranted) {
-      onGranted?.call();
-      return;
-    }
-
-    // Show explanation only if permission is not yet granted
     if (Platform.isAndroid) {
       checkAndShowPermissionExplanation(Permission.camera);
     }
-
-    final status = await Permission.camera.request();
-
-    // Always close the snackbar after permission request completes
-    if (Platform.isAndroid) {
+    if (await Permission.camera.request().isGranted) {
       Get.closeCurrentSnackbar();
-    }
-
-    if (status.isGranted) {
       // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
-    } else if (status.isPermanentlyDenied || status.isDenied) {
+    }
+    if (await Permission.camera.isPermanentlyDenied ||
+        await Permission.camera.isDenied) {
       // The user opted to never again see the permission request dialog for this
       // app. The only way to change the permission's status now is to let the
       // user manually enable it in the system settings.
-      _showPermissionDeniedDialog(Permission.camera.title);
+      showPermissionDeniedDialog(Permission.camera.title);
     }
   }
 
+  /// Request storage permission
+  /// On Android 13+ (SDK 33+), we use Permission.storage which doesn't require
+  /// MANAGE_EXTERNAL_STORAGE (which conflicts with limited photo access)
   static void storage(Function()? onGranted) async {
     if (!Platform.isAndroid) {
       onGranted?.call();
       return;
     }
-
+    if (Platform.isAndroid) {
+      checkAndShowPermissionExplanation(Permission.storage);
+    }
     final androidInfo = await DeviceInfoPlugin().androidInfo;
-    late Permission permisson;
 
+    // On Android 13+ (SDK 33+), we don't need MANAGE_EXTERNAL_STORAGE
+    // Use SAF (Storage Access Framework) via native channel instead
+    // For older versions, use storage permission
     if (androidInfo.version.sdkInt <= 32) {
-      permisson = Permission.storage;
+      final permisson = Permission.storage;
+      if (await permisson.request().isGranted) {
+        Get.closeCurrentSnackbar();
+        onGranted?.call();
+      } else if (await permisson.isPermanentlyDenied ||
+          await permisson.isDenied) {
+        showPermissionDeniedDialog(permisson.title);
+      }
     } else {
-      permisson = Permission.manageExternalStorage;
-    }
-
-    // Check if permission is already granted - if so, skip explanation and just call callback
-    if (await permisson.status.isGranted) {
+      // On Android 13+, we rely on SAF for file access
+      // No need for storage permission for file picking
+      Get.closeCurrentSnackbar();
       onGranted?.call();
-      return;
-    }
-
-    // Show explanation only if permission is not yet granted
-    checkAndShowPermissionExplanation(permisson);
-
-    final status = await permisson.request();
-
-    // Always close the snackbar after permission request completes
-    Get.closeCurrentSnackbar();
-
-    if (status.isGranted) {
-      // Either the permission was already granted before or the user just granted it.
-      onGranted?.call();
-    } else if (status.isPermanentlyDenied || status.isDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-      _showPermissionDeniedDialog(permisson.title);
     }
   }
 
+  /// Note: This method is kept for backward compatibility but should be avoided
+  /// Using MANAGE_EXTERNAL_STORAGE conflicts with limited photo access on Android 14+
+  @Deprecated('Use storage() instead to avoid permission conflicts')
   static void manageExternalStorage(Function()? onGranted) async {
     if (await Permission.manageExternalStorage.request().isGranted) {
-      if (Platform.isAndroid) {
-        Get.closeCurrentSnackbar();
-      }
-      // Either the permission was already granted before or the user just granted it.
+      Get.closeCurrentSnackbar();
       onGranted?.call();
     }
     if (await Permission.storage.isPermanentlyDenied ||
         await Permission.storage.isDenied) {
-      // The user opted to never again see the permission request dialog for this
-      // app. The only way to change the permission's status now is to let the
-      // user manually enable it in the system settings.
-      _showPermissionDeniedDialog(Permission.storage.title);
+      showPermissionDeniedDialog(Permission.storage.title);
     }
   }
 
-  static void microphone(Function()? onGranted, {Function()? onDenied}) async {
+  static Future<PermissionStatus> microphone(Function()? onGranted,
+      {Function()? onDenied}) async {
     if (Platform.isAndroid) {
       checkAndShowPermissionExplanation(Permission.microphone);
     }
     final result = await Permission.microphone.request();
     if (result.isGranted) {
-      if (Platform.isAndroid) {
-        Get.closeCurrentSnackbar();
-      }
+      Get.closeCurrentSnackbar();
       // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     } else if (result.isPermanentlyDenied || result.isDenied) {
@@ -197,15 +184,14 @@ class Permissions {
       // app. The only way to change the permission's status now is to let the
       // user manually enable it in the system settings.
       onDenied?.call();
-      _showPermissionDeniedDialog(Permission.microphone.title);
+      showPermissionDeniedDialog(Permission.microphone.title);
     }
+    return result;
   }
 
   static void speech(Function()? onGranted) async {
     if (await Permission.speech.request().isGranted) {
-      if (Platform.isAndroid) {
-        Get.closeCurrentSnackbar();
-      }
+      Get.closeCurrentSnackbar();
       // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
@@ -214,7 +200,7 @@ class Permissions {
       // The user opted to never again see the permission request dialog for this
       // app. The only way to change the permission's status now is to let the
       // user manually enable it in the system settings.
-      _showPermissionDeniedDialog(Permission.speech.title);
+      showPermissionDeniedDialog(Permission.speech.title);
     }
   }
 
@@ -224,13 +210,6 @@ class Permissions {
       if (androidInfo.version.sdkInt <= 32) {
         storage(onGranted);
       } else {
-        // Check if permission is already granted or limited - skip request if so
-        final currentStatus = await Permission.photos.status;
-        if (isPermissionAccepted(currentStatus)) {
-          onGranted?.call();
-          return;
-        }
-
         checkAndShowPermissionExplanation(Permission.photos);
         final permissions = [Permission.photos, Permission.videos];
         final results = await permissions.request();
@@ -238,46 +217,108 @@ class Permissions {
         final photosResult = results[Permission.photos];
 
         if (photosResult != null && isPermissionAccepted(photosResult)) {
-          Get.closeAllSnackbars();
-          // Either the permission was already granted before or the user just granted it.
-          // Also allow limited access for selected photos
+          Get.closeCurrentSnackbar();
           onGranted?.call();
-        }
-        if (await Permission.photos.isPermanentlyDenied ||
+        } else if (await Permission.photos.isPermanentlyDenied ||
             await Permission.photos.isDenied) {
-          _showPermissionDeniedDialog(Permission.photos.title);
+          showPermissionDeniedDialog(Permission.photos.title);
         }
       }
     } else {
-      // iOS: Check if permission is already granted or limited - skip request if so
-      final currentStatus = await Permission.photos.status;
-      if (isPermissionAccepted(currentStatus)) {
+      if (await Permission.photos.isGranted ||
+          await Permission.photosAddOnly.isGranted) {
+        Get.closeCurrentSnackbar();
         onGranted?.call();
         return;
       }
 
-      final permissions = [Permission.photos, Permission.videos];
-      final results = await permissions.request();
-
-      final photosResult = results[Permission.photos];
-
-      if (photosResult != null && isPermissionAccepted(photosResult)) {
-        // Either the permission was already granted before or the user just granted it.
-        // Also allow limited access for selected photos
+      final addOnlyResult = await Permission.photosAddOnly.request();
+      if (addOnlyResult.isGranted) {
+        Get.closeCurrentSnackbar();
         onGranted?.call();
+        return;
       }
+
+      final photosResult = await Permission.photos.request();
+      if (photosResult.isGranted || photosResult.isLimited) {
+        Get.closeCurrentSnackbar();
+        onGranted?.call();
+        return;
+      }
+
       if (await Permission.photos.isPermanentlyDenied ||
           await Permission.photos.isDenied) {
-        _showPermissionDeniedDialog(Permission.photos.title);
+        showPermissionDeniedDialog(Permission.photos.title);
+      }
+    }
+  }
+
+  /// Request photos permission using PhotoManager (recommended for gallery picker)
+  /// This uses PhotoManager.requestPermissionExtend() which handles both
+  /// full access and limited access correctly on Android 14+
+  ///
+  /// Returns true if permission was granted (full or limited access)
+  /// Returns false if permission was denied
+  ///
+  /// [onGranted] - callback when permission is granted (full or limited)
+  /// [onDenied] - optional callback when permission is denied
+  /// [showExplanation] - whether to show permission explanation snackbar (default: true)
+  static Future<bool> photosWithPhotoManager({
+    Function()? onGranted,
+    Function()? onDenied,
+    bool showExplanation = true,
+  }) async {
+    if (Platform.isAndroid) {
+      // Show explanation snackbar on Android
+      if (showExplanation) {
+        checkAndShowPermissionExplanation(Permission.photos, forceShow: false);
+      }
+
+      // Use PhotoManager to request permission (handles limited access correctly)
+      final permissionState = await PhotoManager.requestPermissionExtend(
+        requestOption: const PermissionRequestOption(
+          androidPermission: AndroidPermission(
+            type: RequestType.common,
+            mediaLocation: true,
+          ),
+        ),
+      );
+
+      Logger.print('Photo permission state (PhotoManager): $permissionState');
+
+      // Check if permission granted (full or limited access)
+      if (permissionState.isAuth || permissionState.hasAccess) {
+        onGranted?.call();
+        Get.closeAllSnackbars();
+        return true;
+      } else {
+        // Permission denied
+        onDenied?.call();
+        showPermissionDeniedDialog(Permission.photos.title);
+        return false;
+      }
+    } else {
+      // iOS: Use PhotoManager for consistency
+      final permissionState = await PhotoManager.requestPermissionExtend();
+
+      Logger.print(
+          'Photo permission state (PhotoManager iOS): $permissionState');
+
+      if (permissionState.isAuth || permissionState.hasAccess) {
+        Get.closeAllSnackbars();
+        onGranted?.call();
+        return true;
+      } else {
+        onDenied?.call();
+        showPermissionDeniedDialog(Permission.photos.title);
+        return false;
       }
     }
   }
 
   static Future<bool> notification() async {
     if (await Permission.notification.request().isGranted) {
-      if (Platform.isAndroid) {
-        Get.closeCurrentSnackbar();
-      }
+      Get.closeCurrentSnackbar();
       // Either the permission was already granted before or the user just granted it.
       return true;
     }
@@ -286,7 +327,7 @@ class Permissions {
       // The user opted to never again see the permission request dialog for this
       // app. The only way to change the permission's status now is to let the
       // user manually enable it in the system settings.
-      _showPermissionDeniedDialog(Permission.notification.title);
+      showPermissionDeniedDialog(Permission.notification.title);
     }
 
     return false;
@@ -294,9 +335,7 @@ class Permissions {
 
   static void ignoreBatteryOptimizations(Function()? onGranted) async {
     if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-      if (Platform.isAndroid) {
-        Get.closeCurrentSnackbar();
-      }
+      Get.closeCurrentSnackbar();
       // Either the permission was already granted before or the user just granted it.
       onGranted?.call();
     }
@@ -333,19 +372,13 @@ class Permissions {
       if (!state.isGranted) {
         msg += '${permission.title}、';
       }
-      if (Platform.isAndroid) {
-        Get.closeCurrentSnackbar();
-      }
     }
     if (isAllGranted) {
+      Get.closeCurrentSnackbar();
       onGranted?.call();
     } else {
       msg = msg.substring(0, msg.length - 1);
-      _showPermissionDeniedDialog(msg);
-    }
-
-    if (Platform.isAndroid) {
-      Get.closeCurrentSnackbar();
+      showPermissionDeniedDialog(msg);
     }
   }
 
@@ -380,14 +413,16 @@ class Permissions {
     }
     if (!isAllGranted) {
       msg = msg.substring(0, msg.length - 1);
-      _showPermissionDeniedDialog(msg);
+      showPermissionDeniedDialog(msg);
     }
-    if (Platform.isAndroid) {
+    if (isAllGranted) {
       Get.closeCurrentSnackbar();
     }
     return isAllGranted;
   }
 
+  /// Request storage and microphone permissions
+  /// On Android 13+, we don't need storage permission for file access (use SAF)
   static void storageAndMicrophone(Function()? onGranted) async {
     final permissions = [
       Permission.microphone,
@@ -395,11 +430,12 @@ class Permissions {
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
 
+    // Only add storage permission on Android 12 and below
+    // On Android 13+, we use SAF for file access
     if (androidInfo.version.sdkInt <= 32) {
       permissions.add(Permission.storage);
-    } else {
-      permissions.add(Permission.manageExternalStorage);
     }
+    // Note: Don't add manageExternalStorage - it conflicts with limited photo access
 
     bool isAllGranted = true;
     var msg = '';
@@ -412,13 +448,11 @@ class Permissions {
       }
     }
     if (isAllGranted) {
-      if (Platform.isAndroid) {
-        Get.closeCurrentSnackbar();
-      }
+      Get.closeCurrentSnackbar();
       onGranted?.call();
     } else {
       msg = msg.substring(0, msg.length - 1);
-      _showPermissionDeniedDialog(msg);
+      showPermissionDeniedDialog(msg);
     }
   }
 
@@ -434,280 +468,32 @@ class Permissions {
     return status.isGranted || status.isLimited;
   }
 
-  static void _showPermissionDeniedDialog(String tips) {
-    Future.delayed(const Duration(milliseconds: 100), () {
-      final context = Get.context;
-      if (context != null && context.mounted) {
-        showDialog(
-          context: Get.context!,
-          builder: (BuildContext context) {
-            return Material(
-              color: Colors.transparent,
-              child: Center(
-                child: AnimationConfiguration.synchronized(
-                  duration: const Duration(milliseconds: 450),
-                  child: SlideAnimation(
-                    curve: Curves.easeOutQuart,
-                    verticalOffset: 50.0,
-                    child: FadeInAnimation(
-                      child: Container(
-                        width: 300.w,
-                        margin: EdgeInsets.symmetric(horizontal: 20.w),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFAFBFC),
-                          borderRadius: BorderRadius.circular(32.r),
-                          boxShadow: [
-                            // Shadow tối (hiệu ứng lõm)
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              offset: const Offset(8, 8),
-                              blurRadius: 20,
-                              spreadRadius: 0,
-                            ),
-                            // Shadow sáng (hiệu ứng nổi)
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.9),
-                              offset: const Offset(-8, -8),
-                              blurRadius: 20,
-                              spreadRadius: 0,
-                            ),
-                            // Viền glow sáng
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.6),
-                              offset: const Offset(0, 0),
-                              blurRadius: 2,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.8),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(32.r),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Header section
-                              Container(
-                                width: double.infinity,
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(0xFFF8FAFC),
-                                      Color(0xFFFAFBFC),
-                                    ],
-                                  ),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 24.w,
-                                  vertical: 28.h,
-                                ),
-                                child: Column(
-                                  children: [
-                                    // Permission icon với clay effect
-                                    Container(
-                                      width: 60.w,
-                                      height: 60.w,
-                                      margin: EdgeInsets.only(bottom: 16.h),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFF59E0B)
-                                            .withOpacity(0.2),
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          // Inner shadow hiệu ứng lõm
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.04),
-                                            offset: const Offset(3, 3),
-                                            blurRadius: 6,
-                                            spreadRadius: -2,
-                                          ),
-                                          BoxShadow(
-                                            color:
-                                                Colors.white.withOpacity(0.8),
-                                            offset: const Offset(-3, -3),
-                                            blurRadius: 6,
-                                            spreadRadius: -2,
-                                          ),
-                                        ],
-                                      ),
-                                      child: Icon(
-                                        Icons.security_rounded,
-                                        size: 32.w,
-                                        color: const Color(0xFFF59E0B),
-                                      ),
-                                    ),
-                                    Text(
-                                      StrRes.permissionDeniedTitle,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'FilsonPro',
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.w800,
-                                        color: const Color(0xFF374151),
-                                        height: 1.3,
-                                        shadows: [
-                                          Shadow(
-                                            color:
-                                                Colors.white.withOpacity(0.9),
-                                            offset: const Offset(0.5, 0.5),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(height: 12.h),
-                                    Text(
-                                      sprintf(
-                                          StrRes.permissionDeniedHint, [tips]),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'FilsonPro',
-                                        fontSize: 15.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color: const Color(0xFF6B7280),
-                                        height: 1.5,
-                                        shadows: [
-                                          Shadow(
-                                            color:
-                                                Colors.white.withOpacity(0.8),
-                                            offset: const Offset(0.5, 0.5),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // Buttons section
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF7F8FA),
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(32.r),
-                                    bottomRight: Radius.circular(32.r),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: _clayButton(
-                                          text: StrRes.cancel,
-                                          textColor: const Color(0xFF6B7280),
-                                          isLeft: true,
-                                          onTap: () {
-                                            Navigator.of(context).pop();
-                                            if (Platform.isAndroid) {
-                                              Get.closeCurrentSnackbar();
-                                            }
-                                          }),
-                                    ),
-                                    Container(
-                                      width: 1.w,
-                                      height: 56.h,
-                                      margin:
-                                          EdgeInsets.symmetric(vertical: 12.h),
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            Colors.black.withOpacity(0.02),
-                                            Colors.black.withOpacity(0.05),
-                                            Colors.black.withOpacity(0.02),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: _clayButton(
-                                        text: StrRes.determine,
-                                        textColor: const Color(0xFF3B82F6),
-                                        isLeft: false,
-                                        onTap: () {
-                                          Navigator.of(context).pop();
-                                          Get.closeCurrentSnackbar();
-                                          openAppSettings();
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      }
-    });
+  static void showPermissionDeniedDialog(String tips) {
+    var content = sprintf(StrRes.permissionDeniedHint, [tips]);
+    Get.dialog(
+      CustomDialog(
+        title: StrRes.permissionDeniedTitle,
+        content: content,
+        rightText: StrRes.determine,
+        leftText: StrRes.cancel,
+        icon: Icons.security,
+        onTapLeft: () {
+          Get.back();
+          if (Platform.isAndroid) {
+            Get.closeCurrentSnackbar();
+          }
+        },
+        onTapRight: () {
+          Get.back();
+          if (Platform.isAndroid) {
+            Get.closeCurrentSnackbar();
+          }
+          openAppSettings();
+        },
+      ),
+      barrierColor: Colors.transparent,
+    );
   }
-
-  static Widget _clayButton({
-    required String text,
-    required Color textColor,
-    required bool isLeft,
-    required VoidCallback onTap,
-  }) =>
-      GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: 80.h,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.only(
-              bottomLeft: isLeft ? Radius.circular(32.r) : Radius.zero,
-              bottomRight: !isLeft ? Radius.circular(32.r) : Radius.zero,
-            ),
-          ),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.r),
-              boxShadow: [
-                // Inner shadow hiệu ứng lõm cho button
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
-                  offset: const Offset(2, 2),
-                  blurRadius: 4,
-                  spreadRadius: -1,
-                ),
-                BoxShadow(
-                  color: Colors.white.withOpacity(0.8),
-                  offset: const Offset(-2, -2),
-                  blurRadius: 4,
-                  spreadRadius: -1,
-                ),
-              ],
-            ),
-            child: Text(
-              text,
-              style: TextStyle(
-                fontFamily: 'FilsonPro',
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w600,
-                color: textColor,
-                shadows: [
-                  Shadow(
-                    color: Colors.white.withOpacity(0.9),
-                    offset: const Offset(0.5, 0.5),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
 }
 
 extension PermissionExt on Permission {

@@ -279,7 +279,21 @@ const Map<String, String> en_US = {
   "baiduMap": "Baidu Maps",
   "amapMap": "AMap",
   "tencentMap": "Tencent Maps",
+  "permissionStorageTitle": "Storage/Photos Permission Request",
+  "permissionStorageMessage":
+      "This permission allows you to upload images/videos, change avatar, share files, save attachments, and provide feedback.",
 
+  "permissionCameraTitle": "Camera Permission Request",
+  "permissionCameraMessage":
+      "This permission allows you to take photos/videos, change avatar, provide feedback, save to gallery, scan QR codes, and make video calls.",
+
+  "permissionMicrophoneTitle": "Microphone Permission Request",
+  "permissionMicrophoneMessage":
+      "This permission is needed for voice calls, recording voice messages, and participating in voice conferences.",
+
+  "permissionDefaultTitle": "Permission Request",
+  "permissionDefaultMessage":
+      "This permission is required to provide better services.",
   "offlineMessage": "You received a new message",
   "offlineCallMessage": "You received a call invitation message",
   "logoutHint": "Are you sure you want to log out?",
