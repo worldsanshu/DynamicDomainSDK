@@ -341,7 +341,7 @@ class UserProfilePanelPage extends StatelessWidget {
             switchValue: logic.isBlacklist,
             hasSwitch: true,
             showArrow: false,
-            showDivider: false,
+            showDivider: true,
             isRow: true,
           ),
         // Friend Setup features
