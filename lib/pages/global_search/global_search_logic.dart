@@ -87,12 +87,9 @@ class GlobalSearchLogic extends CommonSearchLogic {
           ),
         );
 
-        final confirm = await Get.dialog(
-          barrierColor: Colors.transparent,
-          CustomDialog(
-            title: '绑定企业',
-            content: merchant.name,
-          ),
+        final confirm = await CustomDialog.show(
+          title: '绑定企业',
+          content: merchant.name,
         );
 
         if (confirm == true) {

@@ -282,11 +282,11 @@ class AuthController extends SuperController {
     String? errMsg,
     Merchant? merchant,
   }) async {
-    final result = await Get.dialog(CustomDialog(
+    final result = await CustomDialog.show(
       title: '已被封禁账号',
       content: errMsg == null ? null : '因被举报：$errMsg， 您暂时无法使用该账号',
       rightText: merchant != null ? '申诉' : null,
-    ));
+    );
     if (result == true) {
       AppNavigator.startAppeal(
         blockReason: errMsg ?? '',

@@ -306,11 +306,11 @@ class IMViews {
                             : StrRes.useNicknameAsAvatar,
                         onTap: () async {
                           Get.back();
-                          var confirm = await Get.dialog(CustomDialog(
+                          var confirm = await CustomDialog.show(
                             title: isGroup
                                 ? StrRes.confirmUseDefaultGroupAvatar
                                 : StrRes.confirmUseNicknameAsAvatar,
-                          ));
+                          );
                           if (confirm) {
                             onData?.call('', 'NICKNAME');
                           }

@@ -83,12 +83,10 @@ class ReportSubmitLogic extends GetxController {
       return;
     }
     descriptionFocusNode.unfocus();
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
+    var confirm = await CustomDialog.show(
           title: StrRes.reportConfirmTitle,
           content: reportReason.value,
-        ));
+        );
     if (confirm != true) {
       return;
     }
@@ -104,13 +102,11 @@ class ReportSubmitLogic extends GetxController {
           reportedUserID: Get.arguments['userID'],
         );
         LoadingView.singleton.dismiss();
-        await Get.dialog(
-            barrierColor: Colors.transparent,
-            CustomDialog(
+        await CustomDialog.show(
               title: StrRes.reportSubmittedTitle,
               content: StrRes.reportSubmittedContent,
               showCancel: false,
-            ));
+            );
         Get.back(result: true);
       },
     );

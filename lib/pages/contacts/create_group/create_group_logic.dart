@@ -118,9 +118,14 @@ class CreateGroupLogic extends GetxController {
 
   void selectAvatar() {
     IMViews.openPhotoSheet(
-        useNicknameAsAvatarEnabled: false,
+        useNicknameAsAvatarEnabled: true,
+        isGroup: true,
         onData: (path, url) {
-          if (url != null) faceURL.value = url;
+          if (url == 'NICKNAME') {
+            faceURL.value = '';
+          } else if (url != null) {
+            faceURL.value = url;
+          }
         });
   }
 

@@ -360,11 +360,9 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
   // Login Methods
   void onLoginSubmit() async {
     if (isLoginAgree.isFalse) {
-      var confirm = await Get.dialog(
-          barrierColor: Colors.transparent,
-          CustomDialog(
-            title: StrRes.agreeToUserAgreementAndPrivacyPolicy,
-          ));
+      var confirm = await CustomDialog.show(
+        title: StrRes.agreeToUserAgreementAndPrivacyPolicy,
+      );
       if (!confirm) {
         return;
       }
@@ -385,11 +383,9 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
   // Register Methods
   void onRegisterSubmit() async {
     if (isRegisterAgree.isFalse) {
-      var confirm = await Get.dialog(
-          barrierColor: Colors.transparent,
-          CustomDialog(
-            title: StrRes.agreeToUserAgreementAndPrivacyPolicy,
-          ));
+      var confirm = await CustomDialog.show(
+        title: StrRes.agreeToUserAgreementAndPrivacyPolicy,
+      );
       if (!confirm) {
         return;
       }
@@ -462,7 +458,7 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
       //   },
       // );
       ///Custom dialog has some issues on Android, temporarily use toast
-      await Get.dialog(CustomDialog(
+      await CustomDialog.show(
         title: StrRes.yourVerificationCodeIs.trArgs([smsCode]),
         showCancel: false,
         rightText: StrRes.confirm,
@@ -471,7 +467,7 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
           FocusScope.of(Get.context!).unfocus();
           Get.back();
         },
-      ));
+      );
       return true;
     } catch (error) {
       Logger.print('Failed to send verification code: $error');

@@ -470,28 +470,25 @@ class Permissions {
 
   static void showPermissionDeniedDialog(String tips) {
     var content = sprintf(StrRes.permissionDeniedHint, [tips]);
-    Get.dialog(
-      CustomDialog(
-        title: StrRes.permissionDeniedTitle,
-        content: content,
-        rightText: StrRes.determine,
-        leftText: StrRes.cancel,
-        icon: Icons.security,
-        onTapLeft: () {
-          Get.back();
-          if (Platform.isAndroid) {
-            Get.closeCurrentSnackbar();
-          }
-        },
-        onTapRight: () {
-          Get.back();
-          if (Platform.isAndroid) {
-            Get.closeCurrentSnackbar();
-          }
-          openAppSettings();
-        },
-      ),
-      barrierColor: Colors.transparent,
+    CustomDialog.show(
+      title: StrRes.permissionDeniedTitle,
+      content: content,
+      rightText: StrRes.determine,
+      leftText: StrRes.cancel,
+      icon: Icons.security,
+      onTapLeft: () {
+        Get.back();
+        if (Platform.isAndroid) {
+          Get.closeCurrentSnackbar();
+        }
+      },
+      onTapRight: () {
+        Get.back();
+        if (Platform.isAndroid) {
+          Get.closeCurrentSnackbar();
+        }
+        openAppSettings();
+      },
     );
   }
 }

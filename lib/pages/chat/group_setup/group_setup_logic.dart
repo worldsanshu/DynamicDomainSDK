@@ -733,9 +733,9 @@ class GroupSetupLogic extends GetxController {
   void quitGroup() async {
     if (isJoinedGroup.value) {
       if (isOwner) {
-        var confirm = await Get.dialog(CustomDialog(
+        var confirm = await CustomDialog.show(
           title: StrRes.dismissGroupHint,
-        ));
+        );
         if (confirm == true) {
           imLogic.markGroupAsDismissing(groupInfo.value.groupID);
 
@@ -750,9 +750,9 @@ class GroupSetupLogic extends GetxController {
           return;
         }
       } else {
-        var confirm = await Get.dialog(CustomDialog(
+        var confirm = await CustomDialog.show(
           title: StrRes.quitGroupHint,
-        ));
+        );
         if (confirm == true) {
           imLogic.markGroupAsQuitting(groupInfo.value.groupID);
 
@@ -834,12 +834,10 @@ class GroupSetupLogic extends GetxController {
   }
 
   void clearChatHistory() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: StrRes.confirmClearChatHistory,
-          rightText: StrRes.clearAll,
-        ));
+    var confirm = await CustomDialog.show(
+      title: StrRes.confirmClearChatHistory,
+      rightText: StrRes.clearAll,
+    );
     if (confirm == true) {
       await LoadingView.singleton.wrap(asyncFunction: () {
         OpenIM.iMManager.conversationManager

@@ -13,13 +13,11 @@ class TrackingService {
     final status = await getTrackingStatus();
 
     if (status == 'notDetermined') {
-      await Get.dialog(
-          barrierColor: Colors.transparent,
-          CustomDialog(
-            title: StrRes.personalizedAdDescription,
-            content: StrRes.personalizedAdContent,
-            showCancel: false,
-          ));
+      await CustomDialog.show(
+        title: StrRes.personalizedAdDescription,
+        content: StrRes.personalizedAdContent,
+        showCancel: false,
+      );
       await requestTrackingAuthorization();
     } else {
       Logger.print(

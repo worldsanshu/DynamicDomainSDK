@@ -59,13 +59,11 @@ class MerchantSearchLogic extends GetxController {
   }
 
   void onBind(Merchant merchant) async {
-    final result = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
+    final result = await CustomDialog.show(
           title: StrRes.confirmBindCompany,
           content: StrRes.confirmBindCompanyContent
               .replaceFirst('%s', merchant.fullName),
-        ));
+        );
     if (result == true) {
       LoadingView.singleton.wrap(asyncFunction: () async {
         try {

@@ -474,10 +474,13 @@ class AppNavigator {
     List<UserInfo> defaultCheckedList = const [],
   }) async {
     final excludeIDs = defaultCheckedList.map((e) => e.userID!).toList();
+
     final result = await startSelectContacts(
       action: SelAction.crateGroup,
       defaultCheckedIDList: excludeIDs,
       excludeIDList: excludeIDs, // Hide already-selected users from the list
+      checkedList:
+          defaultCheckedList, // Show pre-selected members in bottom sheet
     );
 
     // Verify that result is not null before proceeding

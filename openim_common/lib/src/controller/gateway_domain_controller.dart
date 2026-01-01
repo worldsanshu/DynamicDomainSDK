@@ -164,12 +164,10 @@ class GatewayDomainController extends GetxController {
     if (domain == null) {
       return false;
     }
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
+    var confirm = await CustomDialog.show(
           title: StrRes.newRouteDetected,
           content: StrRes.switchToThisRoute,
-        ));
+        );
 
     if (confirm == true) {
       switchTo(domain);

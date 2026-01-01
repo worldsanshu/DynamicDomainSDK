@@ -227,7 +227,7 @@ class RealNameAuthView extends StatelessWidget {
             _buildInputField(
               controller: logic.realNameController,
               focusNode: logic.realNameFocusNode,
-              label: StrRes.realName,
+              label: '${StrRes.realName} *',
               hint: StrRes.plsEnterRealName,
               icon: CupertinoIcons.person,
               validator: _validateName,
@@ -236,7 +236,7 @@ class RealNameAuthView extends StatelessWidget {
             _buildInputField(
               controller: logic.idCardNumberController,
               focusNode: logic.idCardNumberFocusNode,
-              label: StrRes.realNameIdCardNumber,
+              label: '${StrRes.realNameIdCardNumber} *',
               hint: StrRes.plsEnter18DigitIdCard,
               icon: CupertinoIcons.doc,
               validator: _validateIdNumber,
@@ -258,14 +258,36 @@ class RealNameAuthView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(fontFamily: 'FilsonPro').copyWith(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF374151),
+        if (label.contains('*'))
+          RichText(
+            text: TextSpan(
+              text: label.replaceAll(' *', ''),
+              style: const TextStyle(fontFamily: 'FilsonPro').copyWith(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF374151),
+              ),
+              children: [
+                TextSpan(
+                  text: ' *',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          Text(
+            label,
+            style: const TextStyle(fontFamily: 'FilsonPro').copyWith(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF374151),
+            ),
           ),
-        ),
         8.verticalSpace,
         TextFormField(
           controller: controller,
@@ -361,7 +383,7 @@ class RealNameAuthView extends StatelessWidget {
           ),
           16.verticalSpace,
           _buildImageUploadItem(
-            title: StrRes.idCardFront,
+            title: '${StrRes.idCardFront} *',
             imageUrl: logic.idCardFrontUrl.value,
             onTap: logic.selectIdCardFrontImage,
             onGallery: logic.pickIdCardFrontFromGallery,
@@ -371,7 +393,7 @@ class RealNameAuthView extends StatelessWidget {
           ),
           12.verticalSpace,
           _buildImageUploadItem(
-            title: StrRes.idCardBack,
+            title: '${StrRes.idCardBack} *',
             imageUrl: logic.idCardBackUrl.value,
             onTap: logic.selectIdCardBackImage,
             onGallery: logic.pickIdCardBackFromGallery,
@@ -530,16 +552,14 @@ class RealNameAuthView extends StatelessWidget {
         width: double.infinity,
         height: 56.h,
         child: ElevatedButton(
-          onPressed: logic.isSubmitButtonEnabled.value
-              ? logic.submitRealNameAuth
-              : null,
+          onPressed: logic.submitRealNameAuth,
           style: ElevatedButton.styleFrom(
             backgroundColor: logic.isSubmitButtonEnabled.value
                 ? const Color(0xFF3B82F6)
                 : const Color(0xFFF3F4F6),
-            disabledBackgroundColor: const Color(0xFFF3F4F6),
+            // We want the button to handle taps even when "visually" disabled to show errors
+            // So we don't use 'disabledBackgroundColor' in the traditional sense for logic
             foregroundColor: Colors.white,
-            disabledForegroundColor: const Color(0xFFD1D5DB),
             elevation: 0,
             shadowColor: Colors.transparent,
             shape: RoundedRectangleBorder(
@@ -686,10 +706,10 @@ class RealNameAuthView extends StatelessWidget {
             ),
           ),
           16.verticalSpace,
-          _buildInfoRow(StrRes.realNameAuthName, authInfo['realName'] ?? ''),
+          _buildInfoRow(StrRes.realName, authInfo['realName'] ?? ''),
           8.verticalSpace,
           _buildInfoRow(
-              StrRes.realNameIdNumber, authInfo['idCardMasked'] ?? ''),
+              StrRes.realNameIdCardNumber, authInfo['idCardMasked'] ?? ''),
         ],
       ),
     );

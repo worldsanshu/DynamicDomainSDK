@@ -63,10 +63,7 @@ class MineLogic extends GetxController {
 
   // Best-effort server logout. Local logout is mandatory.
   void logout() async {
-    final confirm = await Get.dialog(
-      barrierColor: Colors.transparent,
-      CustomDialog(title: StrRes.logoutHint),
-    );
+    final confirm = await CustomDialog.show(title: StrRes.logoutHint);
     if (confirm != true) return;
 
     await LoadingView.singleton.wrap(asyncFunction: () async {
@@ -91,9 +88,7 @@ class MineLogic extends GetxController {
 
   // 清除缓存时同时清除邀请码和登录信息
   void clearCache() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(title: StrRes.clearCacheHint));
+    var confirm = await CustomDialog.show(title: StrRes.clearCacheHint);
     if (confirm == true) {
       imLogic.logout();
       await DataSp.removeLoginCertificate();

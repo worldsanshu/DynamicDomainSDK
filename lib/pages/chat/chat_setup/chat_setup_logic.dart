@@ -156,9 +156,7 @@ class ChatSetupLogic extends GetxController {
   }
 
   Future<void> _addBlacklist() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(title: StrRes.areYouSureAddBlacklist));
+    var confirm = await CustomDialog.show(title: StrRes.areYouSureAddBlacklist);
     if (confirm == true) {
       await OpenIM.iMManager.friendshipManager.addBlacklist(
         userID: conversationInfo.value.userID!,
@@ -168,9 +166,9 @@ class ChatSetupLogic extends GetxController {
   }
 
   Future<void> _removeBlacklist() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(title: StrRes.areYouSureRemoveBlacklist));
+    var confirm = await CustomDialog.show(
+      title: StrRes.areYouSureRemoveBlacklist,
+    );
     if (confirm == true) {
       await OpenIM.iMManager.friendshipManager.removeBlacklist(
         userID: conversationInfo.value.userID!,
@@ -187,12 +185,10 @@ class ChatSetupLogic extends GetxController {
   }
 
   void clearChatHistory() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: StrRes.confirmClearChatHistory,
-          rightText: StrRes.clearAll,
-        ));
+    var confirm = await CustomDialog.show(
+      title: StrRes.confirmClearChatHistory,
+      rightText: StrRes.clearAll,
+    );
     if (confirm == true) {
       await LoadingView.singleton.wrap(asyncFunction: () {
         OpenIM.iMManager.conversationManager
@@ -219,28 +215,23 @@ class ChatSetupLogic extends GetxController {
       final result = await GatewayApi.getRealNameAuthInfo();
       final status = result['status'] ?? 0;
       if (status != 2) {
-        var confirm = await Get.dialog(CustomDialog(
+        var confirm = await CustomDialog.show(
           title: StrRes.realNameAuthRequiredForGroup,
           rightText: StrRes.goToRealNameAuth,
-        ));
+        );
         if (confirm == true) AppNavigator.startRealNameAuth();
         return;
       }
     } catch (e) {
-      var confirm = await Get.dialog(CustomDialog(
+      var confirm = await CustomDialog.show(
         title: StrRes.realNameAuthRequiredForGroup,
         rightText: StrRes.goToRealNameAuth,
-      ));
+      );
       if (confirm == true) AppNavigator.startRealNameAuth();
       return;
     }
 
     AppNavigator.startCreateGroup(defaultCheckedList: [
-      UserInfo(
-        userID: OpenIM.iMManager.userInfo.userID,
-        faceURL: OpenIM.iMManager.userInfo.faceURL,
-        nickname: OpenIM.iMManager.userInfo.nickname,
-      ),
       UserInfo(
         userID: conversationInfo.value.userID,
         faceURL: conversationInfo.value.faceURL,

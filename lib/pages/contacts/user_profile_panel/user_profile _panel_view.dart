@@ -10,6 +10,7 @@ import 'package:openim_common/openim_common.dart';
 import '../../../widgets/gradient_scaffold.dart';
 import '../../../widgets/settings_menu.dart';
 import '../../../widgets/section_title.dart';
+import '../../../widgets/custom_buttom.dart';
 import 'user_profile _panel_logic.dart';
 
 class UserProfilePanelPage extends StatelessWidget {
@@ -160,83 +161,35 @@ class UserProfilePanelPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildCircularActionButton(
-            context,
+          CustomButton(
             icon: CupertinoIcons.chat_bubble_fill,
             label: StrRes.sendMessage,
             onTap: logic.toChat,
-            color: const Color(0xFF3B82F6),
+            color: Theme.of(context).primaryColor,
+            iconSize: 20,
           ),
           if (logic.showAudioAndVideoCall) ...[
             24.horizontalSpace,
-            _buildCircularActionButton(
-              context,
+            CustomButton(
               icon: CupertinoIcons.phone_fill,
               label: StrRes.audioCall,
               onTap: () =>
                   logic.trtcLogic.callAudio(logic.userInfo.value.userID!),
-              color: const Color(0xFF10B981),
+              color: Theme.of(context).primaryColor,
+              iconSize: 20,
             ),
             24.horizontalSpace,
-            _buildCircularActionButton(
-              context,
+            CustomButton(
               icon: CupertinoIcons.videocam_fill,
               label: StrRes.videoCall,
               onTap: () =>
                   logic.trtcLogic.callVideo(logic.userInfo.value.userID!),
-              color: const Color(0xFF8B5CF6),
+              color: Theme.of(context).primaryColor,
+              iconSize: 20,
             ),
           ],
         ],
       ),
-    );
-  }
-
-  Widget _buildCircularActionButton(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-    required Color color,
-  }) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            width: 56.w,
-            height: 56.w,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: color.withOpacity(0.2),
-                  blurRadius: 12,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Icon(
-                icon,
-                color: color,
-                size: 24.w,
-              ),
-            ),
-          ),
-        ),
-        8.verticalSpace,
-        Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'FilsonPro',
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF6B7280),
-          ),
-        ),
-      ],
     );
   }
 

@@ -42,13 +42,26 @@ class _MinePageState extends State<MinePage> {
           final user = logic.imLogic.userInfo.value;
           return GestureDetector(
             onTap: logic.viewMyInfo,
-            child: AvatarView(
-              url: user.faceURL,
-              text: user.nickname,
-              width: 100.w,
-              height: 100.w,
-              textStyle: TextStyle(fontSize: 28.sp, color: Colors.white),
-              isCircle: true,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 4.w),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: AvatarView(
+                url: user.faceURL,
+                text: user.nickname,
+                width: 100.w,
+                height: 100.w,
+                textStyle: TextStyle(fontSize: 28.sp, color: Colors.white),
+                isCircle: true,
+              ),
             ),
           );
         }),

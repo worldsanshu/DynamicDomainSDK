@@ -251,12 +251,9 @@ class GroupMemberListLogic extends GetxController {
   }
 
   static _transferGroupRight(GroupMembersInfo membersInfo) async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: sprintf(
-              StrRes.confirmTransferGroupToUser, [membersInfo.nickname]),
-        ));
+    var confirm = await CustomDialog.show(
+      title: sprintf(StrRes.confirmTransferGroupToUser, [membersInfo.nickname]),
+    );
     if (confirm == true) {
       Get.back(result: membersInfo);
     }
@@ -381,13 +378,9 @@ class GroupMemberListLogic extends GetxController {
     final everyoneId = OpenIM.iMManager.conversationManager.atAllTag;
     if (checkedList.isNotEmpty) {
       // Ask user whether to remove already-selected users to select everyone
-      final result = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: StrRes.cannotSelectEveryoneWithOthersContent,
-          content: StrRes.doYouWantToRemoveOtherMembers,
-          onTapRight: () => Get.back(result: true),
-        ),
+      final result = await CustomDialog.show(
+        title: StrRes.cannotSelectEveryoneWithOthersContent,
+        content: StrRes.doYouWantToRemoveOtherMembers,
       );
 
       if (result == true) {

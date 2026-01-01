@@ -15,24 +15,23 @@ class AddContactsMethodLogic extends GetxController {
       final result = await GatewayApi.getRealNameAuthInfo();
       final status = result['status'] ?? 0;
       if (status != 2) {
-        var confirm = await Get.dialog(CustomDialog(
+        var confirm = await CustomDialog.show(
           title: StrRes.realNameAuthRequiredForGroup,
           rightText: StrRes.goToRealNameAuth,
-        ));
+        );
         if (confirm == true) AppNavigator.startRealNameAuth();
         return;
       }
     } catch (e) {
-      var confirm = await Get.dialog(CustomDialog(
+      var confirm = await CustomDialog.show(
         title: StrRes.realNameAuthRequiredForGroup,
         rightText: StrRes.goToRealNameAuth,
-      ));
+      );
       if (confirm == true) AppNavigator.startRealNameAuth();
       return;
     }
 
-    AppNavigator.startCreateGroup(
-        defaultCheckedList: [OpenIM.iMManager.userInfo]);
+    AppNavigator.startCreateGroup();
   }
 
   addGroup() =>

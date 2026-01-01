@@ -27,13 +27,11 @@ class AppealLogic extends GetxController {
         reason: descriptionController.text,
       );
       LoadingView.singleton.dismiss();
-      await Get.dialog(
-          barrierColor: Colors.transparent,
-          CustomDialog(
-            title: StrRes.appealSubmittedTitle,
-            content: StrRes.appealSubmittedContent,
-            showCancel: false,
-          ));
+      await CustomDialog.show(
+        title: StrRes.appealSubmittedTitle,
+        content: StrRes.appealSubmittedContent,
+        showCancel: false,
+      );
       Get.back();
     });
   }

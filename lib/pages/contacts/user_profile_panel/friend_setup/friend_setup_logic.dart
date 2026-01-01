@@ -31,9 +31,7 @@ class FriendSetupLogic extends GetxController {
 
   /// 加入黑名单
   void addBlacklist() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(title: StrRes.areYouSureAddBlacklist));
+    var confirm = await CustomDialog.show(title: StrRes.areYouSureAddBlacklist);
     if (confirm == true) {
       await OpenIM.iMManager.friendshipManager.addBlacklist(
         userID: userProfilesLogic.userInfo.value.userID!,
@@ -48,9 +46,7 @@ class FriendSetupLogic extends GetxController {
 
   /// 从黑名单移除
   void removeBlacklist() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(title: StrRes.areYouSureRemoveBlacklist));
+    var confirm = await CustomDialog.show(title: StrRes.areYouSureRemoveBlacklist);
     if (confirm == true) {
       await OpenIM.iMManager.friendshipManager.removeBlacklist(
         userID: userProfilesLogic.userInfo.value.userID!,
@@ -64,12 +60,10 @@ class FriendSetupLogic extends GetxController {
 
   /// 解除好友关系
   void deleteFromFriendList() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: StrRes.areYouSureDelFriend,
-          rightText: StrRes.delete,
-        ));
+    var confirm = await CustomDialog.show(
+      title: StrRes.areYouSureDelFriend,
+      rightText: StrRes.delete,
+    );
     if (confirm) {
       await LoadingView.singleton.wrap(asyncFunction: () async {
         await OpenIM.iMManager.friendshipManager.deleteFriend(

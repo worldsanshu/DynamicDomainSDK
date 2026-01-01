@@ -151,12 +151,9 @@ class SearchGroupMemberLogic extends GetxController {
   }
 
   static _transferGroupRight(GroupMembersInfo membersInfo) async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: sprintf(
-              StrRes.confirmTransferGroupToUser, [membersInfo.nickname]),
-        ));
+    var confirm = await CustomDialog.show(
+      title: sprintf(StrRes.confirmTransferGroupToUser, [membersInfo.nickname]),
+    );
     if (confirm == true) {
       Get.back(result: membersInfo);
     }

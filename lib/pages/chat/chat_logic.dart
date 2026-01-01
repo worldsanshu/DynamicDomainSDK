@@ -1133,13 +1133,11 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     if (checked) {
       // 合并最多20条限制
       if (multiSelList.length >= 20) {
-        Get.dialog(
-            barrierColor: Colors.transparent,
-            CustomDialog(
-              title: StrRes.forwardMaxCountHint,
-              showCancel: false,
-              rightText: StrRes.confirm,
-            ));
+        CustomDialog.show(
+          title: StrRes.forwardMaxCountHint,
+          showCancel: false,
+          rightText: StrRes.confirm,
+        );
       } else {
         multiSelList.add(message);
         multiSelList.sort((a, b) {
@@ -2150,13 +2148,11 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
         final firstItem = result.first;
         if (firstItem is Map<String, dynamic>) {
           _blockDialogShowFlag = true;
-          await Get.dialog(
-              barrierColor: Colors.transparent,
-              CustomDialog(
+          CustomDialog.show(
                 title: '群组已被封停',
                 content: '因：${firstItem['reason']} 已被封停，不能使用',
                 showCancel: false,
-              ));
+              );
           _blockDialogShowFlag = false;
           return;
         }

@@ -577,8 +577,8 @@ class _ConversationPageState extends State<ConversationPage> {
         // Online status indicator
         if (logic.isUserOnline(info))
           Positioned(
-            right: 4.w,
-            bottom: 4.h,
+            right: 0,
+            bottom: 0,
             child: Container(
               width: 16.w,
               height: 16.h,

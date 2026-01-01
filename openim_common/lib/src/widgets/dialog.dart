@@ -43,6 +43,42 @@ class CustomDialog extends StatelessWidget {
   final IconData? icon;
   final double? iconSize;
 
+  static Future<T?> show<T>({
+    String? title,
+    String? url,
+    String? content,
+    String? rightText,
+    String? leftText,
+    bool showCancel = true,
+    bool scrollable = false,
+    Function()? onTapLeft,
+    Function()? onTapRight,
+    Color? primaryColor,
+    IconData? icon,
+    double? iconSize,
+    bool barrierDismissible = true,
+  }) {
+    return Get.dialog<T>(
+      CustomDialog(
+        title: title,
+        url: url,
+        content: content,
+        rightText: rightText,
+        leftText: leftText,
+        showCancel: showCancel,
+        scrollable: scrollable,
+        onTapLeft: onTapLeft,
+        onTapRight: onTapRight,
+        primaryColor: primaryColor,
+        icon: icon,
+        iconSize: iconSize,
+      ),
+      barrierColor: Colors.transparent,
+      barrierDismissible: barrierDismissible,
+      useSafeArea: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final btnColor = primaryColor ?? Theme.of(context).primaryColor;
@@ -305,270 +341,274 @@ class ForwardHintDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final list = IMUtils.convertCheckedListToForwardObj(checkedList);
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              child: Container(
-                color: Colors.transparent,
+    return TouchCloseSoftKeyboard(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                child: Container(
+                  color: Colors.transparent,
+                ),
               ),
             ),
-          ),
-          Center(
-            child: AnimationConfiguration.synchronized(
-              duration: const Duration(milliseconds: 400),
-              child: SlideAnimation(
-                curve: Curves.easeOutCubic,
-                verticalOffset: 40.0,
-                child: FadeInAnimation(
-                  child: SingleChildScrollView(
-                    child: Container(
-                      padding: EdgeInsets.all(20.w),
-                      margin: EdgeInsets.symmetric(horizontal: 5.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF9CA3AF).withOpacity(0.08),
-                            offset: const Offset(0, 2),
-                            blurRadius: 12.r,
-                            spreadRadius: 0,
-                          ),
-                        ],
-                        border: Border.all(
-                          color: const Color(0xFFF3F4F6),
-                          width: 1,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Title
-                          Text(
-                            list.length == 1
-                                ? StrRes.sentTo
-                                : StrRes.sentSeparatelyTo,
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.w700,
-                              color: const Color(0xFF374151),
+            Center(
+              child: AnimationConfiguration.synchronized(
+                duration: const Duration(milliseconds: 400),
+                child: SlideAnimation(
+                  curve: Curves.easeOutCubic,
+                  verticalOffset: 40.0,
+                  child: FadeInAnimation(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.all(20.w),
+                        margin: EdgeInsets.symmetric(horizontal: 5.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF9CA3AF).withOpacity(0.08),
+                              offset: const Offset(0, 2),
+                              blurRadius: 12.r,
+                              spreadRadius: 0,
                             ),
+                          ],
+                          border: Border.all(
+                            color: const Color(0xFFF3F4F6),
+                            width: 1,
                           ),
-                          SizedBox(height: 16.h),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Title
+                            Text(
+                              list.length == 1
+                                  ? StrRes.sentTo
+                                  : StrRes.sentSeparatelyTo,
+                              style: TextStyle(
+                                fontFamily: 'FilsonPro',
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF374151),
+                              ),
+                            ),
+                            SizedBox(height: 16.h),
 
-                          // Recipients section
-                          list.length == 1
-                              ? Row(
-                                  children: [
-                                    // Avatar
-                                    AvatarView(
-                                      url: list.first['faceURL'],
-                                      text: list.first['nickname'],
-                                      isCircle: true,
-                                      width: 68.w,
-                                      height: 68.w,
-                                      isGroup: list.first['groupID'] != '' &&
-                                          list.first['groupID'] != null,
-                                    ),
-                                    SizedBox(width: 16.w),
-                                    Expanded(
-                                      child: Text(
-                                        list.first['nickname'] ?? '',
-                                        style: TextStyle(
-                                          fontFamily: 'FilsonPro',
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: const Color(0xFF374151),
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                            // Recipients section
+                            list.length == 1
+                                ? Row(
+                                    children: [
+                                      // Avatar
+                                      AvatarView(
+                                        url: list.first['faceURL'],
+                                        text: list.first['nickname'],
+                                        isCircle: true,
+                                        width: 68.w,
+                                        height: 68.w,
+                                        isGroup: list.first['groupID'] != '' &&
+                                            list.first['groupID'] != null,
                                       ),
-                                    ),
-                                  ],
-                                )
-                              : ConstrainedBox(
-                                  constraints: BoxConstraints(maxHeight: 280.h),
-                                  child: GridView.builder(
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 5,
-                                      crossAxisSpacing: 12.w,
-                                      mainAxisSpacing: 12.h,
-                                      childAspectRatio: 50.w / 75.h,
-                                    ),
-                                    itemCount: list.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (_, index) =>
-                                        AnimationConfiguration.staggeredGrid(
-                                      position: index,
-                                      duration:
-                                          const Duration(milliseconds: 400),
-                                      columnCount: 5,
-                                      child: ScaleAnimation(
-                                        child: FadeInAnimation(
-                                          child: Column(
-                                            children: [
-                                              // Avatar
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color:
-                                                        const Color(0xFFE5E7EB),
-                                                    width: 1.5,
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
+                                      SizedBox(width: 16.w),
+                                      Expanded(
+                                        child: Text(
+                                          list.first['nickname'] ?? '',
+                                          style: TextStyle(
+                                            fontFamily: 'FilsonPro',
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: const Color(0xFF374151),
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : ConstrainedBox(
+                                    constraints:
+                                        BoxConstraints(maxHeight: 280.h),
+                                    child: GridView.builder(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 5,
+                                        crossAxisSpacing: 12.w,
+                                        mainAxisSpacing: 12.h,
+                                        childAspectRatio: 50.w / 75.h,
+                                      ),
+                                      itemCount: list.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (_, index) =>
+                                          AnimationConfiguration.staggeredGrid(
+                                        position: index,
+                                        duration:
+                                            const Duration(milliseconds: 400),
+                                        columnCount: 5,
+                                        child: ScaleAnimation(
+                                          child: FadeInAnimation(
+                                            child: Column(
+                                              children: [
+                                                // Avatar
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
                                                       color: const Color(
-                                                              0xFF9CA3AF)
-                                                          .withOpacity(0.1),
-                                                      offset:
-                                                          const Offset(0, 2),
-                                                      blurRadius: 8.r,
+                                                          0xFFE5E7EB),
+                                                      width: 1.5,
                                                     ),
-                                                  ],
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: const Color(
+                                                                0xFF9CA3AF)
+                                                            .withOpacity(0.1),
+                                                        offset:
+                                                            const Offset(0, 2),
+                                                        blurRadius: 8.r,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: AvatarView(
+                                                    url: list.elementAt(
+                                                        index)['faceURL'],
+                                                    text: list.elementAt(
+                                                        index)['nickname'],
+                                                    isCircle: true,
+                                                    width: 46.w,
+                                                    height: 46.w,
+                                                    isGroup: list.elementAt(
+                                                                    index)[
+                                                                'groupID'] !=
+                                                            '' &&
+                                                        list.elementAt(index)[
+                                                                'groupID'] !=
+                                                            null,
+                                                  ),
                                                 ),
-                                                child: AvatarView(
-                                                  url: list.elementAt(
-                                                      index)['faceURL'],
-                                                  text: list.elementAt(
-                                                      index)['nickname'],
-                                                  isCircle: true,
-                                                  width: 46.w,
-                                                  height: 46.w,
-                                                  isGroup:
-                                                      list.elementAt(index)[
-                                                                  'groupID'] !=
-                                                              '' &&
-                                                          list.elementAt(index)[
-                                                                  'groupID'] !=
-                                                              null,
+                                                SizedBox(height: 6.h),
+                                                Text(
+                                                  list.elementAt(
+                                                          index)['nickname'] ??
+                                                      '',
+                                                  style: TextStyle(
+                                                    fontFamily: 'FilsonPro',
+                                                    fontSize: 11.sp,
+                                                    fontWeight: FontWeight.w500,
+                                                    color:
+                                                        const Color(0xFF6B7280),
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.center,
                                                 ),
-                                              ),
-                                              SizedBox(height: 6.h),
-                                              Text(
-                                                list.elementAt(
-                                                        index)['nickname'] ??
-                                                    '',
-                                                style: TextStyle(
-                                                  fontFamily: 'FilsonPro',
-                                                  fontSize: 11.sp,
-                                                  fontWeight: FontWeight.w500,
-                                                  color:
-                                                      const Color(0xFF6B7280),
-                                                ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
 
-                          SizedBox(height: 18.h),
+                            SizedBox(height: 18.h),
 
-                          // Section title
-                          Text(
-                            title,
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF6B7280),
-                              letterSpacing: 0.3,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-
-                          SizedBox(height: 16.h),
-
-                          // Message input
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF9FAFB),
-                              borderRadius: BorderRadius.circular(16.r),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      const Color(0xFF9CA3AF).withOpacity(0.06),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 6.r,
-                                ),
-                              ],
-                              border: Border.all(
-                                color: const Color(0xFFF3F4F6),
-                                width: 1,
-                              ),
-                            ),
-                            child: TextField(
+                            // Section title
+                            Text(
+                              title,
                               style: TextStyle(
                                 fontFamily: 'FilsonPro',
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF374151),
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF6B7280),
+                                letterSpacing: 0.3,
                               ),
-                              controller: controller,
-                              maxLines: 3,
-                              minLines: 1,
-                              decoration: InputDecoration(
-                                hintText: StrRes.leaveMessage,
-                                hintStyle: TextStyle(
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+
+                            SizedBox(height: 16.h),
+
+                            // Message input
+                            Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF9FAFB),
+                                borderRadius: BorderRadius.circular(16.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF9CA3AF)
+                                        .withOpacity(0.06),
+                                    offset: const Offset(0, 2),
+                                    blurRadius: 6.r,
+                                  ),
+                                ],
+                                border: Border.all(
+                                  color: const Color(0xFFF3F4F6),
+                                  width: 1,
+                                ),
+                              ),
+                              child: TextField(
+                                style: TextStyle(
                                   fontFamily: 'FilsonPro',
                                   fontSize: 15.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: const Color(0xFF9CA3AF),
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF374151),
                                 ),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 16.w,
-                                  vertical: 14.h,
+                                controller: controller,
+                                maxLines: 3,
+                                minLines: 1,
+                                decoration: InputDecoration(
+                                  hintText: StrRes.leaveMessage,
+                                  hintStyle: TextStyle(
+                                    fontFamily: 'FilsonPro',
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xFF9CA3AF),
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16.w,
+                                    vertical: 14.h,
+                                  ),
+                                  isDense: true,
                                 ),
-                                isDense: true,
                               ),
                             ),
-                          ),
 
-                          SizedBox(height: 24.h),
+                            SizedBox(height: 24.h),
 
-                          // Action buttons
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              _actionButton(
-                                text: StrRes.cancel,
-                                textColor: const Color(0xFF6B7280),
-                                onTap: () => Get.back(),
-                                isCancel: true,
-                              ),
-                              SizedBox(width: 16.w),
-                              _actionButton(
-                                text: StrRes.determine,
-                                textColor: const Color(0xFF4F42FF),
-                                onTap: () => Get.back(result: true),
-                                isCancel: false,
-                              ),
-                            ],
-                          ),
-                        ],
+                            // Action buttons
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                _actionButton(
+                                  text: StrRes.cancel,
+                                  textColor: const Color(0xFF6B7280),
+                                  onTap: () => Get.back(),
+                                  isCancel: true,
+                                ),
+                                SizedBox(width: 16.w),
+                                _actionButton(
+                                  text: StrRes.determine,
+                                  textColor: const Color(0xFF4F42FF),
+                                  onTap: () => Get.back(result: true),
+                                  isCancel: false,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

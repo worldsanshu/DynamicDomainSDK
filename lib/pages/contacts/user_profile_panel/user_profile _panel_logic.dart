@@ -518,9 +518,9 @@ class UserProfilePanelLogic extends GetxController {
 
   /// Add to blacklist
   void addBlacklist() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(title: StrRes.areYouSureAddBlacklist));
+    var confirm = await CustomDialog.show(
+      title: StrRes.areYouSureAddBlacklist,
+    );
     if (confirm == true) {
       await OpenIM.iMManager.friendshipManager.addBlacklist(
         userID: userInfo.value.userID!,
@@ -536,9 +536,9 @@ class UserProfilePanelLogic extends GetxController {
 
   /// Remove from blacklist
   void removeBlacklist() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(title: StrRes.areYouSureRemoveBlacklist));
+    var confirm = await CustomDialog.show(
+      title: StrRes.areYouSureRemoveBlacklist,
+    );
     if (confirm == true) {
       await OpenIM.iMManager.friendshipManager.removeBlacklist(
         userID: userInfo.value.userID!,
@@ -553,12 +553,10 @@ class UserProfilePanelLogic extends GetxController {
 
   /// Delete friend
   void deleteFromFriendList() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: StrRes.areYouSureDelFriend,
-          rightText: StrRes.delete,
-        ));
+    var confirm = await CustomDialog.show(
+      title: StrRes.areYouSureDelFriend,
+      rightText: StrRes.delete,
+    );
     if (confirm == true) {
       await LoadingView.singleton.wrap(asyncFunction: () async {
         await OpenIM.iMManager.friendshipManager.deleteFriend(

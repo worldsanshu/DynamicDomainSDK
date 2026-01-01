@@ -9,6 +9,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:openim/widgets/empty_view.dart';
 import 'package:openim/widgets/gradient_scaffold.dart';
 import 'package:openim_common/openim_common.dart';
+import 'package:sprintf/sprintf.dart';
 
 import 'friend_requests_logic.dart';
 import '../../../routes/app_navigator.dart';
@@ -272,7 +273,7 @@ class FriendRequestsPage extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    '${StrRes.applyReason.replaceAll('%s', '')}: $reason',
+                    sprintf(StrRes.applyReason, [reason]),
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
                       fontSize: 13.sp,
@@ -302,10 +303,11 @@ class FriendRequestsPage extends StatelessWidget {
     if (isISendRequest) {
       if (info.isWaitingHandle) {
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
           decoration: BoxDecoration(
             color: primaryColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
               color: primaryColor.withOpacity(0.2),
               width: 1,
@@ -319,12 +321,12 @@ class FriendRequestsPage extends StatelessWidget {
                 size: 16.sp,
                 color: primaryColor,
               ),
-              6.horizontalSpace,
+              8.horizontalSpace,
               Text(
-                StrRes.waitingForVerification,
+                StrRes.waiting,
                 style: TextStyle(
                   fontFamily: 'FilsonPro',
-                  fontSize: 12.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w600,
                   color: primaryColor,
                 ),

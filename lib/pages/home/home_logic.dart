@@ -248,24 +248,23 @@ class HomeLogic extends SuperController with UpgradeManger {
       final result = await GatewayApi.getRealNameAuthInfo();
       final status = result['status'] ?? 0;
       if (status != 2) {
-        var confirm = await Get.dialog(CustomDialog(
+        var confirm = await CustomDialog.show(
           title: StrRes.realNameAuthRequiredForGroup,
           rightText: StrRes.goToRealNameAuth,
-        ));
+        );
         if (confirm == true) AppNavigator.startRealNameAuth();
         return;
       }
     } catch (e) {
-      var confirm = await Get.dialog(CustomDialog(
+      var confirm = await CustomDialog.show(
         title: StrRes.realNameAuthRequiredForGroup,
         rightText: StrRes.goToRealNameAuth,
-      ));
+      );
       if (confirm == true) AppNavigator.startRealNameAuth();
       return;
     }
 
-    AppNavigator.startCreateGroup(
-        defaultCheckedList: [OpenIM.iMManager.userInfo]);
+    AppNavigator.startCreateGroup();
   }
 
   addGroup() =>
@@ -276,7 +275,7 @@ class HomeLogic extends SuperController with UpgradeManger {
       EasyLoading.dismiss();
     }
 
-    IMViews.showToast(tips??StrRes.accountException, type:2);
+    IMViews.showToast(tips ?? StrRes.accountException, type: 2);
     await DataSp.removeLoginCertificate();
     pushLogic.logout();
     trtcLogic.logout();

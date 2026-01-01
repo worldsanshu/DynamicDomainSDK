@@ -321,11 +321,9 @@ class AccountSetupLogic extends GetxController {
   }
 
   void clearChatHistory() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: StrRes.confirmClearChatHistory,
-        ));
+    var confirm = await CustomDialog.show(
+      title: StrRes.confirmClearChatHistory,
+    );
     if (confirm == true) {
       try {
         await LoadingView.singleton.wrap(asyncFunction: () async {
@@ -346,20 +344,16 @@ class AccountSetupLogic extends GetxController {
   }
 
   void deleteAccount() async {
-    var confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: StrRes.confirmDeleteAccount,
-          content: StrRes.confirmDeleteAccountContent,
-        ));
+    var confirm = await CustomDialog.show(
+      title: StrRes.confirmDeleteAccount,
+      content: StrRes.confirmDeleteAccountContent,
+    );
     if (confirm == true) {
-      await Get.dialog(
-          barrierColor: Colors.transparent,
-          CustomDialog(
-            title: StrRes.confirmDeleteAccountTipsTitle,
-            content: StrRes.confirmDeleteAccountTipsContent,
-            showCancel: false,
-          ));
+      await CustomDialog.show(
+        title: StrRes.confirmDeleteAccountTipsTitle,
+        content: StrRes.confirmDeleteAccountTipsContent,
+        showCancel: false,
+      );
       try {
         await LoadingView.singleton.wrap(asyncFunction: () async {
           await imLogic.logout();
@@ -405,24 +399,18 @@ class AccountSetupLogic extends GetxController {
 
   void toggleTeenMode() async {
     if (teenModeEnabled.value) {
-      final confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: StrRes.disableTeenMode,
-          content: StrRes.confirmDisableTeenMode,
-        ),
+      final confirm = await CustomDialog.show(
+        title: StrRes.disableTeenMode,
+        content: StrRes.confirmDisableTeenMode,
       );
 
       if (confirm == true) {
         _disableTeenMode();
       }
     } else {
-      final confirm = await Get.dialog(
-        barrierColor: Colors.transparent,
-        CustomDialog(
-          title: StrRes.enableTeenMode,
-          content: StrRes.confirmEnableTeenMode,
-        ),
+      final confirm = await CustomDialog.show(
+        title: StrRes.enableTeenMode,
+        content: StrRes.confirmEnableTeenMode,
       );
 
       if (confirm == true) {

@@ -121,50 +121,65 @@ class ChatSetupPage extends StatelessWidget {
                     children: [
                       // Menu Sections
                       SectionTitle(title: StrRes.chatSettings),
-                      SettingsMenuItem(
-                        label: StrRes.topContacts,
-                        hasSwitch: true,
-                        switchValue: logic.isPinned,
-                        onSwitchChanged: (_) => logic.toggleTopContacts(),
-                        showArrow: false,
-                      ),
-                      SettingsMenuItem(
-                        label: StrRes.messageNotDisturb,
-                        hasSwitch: true,
-                        switchValue: logic.isNotDisturb,
-                        onSwitchChanged: (_) => logic.toggleNotDisturb(),
-                        showArrow: false,
+                      SettingsMenuSection(
+                        items: [
+                          SettingsMenuItem(
+                            label: StrRes.topContacts,
+                            hasSwitch: true,
+                            switchValue: logic.isPinned,
+                            onSwitchChanged: (_) => logic.toggleTopContacts(),
+                            showArrow: false,
+                          ),
+                          SettingsMenuItem(
+                            label: StrRes.messageNotDisturb,
+                            hasSwitch: true,
+                            switchValue: logic.isNotDisturb,
+                            onSwitchChanged: (_) => logic.toggleNotDisturb(),
+                            showArrow: false,
+                            showDivider: false,
+                          ),
+                        ],
                       ),
 
                       SectionTitle(title: StrRes.appearance),
-                      SettingsMenuItem(
-                        icon: CupertinoIcons.photo,
-                        label: StrRes.setChatBackground,
-                        onTap: logic.setBackgroundImage,
-                      ),
-                      SettingsMenuItem(
-                        icon: CupertinoIcons.textformat,
-                        label: StrRes.fontSize,
-                        onTap: logic.setFontSize,
+                      SettingsMenuSection(
+                        items: [
+                          SettingsMenuItem(
+                            icon: CupertinoIcons.photo,
+                            label: StrRes.setChatBackground,
+                            onTap: logic.setBackgroundImage,
+                          ),
+                          SettingsMenuItem(
+                            icon: CupertinoIcons.textformat,
+                            label: StrRes.fontSize,
+                            onTap: logic.setFontSize,
+                            showDivider: false,
+                          ),
+                        ],
                       ),
 
                       SectionTitle(title: StrRes.actions),
-                      SettingsMenuItem(
-                        icon: CupertinoIcons.person_2,
-                        label: StrRes.createGroup,
-                        onTap: logic.createGroup,
-                      ),
-                      SettingsMenuItem(
-                        icon: CupertinoIcons.flag,
-                        label: StrRes.report,
-                        onTap: logic.startReport,
-                        isWarning: true,
-                      ),
-                      SettingsMenuItem(
-                        icon: CupertinoIcons.delete,
-                        label: StrRes.clearChatHistory,
-                        onTap: logic.clearChatHistory,
-                        isDestroy: true,
+                      SettingsMenuSection(
+                        items: [
+                          SettingsMenuItem(
+                            icon: CupertinoIcons.person_2,
+                            label: StrRes.createGroup,
+                            onTap: logic.createGroup,
+                          ),
+                          SettingsMenuItem(
+                            icon: CupertinoIcons.flag,
+                            label: StrRes.report,
+                            onTap: logic.startReport,
+                            isWarning: true,
+                          ),
+                          SettingsMenuItem(
+                            icon: CupertinoIcons.delete,
+                            label: StrRes.clearChatHistory,
+                            onTap: logic.clearChatHistory,
+                            isDestroy: true,
+                            showDivider: false,
+                          ),
+                        ],
                       ),
 
                       40.verticalSpace,

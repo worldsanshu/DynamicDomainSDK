@@ -25,19 +25,21 @@ class SelectContactsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GradientScaffold(
-      title: StrRes.selectContacts,
-      showBackButton: true,
-      searchBox: WechatStyleSearchBox(
-        hintText: StrRes.search,
-        enabled: true,
-        autofocus: false,
-        controller: logic.searchCtrl,
-        onChanged: logic.performSearch,
-        onCleared: logic.clearSearch,
-        margin: EdgeInsets.zero,
+    return TouchCloseSoftKeyboard(
+      child: GradientScaffold(
+        title: StrRes.selectContacts,
+        showBackButton: true,
+        searchBox: WechatStyleSearchBox(
+          hintText: StrRes.search,
+          enabled: true,
+          autofocus: false,
+          controller: logic.searchCtrl,
+          onChanged: logic.performSearch,
+          onCleared: logic.clearSearch,
+          margin: EdgeInsets.zero,
+        ),
+        body: _buildContentContainer(),
       ),
-      body: _buildContentContainer(),
     );
   }
 

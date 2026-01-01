@@ -375,6 +375,7 @@ class RealNameAuthLogic extends GetxController {
       return;
     }
 
+    // Trigger validation to show errors if invalid
     if (!_validateFormForSubmit()) {
       return;
     }

@@ -286,12 +286,12 @@ class ConversationLogic extends SuperController {
 
   viewAnnouncement(Announcement announcement) async {
     markAnnouncementAsRead(announcement);
-    return await Get.dialog(CustomDialog(
+    return await CustomDialog.show(
       title: announcement.title,
       content: announcement.content,
       showCancel: false,
       scrollable: true,
-    ));
+    );
   }
 
   @override
@@ -981,11 +981,11 @@ class ConversationLogic extends SuperController {
     final connectivityResult = await Connectivity().checkConnectivity();
     final hasNetwork = !connectivityResult.contains(ConnectivityResult.none);
     if (hasNetwork) {
-      await Get.dialog(CustomDialog(
+      await CustomDialog.show(
         title: title,
         content: content,
         showCancel: false,
-      ));
+      );
       final merchant =
           await GatewayApi.searchMerchantByID(currentIMServerInfo.merchantID);
       final merchantServers = MerchantServers.fromApiJson(merchant.toJson());
@@ -1088,18 +1088,18 @@ class ConversationLogic extends SuperController {
       final result = await GatewayApi.getRealNameAuthInfo();
       final status = result['status'] ?? 0;
       if (status != 2) {
-        var confirm = await Get.dialog(CustomDialog(
+        var confirm = await CustomDialog.show(
           title: StrRes.realNameAuthRequiredForGroup,
           rightText: StrRes.goToRealNameAuth,
-        ));
+        );
         if (confirm == true) AppNavigator.startRealNameAuth();
         return;
       }
     } catch (e) {
-      var confirm = await Get.dialog(CustomDialog(
+      var confirm = await CustomDialog.show(
         title: StrRes.realNameAuthRequiredForGroup,
         rightText: StrRes.goToRealNameAuth,
-      ));
+      );
       if (confirm == true) AppNavigator.startRealNameAuth();
       return;
     }

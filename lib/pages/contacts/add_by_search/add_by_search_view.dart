@@ -251,6 +251,7 @@ class AddContactsBySearchPage extends StatelessWidget {
                       color: Colors.white,
                     ),
                     isCircle: true,
+                    isGroup: !logic.isSearchUser,
                   ),
                   16.horizontalSpace,
                   Expanded(

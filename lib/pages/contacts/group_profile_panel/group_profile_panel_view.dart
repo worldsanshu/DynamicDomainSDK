@@ -102,7 +102,6 @@ class GroupProfilePanelPage extends StatelessWidget {
               text: logic.groupInfo.value.groupName,
               isGroup: true,
               isCircle: true,
-              borderRadius: BorderRadius.circular(12.r),
             ),
             16.horizontalSpace,
             Expanded(
@@ -236,11 +235,9 @@ class GroupProfilePanelPage extends StatelessWidget {
                 final member = logic.members.elementAt(index);
                 if (index == 5 && logic.members.length > 6) {
                   return Container(
-                    width: 44.w,
-                    height: 44.h,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
                       color: const Color(0xFFF3F4F6),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Icon(
                       Icons.more_horiz_rounded,
@@ -252,10 +249,9 @@ class GroupProfilePanelPage extends StatelessWidget {
                 return AvatarView(
                   width: 44.w,
                   height: 44.h,
-                  isCircle: true,
                   text: member.nickname,
                   url: member.faceURL,
-                  borderRadius: BorderRadius.circular(10.r),
+                  isCircle: true,
                 );
               },
             ),

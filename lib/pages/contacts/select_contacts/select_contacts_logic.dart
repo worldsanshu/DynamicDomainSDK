@@ -442,19 +442,18 @@ class SelectContactsLogic
       }
     } else {
       if (action == SelAction.carte) {
-        final sure = await Get.dialog(
-            barrierColor: Colors.transparent,
-            CustomDialog(
-              title: StrRes.sendCarteConfirmHint,
-            ));
+        final sure = await CustomDialog.show(
+          title: StrRes.sendCarteConfirmHint,
+        );
         if (sure != true) return;
         Get.back(
             result: checkedList.values
                 .map((e) => UserInfo.fromJson(e.toJson()))
                 .toList());
       } else if (action == SelAction.crateGroup) {
-        // Include defaultCheckedIDList in the total count
-        final totalSelected = defaultCheckedIDList.length + checkedList.length;
+        // Include defaultCheckedIDList + current user (who is added automatically) in the total count
+        final totalSelected =
+            defaultCheckedIDList.length + checkedList.length + 1;
         if (totalSelected < 3) {
           IMViews.showToast(StrRes.selectContactsMinimum.trArgs(["2"]));
           return;
@@ -485,11 +484,9 @@ class SelectContactsLogic
 
   confirmSelectedItem(dynamic info) async {
     if (action == SelAction.carte) {
-      final sure = await Get.dialog(
-          barrierColor: Colors.transparent,
-          CustomDialog(
-            title: StrRes.sendCarteConfirmHint,
-          ));
+      final sure = await CustomDialog.show(
+        title: StrRes.sendCarteConfirmHint,
+      );
       if (sure == true) {
         Get.back(result: UserInfo.fromJson(info.toJson()));
       }
@@ -498,7 +495,7 @@ class SelectContactsLogic
 
   bool get enabledConfirmButton {
     // For `forward` and `addMember` actions we allow confirming when at least one contact is selected.
-    // For `crateGroup` action, require 3 total selected (to form a group).
+    // For `crateGroup` action, require 3 total selected (including current user who is added automatically).
     // For other actions, allow at least 1 selection.
     final totalSelected = defaultCheckedIDList.length + checkedList.length;
     if (action == SelAction.forward ||
@@ -507,7 +504,7 @@ class SelectContactsLogic
       return checkedList.isNotEmpty;
     }
     if (action == SelAction.crateGroup) {
-      return totalSelected >= 3;
+      return totalSelected + 1 >= 3; // +1 for current user added automatically
     }
     return checkedList.isNotEmpty;
   }
