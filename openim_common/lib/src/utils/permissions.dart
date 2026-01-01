@@ -476,17 +476,15 @@ class Permissions {
       rightText: StrRes.determine,
       leftText: StrRes.cancel,
       icon: Icons.security,
-      onTapLeft: () {
-        Get.back();
-        if (Platform.isAndroid) {
-          Get.closeCurrentSnackbar();
-        }
+      onTapLeft: () async {
+        Get.closeAllSnackbars();
+        await Future.delayed(const Duration(milliseconds: 300));
+        Navigator.of(Get.overlayContext!).pop();
       },
-      onTapRight: () {
-        Get.back();
-        if (Platform.isAndroid) {
-          Get.closeCurrentSnackbar();
-        }
+      onTapRight: () async {
+        Get.closeAllSnackbars();
+        await Future.delayed(const Duration(milliseconds: 300));
+        Navigator.of(Get.overlayContext!).pop();
         openAppSettings();
       },
     );
