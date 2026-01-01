@@ -59,7 +59,6 @@ void showNewContactPopup(BuildContext context, GlobalKey buttonKey) {
                             homeLogic.scan();
                           },
                         ),
-                        _buildMenuDivider(),
                         SettingsMenuItem(
                           icon: CupertinoIcons.person_add,
                           label: StrRes.addFriend,
@@ -68,7 +67,6 @@ void showNewContactPopup(BuildContext context, GlobalKey buttonKey) {
                             homeLogic.addFriend();
                           },
                         ),
-                        _buildMenuDivider(),
                         SettingsMenuItem(
                           icon: CupertinoIcons.person_2,
                           label: StrRes.addGroup,
@@ -77,7 +75,6 @@ void showNewContactPopup(BuildContext context, GlobalKey buttonKey) {
                             homeLogic.addGroup();
                           },
                         ),
-                        _buildMenuDivider(),
                         SettingsMenuItem(
                           icon: CupertinoIcons.create,
                           label: StrRes.createGroup,

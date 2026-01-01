@@ -765,7 +765,7 @@ const Map<String, String> en_US = {
   "actions": "Actions",
   "idLabel": "ID:",
   "personalChatSettings": "Chat Settings",
-  "userInformation": "User Information",
+  "userInformation": "Profile Details",
   "appearance": "Appearance",
   "notificationSettings": "Notification Settings",
   "privacySettings": "Privacy Settings",

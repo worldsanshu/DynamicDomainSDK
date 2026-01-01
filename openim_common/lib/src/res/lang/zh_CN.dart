@@ -732,7 +732,7 @@ const Map<String, String> zh_CN = {
   "actions": "操作",
   "idLabel": "ID:",
   "personalChatSettings": "聊天设置",
-  "userInformation": "用户信息",
+  "userInformation": "个人资料详情",
   "appearance": "外观",
   "notificationSettings": "通知设置",
   "privacySettings": "隐私设置",
