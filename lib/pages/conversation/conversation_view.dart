@@ -381,6 +381,7 @@ class _ConversationPageState extends State<ConversationPage> {
                 backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
                 icon: Ionicons.checkmark_done_circle_outline,
+                padding:EdgeInsets.only(right: 0),
                 borderRadius: BorderRadius.circular(12.r),
               ),
             SlidableAction(
