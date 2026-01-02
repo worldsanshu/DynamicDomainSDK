@@ -470,20 +470,31 @@ class ConversationLogic extends SuperController {
 
   /// 删除会话
   void deleteConversation(ConversationInfo info) async {
-    await OpenIM.iMManager.conversationManager
-        .deleteConversationAndDeleteAllMsg(
-      conversationID: info.conversationID,
+    var confirm = await CustomDialog.show(
+      title: StrRes.confirmDeleteConversation,
+      rightText: StrRes.delete,
     );
-    final removed = list.remove(info);
-    if (removed) {
-      conversationCount.value =
-          (conversationCount.value - 1).clamp(0, double.infinity).toInt();
+    if (confirm == true) {
+      try {
+        await OpenIM.iMManager.conversationManager
+            .deleteConversationAndDeleteAllMsg(
+          conversationID: info.conversationID,
+        );
+        IMViews.showToast(StrRes.deleteSuccessfully, type: 1);
+        final removed = list.remove(info);
+        if (removed) {
+          conversationCount.value =
+              (conversationCount.value - 1).clamp(0, double.infinity).toInt();
 
-      // Only decrement unread count if the deleted conversation had unread messages
-      if (info.unreadCount > 0) {
-        unreadConversationCount.value = (unreadConversationCount.value - 1)
-            .clamp(0, double.infinity)
-            .toInt();
+          // Only decrement unread count if the deleted conversation had unread messages
+          if (info.unreadCount > 0) {
+            unreadConversationCount.value = (unreadConversationCount.value - 1)
+                .clamp(0, double.infinity)
+                .toInt();
+          }
+        }
+      } catch (e) {
+        IMViews.showToast(StrRes.deleteFailed);
       }
     }
   }
@@ -765,7 +776,7 @@ class ConversationLogic extends SuperController {
   bool get showLoading => !reInstall && isLoadingStatus;
 
   String get titleText {
-    if (showLoading) return  StrRes.connecting;
+    if (showLoading) return StrRes.connecting;
     if (imSdkStatus != null) {
       return imSdkStatus!;
     }

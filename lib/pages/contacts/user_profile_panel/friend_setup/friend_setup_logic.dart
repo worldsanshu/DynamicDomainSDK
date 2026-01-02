@@ -39,14 +39,15 @@ class FriendSetupLogic extends GetxController {
       userProfilesLogic.userInfo.update((val) {
         val?.isBlacklist = true;
       });
-      IMViews.showToast(StrRes.addedBlacklistSuccessfully,type:1);
+      IMViews.showToast(StrRes.addedBlacklistSuccessfully, type: 1);
       Get.back();
     }
   }
 
   /// 从黑名单移除
   void removeBlacklist() async {
-    var confirm = await CustomDialog.show(title: StrRes.areYouSureRemoveBlacklist);
+    var confirm =
+        await CustomDialog.show(title: StrRes.areYouSureRemoveBlacklist);
     if (confirm == true) {
       await OpenIM.iMManager.friendshipManager.removeBlacklist(
         userID: userProfilesLogic.userInfo.value.userID!,
@@ -54,7 +55,7 @@ class FriendSetupLogic extends GetxController {
       userProfilesLogic.userInfo.update((val) {
         val?.isBlacklist = false;
       });
-      IMViews.showToast(StrRes.removedBlacklistSuccessfully,type:1);
+      IMViews.showToast(StrRes.removedBlacklistSuccessfully, type: 1);
     }
   }
 
@@ -90,7 +91,7 @@ class FriendSetupLogic extends GetxController {
         conversationLogic.list
             .removeWhere((e) => e.conversationID == conversationID);
       });
-      IMViews.showToast(StrRes.friendDeletedSuccessfully,type:1);
+      IMViews.showToast(StrRes.friendDeletedSuccessfully, type: 1);
       // 如果从聊天窗口查看用户资料
       if (userProfilesLogic.offAllWhenDelFriend == true) {
         AppNavigator.startBackMain();
@@ -141,6 +142,7 @@ class FriendSetupLogic extends GetxController {
           offlinePushInfo: Config.offlinePushInfo,
         );
       }
+      IMViews.showToast(StrRes.sentSuccessfully, type: 1);
     }
   }
 

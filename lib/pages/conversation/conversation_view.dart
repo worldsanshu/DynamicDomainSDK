@@ -314,8 +314,8 @@ class _ConversationPageState extends State<ConversationPage> {
             ),
             4.verticalSpace,
             Text(
-              friend.showName.length > 6
-                  ? '${friend.showName.substring(0, 6)}...'
+              friend.showName.characters.length > 6
+                  ? '${friend.showName.characters.take(6)}...'
                   : friend.showName,
               style: TextStyle(
                 fontFamily: 'FilsonPro',
@@ -381,7 +381,7 @@ class _ConversationPageState extends State<ConversationPage> {
                 backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
                 icon: Ionicons.checkmark_done_circle_outline,
-                padding:EdgeInsets.only(right: 0),
+                padding: EdgeInsets.only(right: 0),
                 borderRadius: BorderRadius.circular(12.r),
               ),
             SlidableAction(

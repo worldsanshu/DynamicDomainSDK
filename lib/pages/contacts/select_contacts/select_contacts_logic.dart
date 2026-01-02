@@ -79,18 +79,25 @@ class SelectContactsLogic
       friendList = friendListLogic.friendList;
     }
 
-    // Defer reactive updates to avoid setState during build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final defaultList = Get.arguments['defaultCheckedIDList'] ?? [];
-      final checkedMap = Get.arguments['checkedList'] ?? {};
+    final defaultList = Get.arguments['defaultCheckedIDList'] ?? [];
+    final checkedMap = Get.arguments['checkedList'] ?? {};
 
-      if (defaultList.isNotEmpty) {
-        defaultCheckedIDList.addAll(defaultList);
-      }
-      if (checkedMap.isNotEmpty) {
-        checkedList.addAll(checkedMap);
-      }
-    });
+    if (defaultList.isNotEmpty) {
+      defaultCheckedIDList.addAll(defaultList);
+    }
+    if (checkedMap.isNotEmpty) {
+      checkedMap.forEach((key, value) {
+        var info = value;
+        // Try to find the user in the friend list to get the latest info (nickname, remark, faceURL)
+        // instead of using potentially stale or minimal info passed from the previous screen.
+        // This ensures the selected contacts list displays the correct name instead of ID.
+        try {
+          final friend = friendList.firstWhere((f) => f.userID == key);
+          info = friend;
+        } catch (_) {}
+        checkedList.putIfAbsent(key, () => info);
+      });
+    }
 
     openSelectedSheet = Get.arguments['openSelectedSheet'];
     ex = Get.arguments['ex'];

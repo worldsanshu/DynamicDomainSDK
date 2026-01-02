@@ -716,31 +716,25 @@ class RealNameAuthView extends StatelessWidget {
   }
 
   Widget _buildInfoRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 80.w,
-          child: Text(
-            label,
-            style: const TextStyle(fontFamily: 'FilsonPro').copyWith(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              color: const Color(0xFF6B7280),
-            ),
-          ),
+    return RichText(
+      text: TextSpan(
+        text: '$label:  ',
+        style: const TextStyle(fontFamily: 'FilsonPro').copyWith(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF6B7280),
         ),
-        Expanded(
-          child: Text(
-            value,
+        children: [
+          TextSpan(
+            text: value,
             style: const TextStyle(fontFamily: 'FilsonPro').copyWith(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF374151),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

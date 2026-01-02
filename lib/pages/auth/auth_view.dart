@@ -564,6 +564,7 @@ class AuthView extends StatelessWidget {
               compareController: logic.registerPasswordController,
               formFieldKey: logic.registerPasswordConfirmationFieldKey,
               isRequired: true,
+              emptyErrorLabel: StrRes.plsEnterConfirmPassword,
             ),
             Gap(20.h),
             PhoneCodeField(

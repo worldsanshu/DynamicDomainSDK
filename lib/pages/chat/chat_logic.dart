@@ -58,6 +58,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
   final browserController = PhotoBrowserController();
   late GlobalKey chatInputBoxStateKey;
   bool playOnce = false; // 点击的当前视频只能播放一次
+  final isInputFocused = false.obs;
   // final clickSubject = PublishSubject<Message>();
   final forceCloseToolbox = PublishSubject<bool>();
   final forceCloseMenuSub = PublishSubject<bool>();
@@ -1640,6 +1641,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
   }
 
   void focusNodeChanged(bool hasFocus) {
+    isInputFocused.value = hasFocus;
     _changeInputStatus(hasFocus);
     if (hasFocus) {
       Logger.print('focus:$hasFocus');

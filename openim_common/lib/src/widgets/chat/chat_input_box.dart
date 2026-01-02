@@ -492,7 +492,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
                           constraints:
                               BoxConstraints(minHeight: kInputBoxMinHeight),
                           padding: EdgeInsets.symmetric(
-                              horizontal: 16.w, vertical: 10.h),
+                              horizontal: 22.w, vertical: 10.h),
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             border: Border(
@@ -607,7 +607,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
         }
         widget.callbackKeyboardHeight(_getKeyboardHeight());
       },
-      safeAreaBottom: 0,
+      safeAreaBottom: MediaQuery.of(context).padding.bottom,
     );
   }
 

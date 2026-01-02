@@ -621,6 +621,7 @@ class UserProfilePanelLogic extends GetxController {
           offlinePushInfo: Config.offlinePushInfo,
         );
       }
+      IMViews.showToast(StrRes.sentSuccessfully, type: 1);
     }
   }
 }

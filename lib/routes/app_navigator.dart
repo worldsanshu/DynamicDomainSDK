@@ -473,12 +473,10 @@ class AppNavigator {
   static startCreateGroup({
     List<UserInfo> defaultCheckedList = const [],
   }) async {
-    final excludeIDs = defaultCheckedList.map((e) => e.userID!).toList();
-
     final result = await startSelectContacts(
       action: SelAction.crateGroup,
-      defaultCheckedIDList: excludeIDs,
-      excludeIDList: excludeIDs, // Hide already-selected users from the list
+      defaultCheckedIDList: [],
+      excludeIDList: [], // Show already-selected users in the list
       checkedList:
           defaultCheckedList, // Show pre-selected members in bottom sheet
     );

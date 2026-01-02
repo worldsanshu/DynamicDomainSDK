@@ -743,6 +743,7 @@ class AccountSetupLogic extends GetxController {
                     validateFormat: true,
                     isRequired: true,
                     label: StrRes.newPwd,
+                    emptyErrorLabel: StrRes.plsEnterNewPwd,
                     onPasswordChange: () {
                       if (againPwdCtrl.text.isNotEmpty) {
                         confirmPwdFieldKey.currentState?.validate();
@@ -757,6 +758,7 @@ class AccountSetupLogic extends GetxController {
                     formFieldKey: confirmPwdFieldKey,
                     isRequired: true,
                     label: StrRes.confirmNewPwd,
+                    emptyErrorLabel: StrRes.plsEnterConfirmPwd,
                   ),
                 ],
               ).paddingSymmetric(vertical: 16.h),
@@ -769,7 +771,6 @@ class AccountSetupLogic extends GetxController {
                         : Colors.grey,
                     expand: true,
                   )),
-              30.verticalSpace,
             ],
           ),
         ),

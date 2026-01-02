@@ -129,3 +129,4 @@ export 'src/widgets/verify_code_send_button.dart';
 export 'src/widgets/views.dart';
 export 'src/widgets/overlay_widget.dart';
 export 'src/widgets/top_notice_bar.dart';
+export 'src/widgets/profile_header_avatar.dart';

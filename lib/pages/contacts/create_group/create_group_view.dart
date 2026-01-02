@@ -83,7 +83,7 @@ class CreateGroupPage extends StatelessWidget {
                 if (logic.faceURL.isNotEmpty)
                   Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
+                      shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
                           color: const Color(0xFF9CA3AF).withOpacity(0.06),
@@ -97,7 +97,7 @@ class CreateGroupPage extends StatelessWidget {
                       height: 56.h,
                       url: logic.faceURL.value,
                       onTap: logic.selectAvatar,
-                      borderRadius: BorderRadius.circular(12.r),
+                      isCircle: true,
                     ),
                   )
                 else
@@ -106,11 +106,11 @@ class CreateGroupPage extends StatelessWidget {
                     height: 56.h,
                     decoration: BoxDecoration(
                       color: const Color(0xFFF3F4F6),
-                      borderRadius: BorderRadius.circular(12.r),
+                      shape: BoxShape.circle,
                     ),
                     child: InkWell(
                       onTap: logic.selectAvatar,
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(56.r),
                       child: Icon(
                         Icons.camera_alt_rounded,
                         color: AppColor.iconColor,
@@ -168,16 +168,6 @@ class CreateGroupPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
               child: Row(
                 children: [
-                  Text(
-                    StrRes.groupMember,
-                    style: TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF374151),
-                    ),
-                  ),
-                  const Spacer(),
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 10.w,
@@ -197,6 +187,7 @@ class CreateGroupPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const Spacer(),
                 ],
               ),
             ),
@@ -217,7 +208,7 @@ class CreateGroupPage extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.r),
+                        shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
                             color: const Color(0xFF9CA3AF).withOpacity(0.04),
@@ -236,7 +227,7 @@ class CreateGroupPage extends StatelessWidget {
                           fontSize: 14.sp,
                           color: Colors.white,
                         ),
-                        borderRadius: BorderRadius.circular(12.r),
+                        isCircle: true,
                         isGroup: false,
                       ),
                     ),

@@ -196,6 +196,7 @@ class StrRes {
 
   static String get setPassword => 'setPassword'.tr;
 
+  static String get plsEnterConfirmPassword => 'plsEnterConfirmPassword'.tr;
   static String get plsConfirmPasswordAgain => 'plsConfirmPasswordAgain'.tr;
 
   static String get confirmPassword => 'confirmPassword'.tr;
@@ -701,6 +702,8 @@ class StrRes {
 
   static String get unfriend => 'unfriend'.tr;
 
+  static String get confirmDeleteConversation => 'confirmDeleteConversation'.tr;
+
   static String get areYouSureDelFriend => 'areYouSureDelFriend'.tr;
 
   static String get areYouSureAddBlacklist => 'areYouSureAddBlacklist'.tr;
@@ -720,6 +723,10 @@ class StrRes {
   static String get saveSuccessfully => 'saveSuccessfully'.tr;
 
   static String get saveFailed => 'saveFailed'.tr;
+
+  static String get deleteSuccessfully => 'deleteSuccessfully'.tr;
+
+  static String get deleteFailed => 'deleteFailed'.tr;
 
   static String get groupVerification => 'groupVerification'.tr;
 
