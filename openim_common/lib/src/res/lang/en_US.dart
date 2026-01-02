@@ -624,6 +624,8 @@ const Map<String, String> en_US = {
   "likedYou": "Liked your post",
   "mentionedYou": "Mentioned you",
   "replied": "Replied",
+  "youRepliedTo": "You replied to %s",
+  "youRepliedToYourself": "You replied to yourself",
   "detail": "Detail",
   "totalNPicture": "Total %s pictures",
   "microphone": "Microphone",

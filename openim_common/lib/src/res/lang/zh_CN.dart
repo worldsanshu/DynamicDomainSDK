@@ -596,6 +596,8 @@ const Map<String, String> zh_CN = {
   "mentionedYou": "提到了你",
   "mentionedWho": "提到了%s",
   "replied": "回复了",
+  "youRepliedTo": "你回复了 %s",
+  "youRepliedToYourself": "你回复了自己",
   "detail": "详情",
   "totalNPicture": "共%s张",
   "microphone": "麦克风",

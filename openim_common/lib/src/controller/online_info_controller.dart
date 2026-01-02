@@ -21,4 +21,12 @@ class OnlineInfoController extends GetxController {
       groupOnlineInfoError.value = true;
     }
   }
+
+  void clear() {
+    onlineUserId.clear();
+    onlineUserIdDay.clear();
+    onlineUserIdWeek.clear();
+    onlineUserId3Day.clear();
+    groupOnlineInfoError.value = false;
+  }
 }

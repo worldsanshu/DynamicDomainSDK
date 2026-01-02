@@ -516,6 +516,7 @@ class _ChatItemViewState extends State<ChatItemView> {
     return ChatQuoteView(
         quoteMsg: quoteMsg,
         onTap: widget.onTapQuoteMessage,
+        isISend: _isISend,
         senderNickname: senderNickname);
   }
 

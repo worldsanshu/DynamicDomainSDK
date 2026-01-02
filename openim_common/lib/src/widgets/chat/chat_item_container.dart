@@ -120,9 +120,24 @@ class ChatItemContainer extends StatelessWidget {
   }
 
   Widget _buildChildView(BuildContext context, BubbleType type) {
+    final bubbleContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (null != this.quoteView) this.quoteView!,
+        this.child,
+      ],
+    );
+
     final bubbleChild = this.isBubbleBg
-        ? ChatBubble(bubbleType: type, child: this.child)
-        : this.child;
+        ? ChatBubble(
+            bubbleType: type,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 0.7.sw),
+              child: bubbleContent,
+            ),
+          )
+        : bubbleContent;
 
     return RepaintBoundary(
       child: Builder(
@@ -270,7 +285,6 @@ class ChatItemContainer extends StatelessWidget {
                           child: this.bottomInfoView,
                         ),
                 ),
-                if (null != this.quoteView) this.quoteView!,
               ],
             ),
           ],
@@ -352,7 +366,6 @@ class ChatItemContainer extends StatelessWidget {
                           child: this.bottomInfoView,
                         ),
                 ),
-                if (null != this.quoteView) this.quoteView!,
                 if (null != this.readStatusView) this.readStatusView!,
               ],
             ),

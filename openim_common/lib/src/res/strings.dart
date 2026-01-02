@@ -1144,6 +1144,10 @@ class StrRes {
 
   static String get replied => 'replied'.tr;
 
+  static String get youRepliedTo => 'youRepliedTo'.tr;
+
+  static String get youRepliedToYourself => 'youRepliedToYourself'.tr;
+
   static String get detail => 'detail'.tr;
 
   static String get totalNPicture => 'totalNPicture'.tr;

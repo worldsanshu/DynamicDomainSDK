@@ -263,6 +263,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     }
     _isInitialized = true;
     conversationInfo = convInfo;
+    onlineInfoLogic.clear();
     searchMessage = arguments['searchMessage'];
     nickname.value = conversationInfo.showName ?? '';
     faceUrl.value = conversationInfo.faceURL ?? '';
@@ -2819,7 +2820,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
       }
     }
     if (canRevoke) {
-      if(message.contentType==MessageType.voice){
+      if (message.contentType == MessageType.voice) {
         stopVoice();
       }
 
