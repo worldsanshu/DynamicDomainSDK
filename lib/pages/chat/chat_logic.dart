@@ -2819,6 +2819,10 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
       }
     }
     if (canRevoke) {
+      if(message.contentType==MessageType.voice){
+        stopVoice();
+      }
+
       try {
         await LoadingView.singleton.wrap(
           asyncFunction: () => OpenIM.iMManager.messageManager.revokeMessage(

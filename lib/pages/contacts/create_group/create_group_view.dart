@@ -168,6 +168,7 @@ class CreateGroupPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
               child: Row(
                 children: [
+                  const Spacer(),
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 10.w,

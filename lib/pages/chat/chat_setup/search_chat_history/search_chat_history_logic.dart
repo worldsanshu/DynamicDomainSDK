@@ -54,7 +54,11 @@ class SearchChatHistoryLogic extends GetxController {
   clearInput() {
     searchKey.value = "";
     focusNode.requestFocus();
-    messageList.clear();
+    if(!isNotDate){
+      searchByTime();
+    }else{
+      messageList.clear();
+    }
   }
 
   bool get isSearchNotResult => (messageList.isEmpty);

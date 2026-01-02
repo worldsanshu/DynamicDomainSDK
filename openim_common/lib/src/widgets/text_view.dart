@@ -122,7 +122,7 @@ class MatchTextView extends StatelessWidget {
     // RegExp pattern2 = RegExp(r"(@\d+\s)");
     // pattern2.hasMatch(text.replaceAll("", ''));
     // match  text
-    stripHtmlIfNeeded(text).splitMapJoin(
+      text.splitMapJoin(
       RegExp(pattern),
       onMatch: (Match match) {
         var matchText = match[0]!;
