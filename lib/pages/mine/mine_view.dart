@@ -54,13 +54,17 @@ class _MinePageState extends State<MinePage> {
               return Column(
                 children: [
                   // Name
-                  Text(
-                    user.nickname ?? '',
-                    style: TextStyle(
-                      fontFamily: 'FilsonPro',
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Text(
+                      user.nickname ?? '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                   8.verticalSpace,
