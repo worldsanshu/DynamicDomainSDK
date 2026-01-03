@@ -62,6 +62,7 @@ class ResetPasswordPage extends StatelessWidget {
                             focusNode: logic.passwordFocusNode,
                             controller: logic.passwordCtrl,
                             validateFormat: true,
+                            label: StrRes.newPwd,
                             isRequired: true,
                             onPasswordChange: () {
                               // Only re-validate confirm password if it already has a value
