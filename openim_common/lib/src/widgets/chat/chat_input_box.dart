@@ -9,7 +9,7 @@ import 'package:openim_common/openim_common.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:flutter/cupertino.dart';
 
-double kInputBoxMinHeight = 56.h;
+double kInputBoxMinHeight = 32.h;
 
 enum PanelType {
   none,
@@ -492,7 +492,7 @@ class _ChatInputBoxState extends State<ChatInputBox>
                           constraints:
                               BoxConstraints(minHeight: kInputBoxMinHeight),
                           padding: EdgeInsets.symmetric(
-                              horizontal: 22.w, vertical: 10.h),
+                              horizontal: 22.w, vertical: 6.h),
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             border: Border(

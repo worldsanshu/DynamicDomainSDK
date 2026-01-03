@@ -11,11 +11,13 @@ class ChatQuoteView extends StatelessWidget {
     super.key,
     required this.quoteMsg,
     this.onTap,
+    this.onLongPress,
     this.senderNickname,
     this.isISend = false,
   });
   final Message quoteMsg;
   final Function(Message message)? onTap;
+  final Function(Message message)? onLongPress;
   final String? senderNickname;
   final bool isISend;
 
@@ -23,6 +25,7 @@ class ChatQuoteView extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => onTap?.call(quoteMsg),
+        onLongPress: () => onLongPress?.call(quoteMsg),
         child: _ChatQuoteContentView(
           message: quoteMsg,
           senderNickname: senderNickname,

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:openim/widgets/custom_buttom.dart';
 import 'package:openim_common/openim_common.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../widgets/file_download_progress.dart';
 import '../../widgets/gradient_scaffold.dart';
@@ -64,6 +65,9 @@ class ChatPage extends StatelessWidget {
         onPopMenuShowChanged: logic.onPopMenuShowChanged,
         onTapQuoteMessage: (Message message) {
           logic.onTapQuoteMsg(message);
+        },
+        onLongPressQuoteMessage: (Message message) {
+          logic.onLongPressQuoteMsg(message);
         },
         onMultiSelChanged: (checked) {
           logic.multiSelMsg(message, checked);
@@ -449,7 +453,11 @@ class ChatPage extends StatelessWidget {
                               verticalOffset: 40.0,
                               child: FadeInAnimation(
                                 curve: Curves.easeOutCubic,
-                                child: _buildItemView(message),
+                                child: AutoScrollTag(
+                                    key: ValueKey(index),
+                                    controller: logic.scrollController,
+                                    index: index,
+                                    child: _buildItemView(message)),
                               ),
                             ),
                           );

@@ -120,6 +120,7 @@ class ChatItemView extends StatefulWidget {
     this.onVisibleTrulyText,
     this.onPopMenuShowChanged,
     this.onTapQuoteMessage,
+    this.onLongPressQuoteMessage,
     this.onMultiSelChanged,
     this.onDestroyMessage,
     this.onViewMessageReadStatus,
@@ -202,6 +203,7 @@ class ChatItemView extends StatefulWidget {
   final Function(String? text)? onVisibleTrulyText;
   final Function(bool show)? onPopMenuShowChanged;
   final Function(Message message)? onTapQuoteMessage;
+  final Function(Message message)? onLongPressQuoteMessage;
   final Function(bool checked)? onMultiSelChanged;
   final Function()? onClickItemView;
   final ValueChanged<
@@ -516,6 +518,7 @@ class _ChatItemViewState extends State<ChatItemView> {
     return ChatQuoteView(
         quoteMsg: quoteMsg,
         onTap: widget.onTapQuoteMessage,
+        onLongPress: widget.onLongPressQuoteMessage,
         isISend: _isISend,
         senderNickname: senderNickname);
   }

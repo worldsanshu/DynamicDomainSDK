@@ -38,6 +38,8 @@ import '../contacts/select_contacts/select_contacts_logic.dart';
 import '../conversation/conversation_logic.dart';
 import 'group_setup/group_member_list/group_member_list_logic.dart';
 
+import 'package:scroll_to_index/scroll_to_index.dart';
+
 import 'message_frequency_logic.dart';
 
 class ChatLogic extends SuperController with FullLifeCycleMixin {
@@ -53,7 +55,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
 
   final inputCtrl = TextEditingController();
   final focusNode = FocusNode();
-  final scrollController = ScrollController();
+  final scrollController = AutoScrollController();
   final refreshController = RefreshController();
   final browserController = PhotoBrowserController();
   late GlobalKey chatInputBoxStateKey;
@@ -1427,12 +1429,133 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
 
   /// 点击引用消息
   void onTapQuoteMsg(Message message) {
-    // if (message.contentType == MessageType.quote) {
-    //   parseClickEvent(message.quoteElem!.quoteMessage!);
-    // } else if (message.contentType == MessageType.atText) {
-    //   parseClickEvent(message.atElem!.quoteMessage!);
-    // }
-    parseClickEvent(message);
+    Message? quoteMessage;
+    if (message.contentType == MessageType.quote) {
+      quoteMessage = message.quoteElem?.quoteMessage;
+    } else if (message.contentType == MessageType.atText) {
+      quoteMessage = message.atTextElem?.quoteMessage;
+    }
+
+    // Fallback if quoteMessage is not found in the element
+    if (quoteMessage == null) {
+      parseClickEvent(message);
+      return;
+    }
+
+    Get.toNamed(AppRoutes.previewChatHistory, arguments: {
+      'message': quoteMessage,
+      'conversationInfo': conversationInfo,
+    });
+  }
+
+  void onLongPressQuoteMsg(Message message) {
+    Message? quoteMessage;
+    if (message.contentType == MessageType.quote) {
+      quoteMessage = message.quoteElem?.quoteMessage;
+    } else if (message.contentType == MessageType.atText) {
+      quoteMessage = message.atTextElem?.quoteMessage;
+    }
+
+    if (quoteMessage == null) return;
+
+    if (quoteMessage.contentType == MessageType.picture ||
+        quoteMessage.contentType == MessageType.video) {
+      Get.bottomSheet(
+        _buildMediaBottomSheet(quoteMessage),
+        isScrollControlled: false,
+      );
+    }
+  }
+
+  Widget _buildMediaBottomSheet(Message message) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.r),
+          topRight: Radius.circular(20.r),
+        ),
+      ),
+      padding: EdgeInsets.only(bottom: 20.h, top: 10.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40.w,
+            height: 4.h,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE5E7EB),
+              borderRadius: BorderRadius.circular(2.r),
+            ),
+          ),
+          10.verticalSpace,
+          ListTile(
+            leading: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEFF6FF),
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: const Icon(Icons.info_outline, color: Color(0xFF4F42FF)),
+            ),
+            title: Text(
+              StrRes.selectAction,
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF4F42FF),
+              ),
+            ),
+          ),
+          Divider(color: const Color(0xFFF3F4F6), thickness: 1.h),
+          ListTile(
+            leading: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: const Icon(Icons.forward, color: Color(0xFF6B7280)),
+            ),
+            title: const Text("Forward"),
+            trailing: const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+            onTap: () {
+              Get.back();
+              forward(message);
+            },
+          ),
+          ListTile(
+            leading: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF9FAFB),
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: const Icon(Icons.download, color: Color(0xFF6B7280)),
+            ),
+            title: Text(StrRes.download),
+            trailing: const Icon(Icons.chevron_right, color: Color(0xFF9CA3AF)),
+            onTap: () {
+              Get.back();
+              _saveMedia(message);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _saveMedia(Message message) {
+    Permissions.storage(() async {
+      if (message.contentType == MessageType.picture) {
+        var url = message.pictureElem?.sourcePicture?.url ??
+            message.pictureElem?.snapshotPicture?.url;
+        if (url != null) await HttpUtil.saveUrlPicture(url);
+      } else if (message.contentType == MessageType.video) {
+        var url = message.videoElem?.videoUrl;
+        if (url != null) await HttpUtil.saveUrlVideo(url);
+      }
+    });
   }
 
   /// 群聊天长按头像为@用户
