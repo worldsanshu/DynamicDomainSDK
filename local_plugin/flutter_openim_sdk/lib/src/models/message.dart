@@ -185,31 +185,61 @@ class Message {
     seq = json['seq'];
     isRead = json['isRead'];
     status = json['status'];
-    offlinePush = json['offlinePush'] != null ? OfflinePushInfo.fromJson(json['offlinePush']) : null;
+    offlinePush = json['offlinePush'] != null
+        ? OfflinePushInfo.fromJson(json['offlinePush'])
+        : null;
     attachedInfo = json['attachedInfo'];
     ex = json['ex'];
     exMap = json['exMap'] ?? {};
     sessionType = json['sessionType'];
-    pictureElem = json['pictureElem'] != null ? PictureElem.fromJson(json['pictureElem']) : null;
-    soundElem = json['soundElem'] != null ? SoundElem.fromJson(json['soundElem']) : null;
-    videoElem = json['videoElem'] != null ? VideoElem.fromJson(json['videoElem']) : null;
-    fileElem = json['fileElem'] != null ? FileElem.fromJson(json['fileElem']) : null;
-    atTextElem = json['atTextElem'] != null ? AtTextElem.fromJson(json['atTextElem']) : null;
-    locationElem = json['locationElem'] != null ? LocationElem.fromJson(json['locationElem']) : null;
+    pictureElem = json['pictureElem'] != null
+        ? PictureElem.fromJson(json['pictureElem'])
+        : null;
+    soundElem = json['soundElem'] != null
+        ? SoundElem.fromJson(json['soundElem'])
+        : null;
+    videoElem = json['videoElem'] != null
+        ? VideoElem.fromJson(json['videoElem'])
+        : null;
+    fileElem =
+        json['fileElem'] != null ? FileElem.fromJson(json['fileElem']) : null;
+    atTextElem = json['atTextElem'] != null
+        ? AtTextElem.fromJson(json['atTextElem'])
+        : null;
+    locationElem = json['locationElem'] != null
+        ? LocationElem.fromJson(json['locationElem'])
+        : null;
 
-    customElem = json['customElem'] != null ? CustomElem.fromJson(json['customElem']) : null;
-    quoteElem = json['quoteElem'] != null ? QuoteElem.fromJson(json['quoteElem']) : null;
-    mergeElem = json['mergeElem'] != null ? MergeElem.fromJson(json['mergeElem']) : null;
-    notificationElem = json['notificationElem'] != null ? NotificationElem.fromJson(json['notificationElem']) : null;
-    faceElem = json['faceElem'] != null ? FaceElem.fromJson(json['faceElem']) : null;
-    attachedInfoElem = json['attachedInfoElem'] != null ? AttachedInfoElem.fromJson(json['attachedInfoElem']) : null;
+    customElem = json['customElem'] != null
+        ? CustomElem.fromJson(json['customElem'])
+        : null;
+    quoteElem = json['quoteElem'] != null
+        ? QuoteElem.fromJson(json['quoteElem'])
+        : null;
+    mergeElem = json['mergeElem'] != null
+        ? MergeElem.fromJson(json['mergeElem'])
+        : null;
+    notificationElem = json['notificationElem'] != null
+        ? NotificationElem.fromJson(json['notificationElem'])
+        : null;
+    faceElem =
+        json['faceElem'] != null ? FaceElem.fromJson(json['faceElem']) : null;
+    attachedInfoElem = json['attachedInfoElem'] != null
+        ? AttachedInfoElem.fromJson(json['attachedInfoElem'])
+        : null;
     hasReadTime = json['hasReadTime'] ?? attachedInfoElem?.hasReadTime;
     isExternalExtensions = json['isExternalExtensions'];
     isReact = json['isReact'];
-    textElem = json['textElem'] != null ? TextElem.fromJson(json['textElem']) : null;
-    cardElem = json['cardElem'] != null ? CardElem.fromJson(json['cardElem']) : null;
-    advancedTextElem = json['advancedTextElem'] != null ? AdvancedTextElem.fromJson(json['advancedTextElem']) : null;
-    typingElem = json['typingElem'] != null ? TypingElem.fromJson(json['typingElem']) : null;
+    textElem =
+        json['textElem'] != null ? TextElem.fromJson(json['textElem']) : null;
+    cardElem =
+        json['cardElem'] != null ? CardElem.fromJson(json['cardElem']) : null;
+    advancedTextElem = json['advancedTextElem'] != null
+        ? AdvancedTextElem.fromJson(json['advancedTextElem'])
+        : null;
+    typingElem = json['typingElem'] != null
+        ? TypingElem.fromJson(json['typingElem'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -259,7 +289,10 @@ class Message {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Message && runtimeType == other.runtimeType && clientMsgID == other.clientMsgID;
+      identical(this, other) ||
+      other is Message &&
+          runtimeType == other.runtimeType &&
+          clientMsgID == other.clientMsgID;
 
   @override
   int get hashCode => clientMsgID.hashCode;
@@ -281,7 +314,12 @@ class Message {
     seq = message.seq;
     isRead = message.isRead;
     hasReadTime = message.hasReadTime;
-    status = message.status;
+    // After succeeded, only accept failed or succeeded, not sending
+    if (status != MessageStatus.succeeded ||
+        message.status == MessageStatus.succeeded ||
+        message.status == MessageStatus.failed) {
+      status = message.status;
+    }
     offlinePush = message.offlinePush;
     attachedInfo = message.attachedInfo;
     ex = message.ex;
@@ -309,7 +347,9 @@ class Message {
   bool get isSingleChat => sessionType == ConversationType.single;
 
   /// Group chat message
-  bool get isGroupChat => sessionType == ConversationType.group || sessionType == ConversationType.superGroup;
+  bool get isGroupChat =>
+      sessionType == ConversationType.group ||
+      sessionType == ConversationType.superGroup;
 }
 
 /// Image message content
@@ -326,13 +366,23 @@ class PictureElem {
   /// Thumbnail picture object
   PictureInfo? snapshotPicture;
 
-  PictureElem({this.sourcePath, this.sourcePicture, this.bigPicture, this.snapshotPicture});
+  PictureElem(
+      {this.sourcePath,
+      this.sourcePicture,
+      this.bigPicture,
+      this.snapshotPicture});
 
   PictureElem.fromJson(Map<String, dynamic> json) {
     sourcePath = json['sourcePath'];
-    sourcePicture = json['sourcePicture'] != null ? new PictureInfo.fromJson(json['sourcePicture']) : null;
-    bigPicture = json['bigPicture'] != null ? new PictureInfo.fromJson(json['bigPicture']) : null;
-    snapshotPicture = json['snapshotPicture'] != null ? new PictureInfo.fromJson(json['snapshotPicture']) : null;
+    sourcePicture = json['sourcePicture'] != null
+        ? new PictureInfo.fromJson(json['sourcePicture'])
+        : null;
+    bigPicture = json['bigPicture'] != null
+        ? new PictureInfo.fromJson(json['bigPicture'])
+        : null;
+    snapshotPicture = json['snapshotPicture'] != null
+        ? new PictureInfo.fromJson(json['snapshotPicture'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -371,7 +421,8 @@ class PictureInfo {
   /// Image URL
   String? url;
 
-  PictureInfo({this.uuid, this.type, this.size, this.width, this.height, this.url});
+  PictureInfo(
+      {this.uuid, this.type, this.size, this.width, this.height, this.url});
 
   PictureInfo.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
@@ -411,7 +462,12 @@ class SoundElem {
   /// Duration in seconds
   int? duration;
 
-  SoundElem({this.uuid, this.soundPath, this.sourceUrl, this.dataSize, this.duration});
+  SoundElem(
+      {this.uuid,
+      this.soundPath,
+      this.sourceUrl,
+      this.dataSize,
+      this.duration});
 
   SoundElem.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
@@ -534,7 +590,8 @@ class FileElem {
   /// File size
   int? fileSize;
 
-  FileElem({this.filePath, this.uuid, this.sourceUrl, this.fileName, this.fileSize});
+  FileElem(
+      {this.filePath, this.uuid, this.sourceUrl, this.fileName, this.fileSize});
 
   FileElem.fromJson(Map<String, dynamic> json) {
     filePath = json['filePath'];
@@ -587,9 +644,13 @@ class AtTextElem {
     }
     isAtSelf = json['isAtSelf'];
     if (json['atUsersInfo'] is List) {
-      atUsersInfo = (json['atUsersInfo'] as List).map((e) => AtUserInfo.fromJson(e)).toList();
+      atUsersInfo = (json['atUsersInfo'] as List)
+          .map((e) => AtUserInfo.fromJson(e))
+          .toList();
     }
-    quoteMessage = null != json['quoteMessage'] ? Message.fromJson(json['quoteMessage']) : null;
+    quoteMessage = null != json['quoteMessage']
+        ? Message.fromJson(json['quoteMessage'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -712,7 +773,9 @@ class MergeElem {
       abstractList = json['abstractList'].cast<String>();
     }
     if (json['multiMessage'] is List) {
-      multiMessage = (json['multiMessage'] as List).map((e) => Message.fromJson(e)).toList();
+      multiMessage = (json['multiMessage'] as List)
+          .map((e) => Message.fromJson(e))
+          .toList();
     }
   }
 
@@ -798,7 +861,9 @@ class AttachedInfoElem {
   });
 
   AttachedInfoElem.fromJson(Map<String, dynamic> json) {
-    groupHasReadInfo = json['groupHasReadInfo'] == null ? null : GroupHasReadInfo.fromJson(json['groupHasReadInfo']);
+    groupHasReadInfo = json['groupHasReadInfo'] == null
+        ? null
+        : GroupHasReadInfo.fromJson(json['groupHasReadInfo']);
     isPrivateChat = json['isPrivateChat'];
     hasReadTime = json['hasReadTime'];
     burnDuration = json['burnDuration'];
@@ -881,13 +946,18 @@ class AdvancedTextElem {
 
   AdvancedTextElem.fromJson(Map<String, dynamic> json) {
     text = json['text'];
-    messageEntityList = json['messageEntityList'] == null ? null : (json['messageEntityList'] as List).map((e) => MessageEntity.fromJson(e)).toList();
+    messageEntityList = json['messageEntityList'] == null
+        ? null
+        : (json['messageEntityList'] as List)
+            .map((e) => MessageEntity.fromJson(e))
+            .toList();
   }
 
   Map<String, dynamic> toJson() {
     final data = Map<String, dynamic>();
     data['text'] = text;
-    data['messageEntityList'] = messageEntityList?.map((e) => e.toJson()).toList();
+    data['messageEntityList'] =
+        messageEntityList?.map((e) => e.toJson()).toList();
     return data;
   }
 }
@@ -963,7 +1033,14 @@ class ReadReceiptInfo {
   /// Conversation type [ConversationType]
   int? sessionType;
 
-  ReadReceiptInfo({this.userID, this.groupID, this.msgIDList, this.readTime, this.msgFrom, this.contentType, this.sessionType});
+  ReadReceiptInfo(
+      {this.userID,
+      this.groupID,
+      this.msgIDList,
+      this.readTime,
+      this.msgFrom,
+      this.contentType,
+      this.sessionType});
 
   ReadReceiptInfo.fromJson(Map<String, dynamic> json) {
     userID = json['uid'] ?? json['userID'];
@@ -1006,7 +1083,8 @@ class OfflinePushInfo {
   /// iOS-specific
   bool? iOSBadgeCount;
 
-  OfflinePushInfo({this.title, this.desc, this.ex, this.iOSPushSound, this.iOSBadgeCount});
+  OfflinePushInfo(
+      {this.title, this.desc, this.ex, this.iOSPushSound, this.iOSBadgeCount});
 
   OfflinePushInfo.fromJson(Map<String, dynamic> json) {
     title = json['title'];
@@ -1134,7 +1212,11 @@ class AdvancedMessage {
   });
 
   AdvancedMessage.fromJson(Map<String, dynamic> json) {
-    messageList = json['messageList'] == null ? null : (json['messageList'] as List).map((e) => Message.fromJson(e)).toList();
+    messageList = json['messageList'] == null
+        ? null
+        : (json['messageList'] as List)
+            .map((e) => Message.fromJson(e))
+            .toList();
     isEnd = json['isEnd'];
     errCode = json['errCode'];
     errMsg = json['errMsg'];

@@ -2991,6 +2991,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     return message.isTextType ||
         message.isAtTextType ||
         message.isTagTextType ||
+        message.isQuoteType ||
         message.isNoticeType;
   }
 

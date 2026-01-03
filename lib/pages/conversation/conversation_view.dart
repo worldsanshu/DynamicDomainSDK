@@ -16,7 +16,7 @@ import 'package:openim_common/openim_common.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'conversation_logic.dart';
-import 'conversation_preview_overlay.dart';
+
 
 class ConversationPage extends StatefulWidget {
   ConversationPage({super.key});
@@ -414,7 +414,6 @@ class _ConversationPageState extends State<ConversationPage> {
       child: Material(
         color: Colors.transparent,
         child: GestureDetector(
-          // onLongPress: () => _showMessagePreview(info),
           child: InkWell(
             onTap: () => logic.toChat(conversationInfo: info),
             child: Row(
@@ -513,19 +512,8 @@ class _ConversationPageState extends State<ConversationPage> {
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              patterns: <MatchPattern>[
-                                MatchPattern(
-                                  type: PatternType.at,
-                                  style: TextStyle(
-                                    fontFamily: 'FilsonPro',
-                                    fontSize: 14.sp,
-                                    fontWeight: logic.getUnreadCount(info) > 0
-                                        ? FontWeight.w600
-                                        : FontWeight.w400,
-                                    color: const Color(0xFF6B7280),
-                                  ),
-                                ),
-                              ],
+                              // Use normal model to disable @mentions highlighting in content
+                              model: TextModel.normal,
                             ),
                           ),
                           8.horizontalSpace,
@@ -547,22 +535,6 @@ class _ConversationPageState extends State<ConversationPage> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Future<void> _showMessagePreview(ConversationInfo info) async {
-    final messages = await logic.getPreviewMessages(info);
-
-    if (!mounted) return;
-
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (context) => ConversationPreviewOverlay(
-        conversationInfo: info,
-        messages: messages,
-        onTapPreview: () => logic.toChat(conversationInfo: info),
       ),
     );
   }
