@@ -188,7 +188,6 @@ class CreateGroupPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Spacer(),
                 ],
               ),
             ),
