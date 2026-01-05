@@ -13,6 +13,7 @@ class PasswordField extends StatefulWidget {
   final Function(String)? onFieldSubmitted;
   final String? label;
   final String? emptyErrorLabel;
+  final bool? isNew;
 
   /// Key to access this field's FormFieldState for external validation trigger
   final GlobalKey<FormFieldState>? formFieldKey;
@@ -32,6 +33,7 @@ class PasswordField extends StatefulWidget {
     this.onPasswordChange,
     this.label,
     this.emptyErrorLabel,
+    this.isNew=false,
   });
 
   @override
@@ -92,7 +94,9 @@ class _PasswordFieldState extends State<PasswordField> {
             }
             return widget.compareController != null
                 ? StrRes.plsEnterConfirmPwd
-                : StrRes.plsEnterPwd;
+                : ((widget.isNew ?? false)
+                    ?StrRes.plsEnterNewPwd:
+                    StrRes.plsEnterPwd);
           }
 
           if (widget.compareController != null &&

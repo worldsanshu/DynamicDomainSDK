@@ -63,6 +63,7 @@ class ResetPasswordPage extends StatelessWidget {
                             validateFormat: true,
                             label: StrRes.newPwd,
                             isRequired: true,
+                            isNew: true,
                             onPasswordChange: () {
                               // Only re-validate confirm password if it already has a value
                               if (logic.confirmPasswordCtrl.text.isNotEmpty) {
