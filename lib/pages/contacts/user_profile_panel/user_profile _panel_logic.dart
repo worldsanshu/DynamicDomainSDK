@@ -444,7 +444,7 @@ class UserProfilePanelLogic extends GetxController {
 
   void toChat() {
     conversationLogic.toChat(
-      offUntilHome: true,
+      offUntilHome: false,
       userID: userInfo.value.userID,
       nickname: userInfo.value.showName,
       faceURL: userInfo.value.faceURL,
