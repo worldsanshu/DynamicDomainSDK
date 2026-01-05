@@ -202,9 +202,16 @@ class ClientConfigController extends GetxController {
 
   /// 判断是否显示成员进群消息：
   /// - 如果全局设置开启，则总是显示；
+  /// - 如果当前用户是群主/管理员，则总是显示；
   /// - 如果是自己加入群聊或被邀请进群，才显示；
-  bool shouldShowMemberJoinedMessage(Message message) {
+  bool shouldShowMemberJoinedMessage(Message message,
+      [int? groupMemberRoleLevel]) {
     if (showMemberJoinedMessages) {
+      return true;
+    }
+
+    // Admin/Owner should always see join messages
+    if (isAdminOrOwner(groupMemberRoleLevel)) {
       return true;
     }
 
@@ -289,7 +296,7 @@ class ClientConfigController extends GetxController {
         return !shouldShowMemberKickedMessages(message);
       case MessageType.memberEnterNotification:
       case MessageType.memberInvitedNotification:
-        return !shouldShowMemberJoinedMessage(message);
+        return !shouldShowMemberJoinedMessage(message, groupMemberRoleLevel);
       case MessageType.revokeMessageNotification:
         return !shouldShowRevokeMessage(message);
       case MessageType.memberQuitNotification:

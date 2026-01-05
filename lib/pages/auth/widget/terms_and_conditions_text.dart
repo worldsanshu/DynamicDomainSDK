@@ -31,16 +31,16 @@ class TermsAndConditionsText extends StatelessWidget {
                 text: StrRes.termsAgree,
                 style: TextStyle(
                   fontFamily: 'FilsonPro',
-                  fontSize: 12.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xFF6B7280),
+                  color: const Color(0xFF6B7280)
                 ),
                 children: [
                   TextSpan(
                     text: StrRes.userAgreementDoc,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: primaryColor,
                     ),
@@ -53,7 +53,7 @@ class TermsAndConditionsText extends StatelessWidget {
                     text: StrRes.and,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
                       color: const Color(0xFF6B7280),
                     ),
@@ -62,7 +62,7 @@ class TermsAndConditionsText extends StatelessWidget {
                     text: StrRes.privacyPolicyDoc,
                     style: TextStyle(
                       fontFamily: 'FilsonPro',
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       color: primaryColor,
                     ),
