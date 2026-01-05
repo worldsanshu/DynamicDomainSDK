@@ -93,7 +93,7 @@ class _PasswordFieldState extends State<PasswordField> {
               return widget.emptyErrorLabel;
             }
             return widget.compareController != null
-                ? StrRes.plsEnterConfirmPwd
+                ? StrRes.plsEnterConfirmPassword
                 : ((widget.isNew ?? false)
                     ?StrRes.plsEnterNewPwd:
                     StrRes.plsEnterPwd);
