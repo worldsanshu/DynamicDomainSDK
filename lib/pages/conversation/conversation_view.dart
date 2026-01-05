@@ -413,7 +413,6 @@ class _ConversationPageState extends State<ConversationPage> {
       child: Material(
         color: Colors.transparent,
         child: GestureDetector(
-          onDoubleTap: () => logic.toChat(conversationInfo: info),
           child: InkWell(
             onTap: () => logic.toChat(conversationInfo: info),
             child: Row(

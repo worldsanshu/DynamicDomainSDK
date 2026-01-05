@@ -419,6 +419,8 @@ const Map<String, String> en_US = {
   "deleteFailed": "Delete Failed",
   "removedSuccessfully": "Removed Successfully",
   "removedFailed": "Removal Failed",
+  "transferSuccessfully": "Transferred Successfully",
+  "transferFailed": "Transfer Failed",
   "confirm": "Confirm",
   "groupVerification": "Group Verification",
   "friendVerification": "Friend Verification",

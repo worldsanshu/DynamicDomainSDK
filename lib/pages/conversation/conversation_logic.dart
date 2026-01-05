@@ -63,6 +63,7 @@ class ConversationLogic extends SuperController {
   bool reInstall = false;
 
   bool _hasLoadedOnce = false;
+  bool _isNavigating = false;
 
   final announcement = Rx<Announcement?>(null);
   final systemAnnouncementList = <Announcement>[].obs;
@@ -1034,6 +1035,8 @@ class ConversationLogic extends SuperController {
     ConversationInfo? conversationInfo,
     Message? searchMessage,
   }) async {
+    if (_isNavigating) return;
+    _isNavigating = true;
     try {
       if (conversationInfo == null) {
         conversationInfo = await _createConversation(
@@ -1095,6 +1098,8 @@ class ConversationLogic extends SuperController {
       print('Error: $e');
       print('Stack: $s');
       IMViews.showToast('Failed to open chat: $e');
+    } finally {
+      _isNavigating = false;
     }
   }
 

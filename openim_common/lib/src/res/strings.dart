@@ -738,6 +738,10 @@ class StrRes {
 
   static String get removedFailed => 'removedFailed'.tr;
 
+  static String get transferSuccessfully => 'transferSuccessfully'.tr;
+
+  static String get transferFailed => 'transferFailed'.tr;
+
   static String get groupVerification => 'groupVerification'.tr;
 
   static String get friendVerification => 'friendVerification'.tr;

@@ -398,6 +398,8 @@ const Map<String, String> zh_CN = {
   "deleteFailed": "删除失败",
   "removedSuccessfully": "移除成功",
   "removedFailed": "移除失败",
+  "transferSuccessfully": "转让成功",
+  "transferFailed": "转让失败",
   "confirm": "确认",
   "groupVerification": "群聊验证",
   "friendVerification": "好友验证",

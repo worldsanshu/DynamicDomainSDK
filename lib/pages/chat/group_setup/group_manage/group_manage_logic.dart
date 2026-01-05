@@ -186,10 +186,17 @@ class GroupManageLogic extends GetxController {
     );
     if (result is GroupMembersInfo) {
       await LoadingView.singleton.wrap(
-        asyncFunction: () => OpenIM.iMManager.groupManager.transferGroupOwner(
+        asyncFunction: () => OpenIM.iMManager.groupManager
+            .transferGroupOwner(
           groupID: groupInfo.value.groupID,
           userID: result.userID!,
-        ),
+        )
+            .then((value) {
+          IMViews.showToast(StrRes.transferSuccessfully,type:1);
+        }).catchError((e) {
+          IMViews.showToast(StrRes.transferFailed);
+          throw e;
+        }),
       );
       groupInfo.update((val) {
         val?.ownerUserID = result.userID;
