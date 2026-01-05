@@ -19,41 +19,41 @@ class ReportDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GradientScaffold(
-        title: StrRes.reportSubmit,
-        subtitle: logic.reportReason.value,
-        showBackButton: true,
-        trailing: CustomButton(
-          onTap: logic.submitReport,
-          icon: CupertinoIcons.paperplane,
-          color: Colors.white,
+      title: StrRes.reportSubmit,
+      subtitle: logic.reportReason.value,
+      showBackButton: true,
+      trailing: CustomButton(
+        onTap: logic.submitReport,
+        icon: CupertinoIcons.paperplane,
+        color: Colors.white,
+      ),
+      scrollable: false,
+      body: ClipRRect(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(30.r),
         ),
-        scrollable: false,
-        body: ClipRRect(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(30.r),
-          ),
-          child: Container(
-            color: const Color(0xFFF9FAFB),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: EdgeInsets.all(16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    16.verticalSpace,
-                    _buildReportReason(),
-                    16.verticalSpace,
-                    _buildDescriptionInput(),
-                    16.verticalSpace,
-                    _buildImageSection(),
-                    24.verticalSpace,
-                  ],
-                ),
+        child: Container(
+          color: const Color(0xFFF9FAFB),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  16.verticalSpace,
+                  _buildReportReason(),
+                  16.verticalSpace,
+                  _buildDescriptionInput(),
+                  16.verticalSpace,
+                  _buildImageSection(),
+                  24.verticalSpace,
+                ],
               ),
             ),
           ),
         ),
+      ),
     );
   }
 
@@ -267,28 +267,14 @@ class ReportDetailPage extends StatelessWidget {
                     ),
                     10.horizontalSpace,
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            StrRes.reportImages,
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF374151),
-                            ),
-                          ),
-                          Text(
-                            '${StrRes.optional} (Max: 5)',
-                            style: TextStyle(
-                              fontFamily: 'FilsonPro',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF9CA3AF),
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        StrRes.reportImages,
+                        style: TextStyle(
+                          fontFamily: 'FilsonPro',
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF374151),
+                        ),
                       ),
                     ),
                     Obx(() => Container(
