@@ -417,6 +417,8 @@ const Map<String, String> en_US = {
       "Cannot view member profile. Group settings restrict viewing non-friend profiles.",
   "deleteSuccessfully": "Delete Successfully",
   "deleteFailed": "Delete Failed",
+  "removedSuccessfully": "Removed Successfully",
+  "removedFailed": "Removal Failed",
   "confirm": "Confirm",
   "groupVerification": "Group Verification",
   "friendVerification": "Friend Verification",

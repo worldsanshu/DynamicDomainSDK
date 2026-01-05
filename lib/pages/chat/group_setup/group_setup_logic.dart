@@ -904,7 +904,10 @@ class GroupSetupLogic extends GetxController {
             reason: 'Get out baby',
           ),
         );
-      } catch (_) {}
+        IMViews.showToast(StrRes.removedSuccessfully, type: 1);
+      } catch (e) {
+        IMViews.showToast(StrRes.removedFailed);
+      }
       refreshMemberList();
     }
   }

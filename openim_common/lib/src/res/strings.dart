@@ -734,6 +734,10 @@ class StrRes {
 
   static String get deleteFailed => 'deleteFailed'.tr;
 
+  static String get removedSuccessfully => 'removedSuccessfully'.tr;
+
+  static String get removedFailed => 'removedFailed'.tr;
+
   static String get groupVerification => 'groupVerification'.tr;
 
   static String get friendVerification => 'friendVerification'.tr;

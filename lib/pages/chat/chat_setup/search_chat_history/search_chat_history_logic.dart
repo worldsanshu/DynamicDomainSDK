@@ -54,9 +54,9 @@ class SearchChatHistoryLogic extends GetxController {
   clearInput() {
     searchKey.value = "";
     focusNode.requestFocus();
-    if(!isNotDate){
+    if (!isNotDate) {
       searchByTime();
-    }else{
+    } else {
       messageList.clear();
     }
   }
@@ -66,42 +66,8 @@ class SearchChatHistoryLogic extends GetxController {
   bool get isNotKey => searchKey.value.isEmpty;
   bool get isNotDate => dateTime.value.secondsSinceEpoch <= 0;
 
-  void searchByTime() async {
-    try {
-      // Use a local variable for search calculation, don't modify the stored date
-      final searchDate = dateTime.value.add(const Duration(days: 1));
-      // 获取0时的时间戳
-      var dateZeroTime =
-          DateTime(searchDate.year, searchDate.month, searchDate.day)
-              .secondsSinceEpoch;
-      var timeDiff = DateTime.now().secondsSinceEpoch - dateZeroTime;
-      var result = await OpenIM.iMManager.messageManager.searchLocalMessages(
-        conversationID: conversationInfo.conversationID,
-        //Start time point for searching. Defaults to 0, meaning searching from now. UTC timestamp, in seconds
-        searchTimePosition: dateZeroTime,
-        // 搜索多久时间，秒为单位
-        searchTimePeriod: 24 * 60 * 60,
-        pageIndex: pageIndex = 1,
-        count: pageSize,
-        messageTypeList: [
-          MessageType.text,
-          MessageType.atText,
-          MessageType.quote
-        ],
-      );
-      if (result.totalCount == 0) {
-        messageList.clear();
-      } else {
-        var item = result.searchResultItems!.first;
-        messageList.assignAll(item.messageList!);
-      }
-    } finally {
-      if (messageList.length < pageIndex * pageSize) {
-        refreshController.loadNoData();
-      } else {
-        refreshController.loadComplete();
-      }
-    }
+  void searchByTime() {
+    search();
   }
 
   void search() async {
@@ -147,6 +113,18 @@ class SearchChatHistoryLogic extends GetxController {
   /// Fetch a page of search results, including a manual fallback for quote replies.
   Future<_SearchPageResult> _getMessageSearchPage(int pageIndex) async {
     final lowerQuery = searchKey.value.toLowerCase();
+
+    // Calculate date filter parameters if a date is selected
+    int? searchTimePosition;
+    int? searchTimePeriod;
+    if (!isNotDate) {
+      final searchDate = dateTime.value.add(const Duration(days: 1));
+      searchTimePosition =
+          DateTime(searchDate.year, searchDate.month, searchDate.day)
+              .secondsSinceEpoch;
+      searchTimePeriod = 24 * 60 * 60; // 1 day in seconds
+    }
+
     final result = await OpenIM.iMManager.messageManager.searchLocalMessages(
       conversationID: conversationInfo.conversationID,
       keywordList: searchKey.value.isNotEmpty ? [searchKey.value] : [],
@@ -155,6 +133,8 @@ class SearchChatHistoryLogic extends GetxController {
         MessageType.atText,
         MessageType.quote,
       ],
+      searchTimePosition: searchTimePosition ?? 0,
+      searchTimePeriod: searchTimePeriod ?? 0,
       pageIndex: pageIndex,
       count: pageSize,
     );
@@ -181,6 +161,8 @@ class SearchChatHistoryLogic extends GetxController {
       query: searchKey.value,
       pageIndex: pageIndex,
       excludeMessageIds: _collectMessageIds(sdkMessages),
+      searchTimePosition: searchTimePosition,
+      searchTimePeriod: searchTimePeriod,
     );
 
     final merged = _mergeAndSortMessages(sdkMessages, quoteResult.messages);
@@ -196,6 +178,8 @@ class SearchChatHistoryLogic extends GetxController {
     required String query,
     required int pageIndex,
     required Set<String> excludeMessageIds,
+    int? searchTimePosition,
+    int? searchTimePeriod,
   }) async {
     final lowerQuery = query.toLowerCase();
     final targetStart = (pageIndex - 1) * pageSize;
@@ -210,6 +194,8 @@ class SearchChatHistoryLogic extends GetxController {
         conversationID: conversationInfo.conversationID,
         keywordList: const [], // Avoid SDK keyword bug for quote text
         messageTypeList: const [MessageType.quote],
+        searchTimePosition: searchTimePosition ?? 0,
+        searchTimePeriod: searchTimePeriod ?? 0,
         pageIndex: fetchPage,
         count: pageSize,
       );

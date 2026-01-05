@@ -396,6 +396,8 @@ const Map<String, String> zh_CN = {
   "cannotViewMemberProfile": "无法查看成员资料。群组设置禁止查看非好友资料。",
   "deleteSuccessfully": "删除成功",
   "deleteFailed": "删除失败",
+  "removedSuccessfully": "移除成功",
+  "removedFailed": "移除失败",
   "confirm": "确认",
   "groupVerification": "群聊验证",
   "friendVerification": "好友验证",
