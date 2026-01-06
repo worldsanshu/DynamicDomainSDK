@@ -1054,6 +1054,8 @@ class ConversationLogic extends SuperController {
         oldS.chatAddr != newS.chatAddr;
   }
 
+  DateTime? _lastToChatTime;
+
   /// 进入聊天页面
   void toChat({
     bool offUntilHome = true,
@@ -1066,6 +1068,13 @@ class ConversationLogic extends SuperController {
     Message? searchMessage,
   }) async {
     try {
+      if (_lastToChatTime != null &&
+          DateTime.now().difference(_lastToChatTime!) <
+              const Duration(milliseconds: 500)) {
+        return;
+      }
+      _lastToChatTime = DateTime.now();
+
       if (conversationInfo == null) {
         conversationInfo = await _createConversation(
           sourceID: userID ?? groupID!,
