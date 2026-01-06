@@ -578,6 +578,28 @@ class ConversationLogic extends SuperController {
     return prefix;
   }
 
+  final _fetchingRoles = <String>{};
+
+  void _fetchGroupRole(ConversationInfo info) {
+    final groupID = info.groupID;
+    if (groupID == null || _fetchingRoles.contains(groupID)) return;
+    _fetchingRoles.add(groupID);
+
+    OpenIM.iMManager.groupManager.getGroupMembersInfo(
+      groupID: groupID,
+      userIDList: [OpenIM.iMManager.userID],
+    ).then((list) {
+      _fetchingRoles.remove(groupID);
+      if (list.isNotEmpty) {
+        final memberInfo = list.first;
+        info.tempRoleLevel = memberInfo.roleLevel ?? GroupRoleLevel.member;
+        this.list.refresh();
+      }
+    }).catchError((_) {
+      _fetchingRoles.remove(groupID);
+    });
+  }
+
   /// 解析消息内容
   String getContent(ConversationInfo info) {
     try {
@@ -589,7 +611,11 @@ class ConversationLogic extends SuperController {
 
       bool isGroup = info.isGroupChat;
       if (isGroup) {
-        if (clientConfigLogic.isMessageHidden(msg)) {
+        if (clientConfigLogic.isMessageHidden(msg, info.tempRoleLevel)) {
+          // If hidden, try to fetch role if not known yet (in case we are Admin/Owner)
+          if (info.tempRoleLevel == null) {
+            _fetchGroupRole(info);
+          }
           return '-';
         }
       }

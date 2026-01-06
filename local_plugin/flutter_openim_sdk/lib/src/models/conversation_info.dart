@@ -65,6 +65,9 @@ class ConversationInfo {
   // Group @ type, which includes @ all, @ individual, and announcement prompts
   int? groupAtType;
 
+  // Temporary field to store role level for UI logic (not from JSON)
+  int? tempRoleLevel;
+
   // Constructor to create a ConversationInfo object
   ConversationInfo({
     required this.conversationID,
@@ -89,7 +92,8 @@ class ConversationInfo {
     this.msgDestructTime,
   });
 
-  ConversationInfo.fromJson(Map<String, dynamic> json) : conversationID = json['conversationID'] {
+  ConversationInfo.fromJson(Map<String, dynamic> json)
+      : conversationID = json['conversationID'] {
     conversationType = json['conversationType'];
     userID = json['userID'];
     groupID = json['groupID'];
@@ -147,14 +151,19 @@ class ConversationInfo {
   bool get isSingleChat => conversationType == ConversationType.single;
 
   // Check if it's a group chat
-  bool get isGroupChat => conversationType == ConversationType.group || conversationType == ConversationType.superGroup;
+  bool get isGroupChat =>
+      conversationType == ConversationType.group ||
+      conversationType == ConversationType.superGroup;
 
   // Check if it's a valid conversation (not in a group if isNotInGroup is true)
   bool get isValid => isSingleChat || (isGroupChat && !isNotInGroup!);
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is ConversationInfo && runtimeType == other.runtimeType && conversationID == other.conversationID;
+      identical(this, other) ||
+      other is ConversationInfo &&
+          runtimeType == other.runtimeType &&
+          conversationID == other.conversationID;
 
   @override
   int get hashCode => conversationID.hashCode;
