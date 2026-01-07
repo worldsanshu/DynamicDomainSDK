@@ -55,7 +55,7 @@ class Config {
     iOSPushSound: '+1',
   );
 
-  static const String defaultInviteCode = "150904";
+  static const String defaultInviteCode = "123789";
 
   /// 二维码：scheme
   static const friendScheme = "x.imserver.xyz/addFriend/";
@@ -77,15 +77,27 @@ class Config {
 
   static const scrambleKey = 'scrambleKey';
 
-  static const iosAppId = '6755507309';
+  static const iosAppId = '_';
 
   static String get contactLink => '$mainGatewayDomain/contact';
 
   static String get privacyPolicyLink =>
-      'https://www.tingjunge.com/static/privacy-policy.html';
+      'https://www.google.com/';
 
   static String get serviceAgreementLink =>
-      'https://www.tingjunge.com/static/service-agreement.html';
+      'https://www.google.com/';
+
+  static String get personalInfoListLink =>
+      'https://www.google.com/';
+
+  static String get thirdPartSdksLink =>
+      'https://www.google.com/';
+
+  /// 工信部ICP备案号
+  static const String icpRecordNumber = "鄂ICP备xxxxxx";
+
+  /// 工信部ICP备案查询地址
+  static const String icpRecordQueryUrl = "https://beian.miit.gov.cn/";
 
   // trtc
   static const trtcAppID = 1600107550;
@@ -93,10 +105,10 @@ class Config {
       'https://im-statics.oss-cn-shenzhen.aliyuncs.com/user_1.png';
 
   // getui
-  static const gtAppID = 'gNpSbOZQsW7y3gZk1WAmi6';
-  static const gtAppKey = 'c8oGq9K9mF6205bJhGyU18';
-  static const gtAppSecret = 'd2C6I1ZTgx8ORcJR7hFFD';
-  static const gtMasterSecret = 'mnqcAqvvSb9hknCiEN15v2';
+  static const gtAppID = '_';
+  static const gtAppKey = '_';
+  static const gtAppSecret = '_';
+  static const gtMasterSecret = '_';
   static const gtAliasAsn = 'cnl';
 
   static int get logLevel {

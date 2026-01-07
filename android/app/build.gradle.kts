@@ -71,30 +71,30 @@ android {
 
         manifestPlaceholders +=
                 mapOf(
-                        "GETUI_APPID" to "gNpSbOZQsW7y3gZk1WAmi6",
+                        "GETUI_APPID" to "",
                         // 下面是多厂商配置，如需要开通使用请联系技术支持
 
                         // 小米
-                        "XIAOMI_APP_ID" to "2882303761520473644",
-                        "XIAOMI_APP_KEY" to "5202047361644",
+                        "XIAOMI_APP_ID" to "",
+                        "XIAOMI_APP_KEY" to "",
 
                         // 魅族
                         "MEIZU_APP_ID" to "",
                         "MEIZU_APP_KEY" to "",
 
                         // 华为
-                        "HUAWEI_APP_ID" to "116015943",
+                        "HUAWEI_APP_ID" to "",
 
                         // OPPO
-                        "OPPO_APP_KEY" to "511a10b12e104561a69b66f6c5446b10",
-                        "OPPO_APP_SECRET" to "e6a28584e9f9483ca9b2b88dba302b1c",
+                        "OPPO_APP_KEY" to "",
+                        "OPPO_APP_SECRET" to "",
 
                         // VIVO
-                        "VIVO_APP_ID" to "105998016",
-                        "VIVO_APP_KEY" to "625075cbed80a7e9d14fdf2b11879e3d",
+                        "VIVO_APP_ID" to "",
+                        "VIVO_APP_KEY" to "",
 
                         // 荣耀
-                        "HONOR_APP_ID" to "104531813"
+                        "HONOR_APP_ID" to ""
                 )
     }
 
