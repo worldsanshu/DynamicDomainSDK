@@ -54,9 +54,6 @@ class GatewayConfigController extends GetxController {
   bool get enableClipboardDomainCheck =>
       appConfig['enableClipboardDomainCheck'] == true;
 
-  bool get confirmNoInviteCodeOnRegister =>
-      appConfig['confirmNoInviteCodeOnRegister'] == true;
-
   bool get enableNetworkCheckAndFallback =>
       appConfig['enableNetworkCheckAndFallback'] == true;
 
