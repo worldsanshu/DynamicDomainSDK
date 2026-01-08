@@ -11,7 +11,6 @@ import 'package:crypto/crypto.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit_config.dart';
 import 'package:ffmpeg_kit_flutter_new/ffprobe_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 import 'package:ffmpeg_kit_flutter_new/session_state.dart';
@@ -190,91 +189,187 @@ class IMUtils {
 
   /// 获取视频缩略图
   static Future<File> getVideoThumbnail(File file) async {
-    final path = file.path;
-    final names = path.substring(path.lastIndexOf("/") + 1).split('.');
-    final name = '${names.first}.png';
-    final directory = await createTempDir(dir: 'video');
-    final targetPath = '$directory/$name';
+    Logger.print('========== getVideoThumbnail START ==========');
+    Logger.print('Input file: ${file.path}');
+    Logger.print('Input file exists: ${file.existsSync()}');
 
+    final path = file.path;
+    // Get the full filename without extension, handling multiple dots
+    final fileName = path.substring(path.lastIndexOf("/") + 1);
+    final lastDotIndex = fileName.lastIndexOf('.');
+    final nameWithoutExt =
+        lastDotIndex > 0 ? fileName.substring(0, lastDotIndex) : fileName;
+    // Sanitize filename: replace spaces and special chars for thumbnail name
+    final sanitizedName = nameWithoutExt.replaceAll(RegExp(r'[^\w\d-]'), '_');
+    final thumbnailName = '$sanitizedName.png';
+
+    Logger.print('Original filename: $fileName');
+    Logger.print('Thumbnail name: $thumbnailName');
+
+    final directory = await createTempDir(dir: 'video');
+    final targetPath = '$directory/$thumbnailName';
+    Logger.print('Thumbnail target path: $targetPath');
+
+    // Quote the paths to handle spaces and special characters
     final String ffmpegCommand =
-        '-i $path -ss 0 -vframes 1 -q:v 15 -y $targetPath';
-    final session = await FFmpegKit.execute(ffmpegCommand);
-
-    final state =
-        FFmpegKitConfig.sessionStateToString(await session.getState());
-    final returnCode = await session.getReturnCode();
-
-    if (state == SessionState.failed || !ReturnCode.isSuccess(returnCode)) {
-      Logger().printError(
-          info: "Command failed. Please check output for the details.");
-    }
-
-    session.cancel();
-
-    return File(targetPath);
-  }
-
-  ///  compress video
-  static Future<File?> compressVideoAndGetFile(File file) async {
-    final path = file.path;
-    final name = path.substring(path.lastIndexOf("/") + 1);
-    final directory = await createTempDir(dir: 'video');
-    final targetPath = '$directory/$name';
-
-    final output = await FFprobeKit.getMediaInformation(path);
-    final streams = output.getMediaInformation()?.getStreams();
-    final isH264 = streams
-            ?.any((element) => element.getCodec()?.contains('h264') == true) ??
-        false;
-    final size = output.getMediaInformation()?.getSize() ?? '0';
-    output.cancel();
-
-    final audioStream = streams
-        ?.firstWhereOrNull((e) => e.getType()?.contains('audio') == true);
-    final isAAC = audioStream?.getCodec()?.toLowerCase() != 'aac';
-
-    // Compression is time consuming.
-    String ffmpegCommand =
-        '-i $path -preset ultrafast -tune fastdecode -threads:v 16 -threads:a 1 -c:a aac -strict -2 -crf 20 -c:v libx264 -y '
-        '$targetPath';
-
-    if (File(targetPath).existsSync() && isH264) {
-      if (isAAC) {
-        return File(targetPath);
-      } else {
-        ffmpegCommand =
-            '-i $path -c:v copy -c:a aac -q:a 2 -threads 4 $targetPath';
-      }
-    }
-
-    // By default, everything below 1024M is uncompressed. If you want to compress it, you can change the value size.
-    if (int.parse(size) < 1024 * 1024 * 1024 && isH264) {
-      if (isAAC) {
-        file.copySync(targetPath);
-
-        return File(targetPath);
-      } else {
-        ffmpegCommand =
-            '-i $path -c:v copy -c:a aac -q:a 2 -threads 4 $targetPath';
-      }
-    }
+        '-i "$path" -ss 0 -vframes 1 -q:v 15 -y "$targetPath"';
+    Logger.print('FFmpeg command: $ffmpegCommand');
 
     final session = await FFmpegKit.execute(ffmpegCommand);
 
     final state = await session.getState();
     final returnCode = await session.getReturnCode();
+    Logger.print('FFmpeg state: $state');
+    Logger.print('FFmpeg return code: ${returnCode?.getValue()}');
 
     if (state == SessionState.failed || !ReturnCode.isSuccess(returnCode)) {
+      final logs = await session.getOutput();
+      Logger.print('FFmpeg failed. Logs: $logs');
       Logger().printError(
-          info: "Command failed. Please check output for the details.");
-      file.copySync(targetPath);
-
-      return File(targetPath);
+          info:
+              "getVideoThumbnail: Command failed. Please check output for the details.");
     }
 
     session.cancel();
 
-    return File(targetPath);
+    final resultFile = File(targetPath);
+    Logger.print('Thumbnail file exists: ${resultFile.existsSync()}');
+    Logger.print('========== getVideoThumbnail END ==========');
+
+    return resultFile;
+  }
+
+  ///  compress video
+  static Future<File?> compressVideoAndGetFile(File file) async {
+    Logger.print('========== compressVideoAndGetFile START ==========');
+    Logger.print('Input file path: ${file.path}');
+    Logger.print('Input file exists: ${file.existsSync()}');
+
+    try {
+      final path = file.path;
+      final name = path.substring(path.lastIndexOf("/") + 1);
+      Logger.print('Video file name: $name');
+
+      final directory = await createTempDir(dir: 'video');
+      Logger.print('Target directory: $directory');
+
+      final targetPath = '$directory/$name';
+      Logger.print('Target path: $targetPath');
+
+      Logger.print('Getting media information...');
+      final output = await FFprobeKit.getMediaInformation(path);
+      final mediaInfo = output.getMediaInformation();
+
+      if (mediaInfo == null) {
+        Logger.print('ERROR: Could not get media information');
+        // Try to copy the original file as fallback
+        try {
+          file.copySync(targetPath);
+          Logger.print('Copied original file as fallback');
+          return File(targetPath);
+        } catch (e) {
+          Logger.print('ERROR copying file: $e');
+          return file; // Return original file
+        }
+      }
+
+      final streams = mediaInfo.getStreams();
+      Logger.print('Number of streams: ${streams.length}');
+
+      final isH264 = streams
+          .any((element) => element.getCodec()?.contains('h264') == true);
+      Logger.print('Is H264: $isH264');
+
+      final size = mediaInfo.getSize() ?? '0';
+      Logger.print('File size: $size bytes');
+      output.cancel();
+
+      final audioStream = streams
+          .firstWhereOrNull((e) => e.getType()?.contains('audio') == true);
+      final audioCodec = audioStream?.getCodec()?.toLowerCase();
+      Logger.print('Audio codec: $audioCodec');
+
+      // hasNonAacAudio = true means audio is NOT AAC and needs conversion
+      final hasNonAacAudio = audioCodec != null && audioCodec != 'aac';
+      Logger.print('Has non-AAC audio: $hasNonAacAudio');
+
+      // Compression is time consuming.
+      String ffmpegCommand =
+          '-i "$path" -preset ultrafast -tune fastdecode -threads:v 16 -threads:a 1 -c:a aac -strict -2 -crf 20 -c:v libx264 -y '
+          '"$targetPath"';
+
+      final targetFileExists = File(targetPath).existsSync();
+      Logger.print('Target file exists: $targetFileExists');
+
+      if (targetFileExists && isH264) {
+        if (!hasNonAacAudio) {
+          Logger.print('Returning existing cached file (H264 with AAC audio)');
+          return File(targetPath);
+        } else {
+          Logger.print('Need to re-encode audio to AAC');
+          ffmpegCommand =
+              '-i "$path" -c:v copy -c:a aac -q:a 2 -threads 4 -y "$targetPath"';
+        }
+      }
+
+      // By default, everything below 1024M is uncompressed. If you want to compress it, you can change the value size.
+      final fileSizeBytes = int.tryParse(size) ?? 0;
+      if (fileSizeBytes < 1024 * 1024 * 1024 && isH264) {
+        if (!hasNonAacAudio) {
+          Logger.print('Copying original file (H264 with AAC, size < 1GB)');
+          try {
+            file.copySync(targetPath);
+            Logger.print('File copied successfully to: $targetPath');
+            return File(targetPath);
+          } catch (e) {
+            Logger.print('ERROR copying file: $e');
+            return file; // Return original file if copy fails
+          }
+        } else {
+          Logger.print('Need to re-encode audio only (H264, size < 1GB)');
+          ffmpegCommand =
+              '-i "$path" -c:v copy -c:a aac -q:a 2 -threads 4 -y "$targetPath"';
+        }
+      }
+
+      Logger.print('Executing FFmpeg command: $ffmpegCommand');
+      final session = await FFmpegKit.execute(ffmpegCommand);
+
+      final state = await session.getState();
+      final returnCode = await session.getReturnCode();
+      Logger.print('FFmpeg state: $state');
+      Logger.print('FFmpeg return code: ${returnCode?.getValue()}');
+
+      if (state == SessionState.failed || !ReturnCode.isSuccess(returnCode)) {
+        Logger.print(
+            'FFmpeg command failed, copying original file as fallback');
+        final logs = await session.getOutput();
+        Logger.print('FFmpeg logs: $logs');
+
+        try {
+          file.copySync(targetPath);
+          Logger.print('Fallback copy successful');
+          return File(targetPath);
+        } catch (e) {
+          Logger.print('ERROR copying file: $e');
+          return file; // Return original file
+        }
+      }
+
+      session.cancel();
+
+      final resultFile = File(targetPath);
+      Logger.print(
+          'Compression successful. Result file exists: ${resultFile.existsSync()}');
+      Logger.print('========== compressVideoAndGetFile END ==========');
+
+      return resultFile;
+    } catch (e, s) {
+      Logger.print('========== compressVideoAndGetFile ERROR ==========');
+      Logger.print('Exception: $e');
+      Logger.print('Stack trace: $s');
+      return file; // Return original file on any error
+    }
   }
 
   ///  compress file and get file.

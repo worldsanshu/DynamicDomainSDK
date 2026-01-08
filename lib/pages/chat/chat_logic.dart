@@ -1273,9 +1273,14 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
               return true;
             }));
     if (null != assets) {
-      // Process assets sequentially to avoid concurrent video compression issues on iOS
-      for (var asset in assets) {
-        await _handleAssets(asset);
+      LoadingView.singleton.show();
+      try {
+        // Process assets sequentially to avoid concurrent video compression issues on iOS
+        for (var asset in assets) {
+          await _handleAssets(asset);
+        }
+      } finally {
+        LoadingView.singleton.dismiss();
       }
     }
   }
@@ -1299,7 +1304,14 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
         },
       ),
     );
-    _handleAssets(entity);
+    if (entity != null) {
+      LoadingView.singleton.show();
+      try {
+        await _handleAssets(entity);
+      } finally {
+        LoadingView.singleton.dismiss();
+      }
+    }
   }
 
   /// 打开系统文件浏览器
@@ -1312,34 +1324,62 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     );
 
     if (result != null) {
-      for (var file in result.files) {
-        // String? mimeType = IMUtils.getMediaType(file.name);
-        String? mimeType = lookupMimeType(file.name);
-        if (mimeType != null) {
-          if (IMUtils.allowImageType(mimeType)) {
-            sendPicture(path: file.path!);
-            continue;
-          } else if (mimeType.contains('video/')) {
-            try {
-              final videoPath = file.path!;
-              final mediaInfo = await VideoCompress.getMediaInfo(videoPath);
-              var thumbnailFile = await VideoCompress.getFileThumbnail(
-                videoPath,
-                quality: 60,
-              );
-              sendVideo(
-                videoPath: videoPath,
-                mimeType: mimeType,
-                duration: mediaInfo.duration!.toInt(),
-                thumbnailPath: thumbnailFile.path,
-              );
+      LoadingView.singleton.show();
+      try {
+        for (var file in result.files) {
+          // String? mimeType = IMUtils.getMediaType(file.name);
+          String? mimeType = lookupMimeType(file.name);
+          if (mimeType != null) {
+            if (IMUtils.allowImageType(mimeType)) {
+              sendPicture(path: file.path!);
               continue;
-            } catch (e, s) {
-              Logger.print('e :$e  s:$s');
+            } else if (mimeType.contains('video/')) {
+              try {
+                final originalPath = file.path!;
+
+                // Step 1: Copy/compress video to cache FIRST
+                File? videoToSend;
+                try {
+                  final compressedFile =
+                      await IMUtils.compressVideoAndGetFile(File(originalPath));
+                  videoToSend = compressedFile ?? File(originalPath);
+                } catch (e) {
+                  Logger.print('Video compression error, copying original: $e');
+                  // Fallback: copy original file to cache
+                  final directory = await IMUtils.createTempDir(dir: 'video');
+                  final name =
+                      originalPath.substring(originalPath.lastIndexOf("/") + 1);
+                  final targetPath = '$directory/$name';
+                  File(originalPath).copySync(targetPath);
+                  videoToSend = File(targetPath);
+                }
+
+                Logger.print('Video in cache: ${videoToSend.path}');
+
+                // Step 2: Generate thumbnail from the cached video file
+                var thumbnailFile =
+                    await IMUtils.getVideoThumbnail(videoToSend);
+                Logger.print('Thumbnail created: ${thumbnailFile.path}');
+
+                final mediaInfo =
+                    await VideoCompress.getMediaInfo(videoToSend.path);
+
+                sendVideo(
+                  videoPath: videoToSend.path,
+                  mimeType: mimeType,
+                  duration: mediaInfo.duration?.toInt() ?? 0,
+                  thumbnailPath: thumbnailFile.path,
+                );
+                continue;
+              } catch (e, s) {
+                Logger.print('Error processing video from file picker: $e  $s');
+              }
             }
           }
+          sendFile(filePath: file.path!, fileName: file.name);
         }
-        sendFile(filePath: file.path!, fileName: file.name);
+      } finally {
+        LoadingView.singleton.dismiss();
       }
     } else {
       // User canceled the picker
@@ -1385,38 +1425,85 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
 
   Future<void> _handleAssets(AssetEntity? asset) async {
     if (null != asset) {
-      Logger.print('--------assets type-----${asset.type}');
-      // Use originFile first, fallback to file for limited photo access compatibility
-      final file = await asset.originFile ?? await asset.file;
-      if (file == null) {
-        Logger.print('--------assets file is null, cannot process');
-        IMViews.showToast(StrRes.sendFailed);
-        return;
-      }
-      final path = file.path;
-      Logger.print('--------assets path-----$path');
-      switch (asset.type) {
-        case AssetType.image:
-          sendPicture(path: path);
-          break;
-        case AssetType.video:
-          var thumbnailFile = await IMUtils.getVideoThumbnail(File(path));
-          LoadingView.singleton.show();
-          final compressedFile =
-              await IMUtils.compressVideoAndGetFile(File(path));
-          LoadingView.singleton.dismiss();
+      try {
+        Logger.print('--------assets type-----${asset.type}');
+        // Use originFile first, fallback to file for limited photo access compatibility
+        final file = await asset.originFile ?? await asset.file;
+        if (file == null) {
+          Logger.print('--------assets file is null, cannot process');
+          IMViews.showToast(StrRes.sendFailed);
+          return;
+        }
+        final path = file.path;
+        Logger.print('--------assets path-----$path');
+        switch (asset.type) {
+          case AssetType.image:
+            sendPicture(path: path);
+            break;
+          case AssetType.video:
+            try {
+              // Step 1: Copy/compress video to cache FIRST
+              // This ensures the file is accessible in app's cache directory
+              File? videoToSend;
+              try {
+                final compressedFile =
+                    await IMUtils.compressVideoAndGetFile(File(path));
+                videoToSend = compressedFile ?? File(path);
+              } catch (e) {
+                Logger.print('Video compression error, copying original: $e');
+                // Fallback: copy original file to cache
+                final directory = await IMUtils.createTempDir(dir: 'video');
+                final name = path.substring(path.lastIndexOf("/") + 1);
+                final targetPath = '$directory/$name';
+                File(path).copySync(targetPath);
+                videoToSend = File(targetPath);
+              }
 
-          sendVideo(
-            videoPath: compressedFile!.path,
-            mimeType: asset.mimeType ?? IMUtils.getMediaType(path) ?? '',
-            duration: asset.duration,
-            // duration: mediaInfo.duration?.toInt() ?? 0,
-            thumbnailPath: thumbnailFile.path,
-          );
-          // sendVoice(duration: asset.duration, path: path);
-          break;
-        default:
-          break;
+              Logger.print('Video in cache: ${videoToSend.path}');
+
+              // Step 2: Generate thumbnail from the cached video file
+              // This works because the file is now in app's accessible cache
+              var thumbnailFile = await IMUtils.getVideoThumbnail(videoToSend);
+              Logger.print('Thumbnail created: ${thumbnailFile.path}');
+
+              Logger.print('Sending video: ${videoToSend.path}');
+              sendVideo(
+                videoPath: videoToSend.path,
+                mimeType: asset.mimeType ?? IMUtils.getMediaType(path) ?? '',
+                duration: asset.duration,
+                thumbnailPath: thumbnailFile.path,
+              );
+            } catch (e, s) {
+              Logger.print(
+                  'Error processing video, trying to send original: $e $s');
+              // Fallback: try to send original video without compression
+              try {
+                // Copy original to cache first
+                final directory = await IMUtils.createTempDir(dir: 'video');
+                final name = path.substring(path.lastIndexOf("/") + 1);
+                final targetPath = '$directory/$name';
+                File(path).copySync(targetPath);
+                final cachedFile = File(targetPath);
+
+                var thumbnailFile = await IMUtils.getVideoThumbnail(cachedFile);
+                sendVideo(
+                  videoPath: cachedFile.path,
+                  mimeType: asset.mimeType ?? IMUtils.getMediaType(path) ?? '',
+                  duration: asset.duration,
+                  thumbnailPath: thumbnailFile.path,
+                );
+              } catch (e2) {
+                Logger.print('Final fallback failed: $e2');
+                IMViews.showToast(StrRes.sendFailed);
+              }
+            }
+            break;
+          default:
+            break;
+        }
+      } catch (e, s) {
+        Logger.print('Error processing asset: $e $s');
+        IMViews.showToast(StrRes.sendFailed);
       }
     }
   }
@@ -1434,20 +1521,65 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
           await sendPicture(path: path);
         } else if (mimeType.contains('video/')) {
           try {
-            var thumbnailFile = await IMUtils.getVideoThumbnail(File(path));
-            final file = await IMUtils.compressVideoAndGetFile(File(path));
+            // Step 1: Copy/compress video to cache FIRST
+            // This ensures the file is accessible in app's cache directory
+            File? videoToSend;
+            try {
+              final compressedFile =
+                  await IMUtils.compressVideoAndGetFile(File(path));
+              videoToSend = compressedFile ?? File(path);
+            } catch (e) {
+              Logger.print('Video compression error, copying original: $e');
+              // Fallback: copy original file to cache
+              final directory = await IMUtils.createTempDir(dir: 'video');
+              final name = path.substring(path.lastIndexOf("/") + 1);
+              final targetPath = '$directory/$name';
+              File(path).copySync(targetPath);
+              videoToSend = File(targetPath);
+            }
 
-            final mediaInfo = await VideoCompress.getMediaInfo(path);
+            Logger.print('Video in cache: ${videoToSend.path}');
 
+            // Step 2: Generate thumbnail from the cached video file
+            var thumbnailFile = await IMUtils.getVideoThumbnail(videoToSend);
+            Logger.print('Thumbnail created: ${thumbnailFile.path}');
+
+            final mediaInfo =
+                await VideoCompress.getMediaInfo(videoToSend.path);
+
+            Logger.print('Sending video: ${videoToSend.path}');
             await sendVideo(
-              videoPath: file!.path,
+              videoPath: videoToSend.path,
               mimeType: mimeType,
               duration: mediaInfo.duration?.toInt() ?? 0,
               thumbnailPath: thumbnailFile.path,
             );
           } catch (e, s) {
-            Logger.print('Error processing video: $e  $s');
-            LoadingView.singleton.dismiss();
+            Logger.print(
+                'Error processing video, trying to send original: $e  $s');
+            // Fallback: try to send original video without compression
+            try {
+              // Copy original to cache first
+              final directory = await IMUtils.createTempDir(dir: 'video');
+              final name = path.substring(path.lastIndexOf("/") + 1);
+              final targetPath = '$directory/$name';
+              File(path).copySync(targetPath);
+              final cachedFile = File(targetPath);
+
+              var thumbnailFile = await IMUtils.getVideoThumbnail(cachedFile);
+              final mediaInfo =
+                  await VideoCompress.getMediaInfo(cachedFile.path);
+              await sendVideo(
+                videoPath: cachedFile.path,
+                mimeType: mimeType,
+                duration: mediaInfo.duration?.toInt() ?? 0,
+                thumbnailPath: thumbnailFile.path,
+              );
+            } catch (e2) {
+              Logger.print('Final fallback failed: $e2');
+              LoadingView.singleton.dismiss();
+              IMViews.showToast(StrRes.sendFailed);
+            }
           }
         } else {
           await sendFile(filePath: path, fileName: file.uri.pathSegments.last);
