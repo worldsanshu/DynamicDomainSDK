@@ -213,13 +213,17 @@ class LazyTabView extends StatefulWidget {
 class _LazyTabViewState extends State<LazyTabView> {
   // Track which tabs have been created
   final Map<int, Widget> _cachedTabs = {};
+  bool _initialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    // Create the initial tab
-    _cachedTabs[widget.currentIndex] =
-        widget.tabBuilder(context, widget.currentIndex);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Create the initial tab here where context is safe to use
+    if (!_initialized) {
+      _initialized = true;
+      _cachedTabs[widget.currentIndex] =
+          widget.tabBuilder(context, widget.currentIndex);
+    }
   }
 
   @override
@@ -236,6 +240,12 @@ class _LazyTabViewState extends State<LazyTabView> {
 
   @override
   Widget build(BuildContext context) {
+    // Ensure initial tab is created if not yet (fallback)
+    if (!_cachedTabs.containsKey(widget.currentIndex)) {
+      _cachedTabs[widget.currentIndex] =
+          widget.tabBuilder(context, widget.currentIndex);
+    }
+
     return IndexedStack(
       index: widget.currentIndex,
       children: List.generate(widget.tabCount, (index) {

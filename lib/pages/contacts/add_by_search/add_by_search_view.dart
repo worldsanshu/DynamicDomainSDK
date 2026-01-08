@@ -135,41 +135,66 @@ class AddContactsBySearchPage extends StatelessWidget {
           logic.isSearchUser ? userList.isNotEmpty : groupList.isNotEmpty;
       bool isSearching = logic.searchKey.isNotEmpty;
 
-      return SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.only(bottom: 20.h),
-        child: AnimationLimiter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: AnimationConfiguration.toStaggeredList(
-              duration: const Duration(milliseconds: 450),
-              childAnimationBuilder: (widget) => SlideAnimation(
-                verticalOffset: 50.0,
-                curve: Curves.easeOutQuart,
-                child: FadeInAnimation(child: widget),
-              ),
-              children: [
-                16.verticalSpace,
-                if (isSearching && hasSearchResults) ...[
-                  _buildResultsSection(),
-                ],
-                if (isSearching && !hasSearchResults) ...[
-                  EmptyView(
+      // Create a unique key based on the current state
+      final contentKey = ValueKey(
+          '${isSearching}_${hasSearchResults}_${userList.length}_${groupList.length}');
+
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 450),
+        switchInCurve: Curves.easeInOut,
+        switchOutCurve: Curves.easeInOut,
+        layoutBuilder: (currentChild, previousChildren) {
+          return Stack(
+            alignment: Alignment.topCenter,
+            children: <Widget>[
+              ...previousChildren,
+              if (currentChild != null) currentChild,
+            ],
+          );
+        },
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        child: SingleChildScrollView(
+          key: contentKey,
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.only(bottom: 20.h),
+          child: AnimationLimiter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: AnimationConfiguration.toStaggeredList(
+                duration: const Duration(milliseconds: 450),
+                childAnimationBuilder: (widget) => SlideAnimation(
+                  verticalOffset: 50.0,
+                  curve: Curves.easeOutQuart,
+                  child: FadeInAnimation(child: widget),
+                ),
+                children: [
+                  16.verticalSpace,
+                  if (isSearching && hasSearchResults) ...[
+                    _buildResultsSection(),
+                  ],
+                  if (isSearching && !hasSearchResults) ...[
+                    EmptyView(
+                        message: logic.isSearchUser
+                            ? StrRes.noFoundUser
+                            : StrRes.noFoundGroup,
+                        icon: CupertinoIcons.search),
+                  ],
+                  if (!isSearching) ...[
+                    EmptyView(
                       message: logic.isSearchUser
-                          ? StrRes.noFoundUser
-                          : StrRes.noFoundGroup,
-                      icon: CupertinoIcons.search),
+                          ? StrRes.searchByPhoneAndUid
+                          : StrRes.searchIDAddGroup,
+                      icon: CupertinoIcons.search,
+                    ),
+                  ],
+                  24.verticalSpace,
                 ],
-                if (!isSearching) ...[
-                  EmptyView(
-                    message: logic.isSearchUser
-                        ? StrRes.searchByPhoneAndUid
-                        : StrRes.searchIDAddGroup,
-                    icon: CupertinoIcons.search,
-                  ),
-                ],
-                24.verticalSpace,
-              ],
+              ),
             ),
           ),
         ),

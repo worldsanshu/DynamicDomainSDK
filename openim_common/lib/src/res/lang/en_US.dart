@@ -587,7 +587,7 @@ const Map<String, String> en_US = {
   "pleaseEnterToSearchGroup": "Please enter keywords to search groups",
   "pleaseEnterToSearchMessages": "Please enter keywords to search messages",
   "pleaseEnterToSearchFiles": "Please enter keywords to search files",
-  "nOthers": "%s others",
+  "nOthers": "and %s others",
   "organizationStructure": "Organization Structure",
   "recentConversations": "Recent Conversations",
   "selectAll": "Select All",

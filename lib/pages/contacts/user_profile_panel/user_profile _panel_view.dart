@@ -31,17 +31,47 @@ class UserProfilePanelPage extends StatelessWidget {
               // User Info (Fixed - not scrollable)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.w),
-                child: Text(
-                  logic.getShowName(),
-                  style: TextStyle(
-                    fontFamily: 'FilsonPro',
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    // Nickname - always stable
+                    Text(
+                      logic.userInfo.value.nickname ?? '',
+                      style: TextStyle(
+                        fontFamily: 'FilsonPro',
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    // Remark - appears with animation when loaded
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 450),
+                      curve: Curves.easeInOut,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 450),
+                        opacity:
+                            (logic.userInfo.value.remark?.isNotEmpty ?? false)
+                                ? 1.0
+                                : 0.0,
+                        child:
+                            (logic.userInfo.value.remark?.isNotEmpty ?? false)
+                                ? Text(
+                                    '(${logic.userInfo.value.remark})',
+                                    style: TextStyle(
+                                      fontFamily: 'FilsonPro',
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  )
+                                : const SizedBox.shrink(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               8.verticalSpace,
