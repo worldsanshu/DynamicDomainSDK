@@ -613,7 +613,29 @@ class AuthLogic extends GetxController with GetTickerProviderStateMixin {
     tabController.animateTo(0);
   }
 
+  void _clearRegisterData() {
+    registerPhoneController.clear();
+    registerNameController.clear();
+    registerPasswordController.clear();
+    registerPasswordConfirmationController.clear();
+    registerVerificationCodeController.clear();
+    isRegisterAgree.value = false;
+  }
+
+  void _clearLoginData() {
+    loginPhoneController.clear();
+    loginPasswordController.clear();
+    isLoginAgree.value = false;
+  }
+
   void switchFormMode(AuthFormMode mode) {
+    if (currentFormMode.value == AuthFormMode.register &&
+        mode == AuthFormMode.login) {
+      _clearRegisterData();
+    } else if (currentFormMode.value == AuthFormMode.login &&
+        mode == AuthFormMode.register) {
+      _clearLoginData();
+    }
     currentFormMode.value = mode;
   }
 }

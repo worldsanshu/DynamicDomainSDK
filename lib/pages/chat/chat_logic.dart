@@ -1273,8 +1273,9 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
               return true;
             }));
     if (null != assets) {
+      // Process assets sequentially to avoid concurrent video compression issues on iOS
       for (var asset in assets) {
-        _handleAssets(asset);
+        await _handleAssets(asset);
       }
     }
   }
@@ -1287,7 +1288,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
       pickerConfig: CameraPickerConfig(
         enableAudio: await Permission.microphone.isGranted,
         enableRecording: true,
-        enableScaledPreview: false,
+        enableScaledPreview: true,
         maximumRecordingDuration: 60.seconds,
         shouldDeletePreviewFile: true,
         onMinimumRecordDurationNotMet: () {
@@ -1382,7 +1383,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     }
   }
 
-  void _handleAssets(AssetEntity? asset) async {
+  Future<void> _handleAssets(AssetEntity? asset) async {
     if (null != asset) {
       Logger.print('--------assets type-----${asset.type}');
       // Use originFile first, fallback to file for limited photo access compatibility

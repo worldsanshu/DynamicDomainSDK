@@ -233,7 +233,7 @@ class IMViews {
                                     ? false
                                     : result == PermissionStatus.granted,
                                 enableRecording: false,
-                                enableScaledPreview: false,
+                                enableScaledPreview: true,
                                 maximumRecordingDuration: 60.seconds,
                                 shouldDeletePreviewFile: true,
                                 onEntitySaving:
