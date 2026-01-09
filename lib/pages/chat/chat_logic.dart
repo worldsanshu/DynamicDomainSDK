@@ -734,7 +734,8 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     final message = await OpenIM.iMManager.messageManager.createTextMessage(
       text: content,
     );
-    _sendMessage(message, userId: userId, groupId: groupId, addToUI: addToUI);
+    await _sendMessage(message,
+        userId: userId, groupId: groupId, addToUI: addToUI);
     return message;
   }
 
@@ -763,9 +764,6 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
       summaryList.add(IMUtils.createSummary(msg));
       if (summaryList.length >= 4) break;
     }
-
-    Logger.print('Combined Forward - Summary List: $summaryList');
-
     if (isGroupChat) {
       title = "${StrRes.groupChat}${StrRes.chatRecord}";
     } else {
@@ -773,15 +771,12 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
       var partner2 = nickname.value;
       title = "$partner1${StrRes.and}$partner2${StrRes.chatRecord}";
     }
-
-    Logger.print('Combined Forward - Title: $title');
-
     var message = await OpenIM.iMManager.messageManager.createMergerMessage(
       messageList: multiSelList,
       title: title,
       summaryList: summaryList,
     );
-    _sendMessage(message, userId: userId, groupId: groupId);
+   await _sendMessage(message, userId: userId, groupId: groupId);
   }
 
   /// 提示对方正在输入
@@ -820,13 +815,13 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     _sendMessage(message);
   }
 
-  void _sendMessage(
+  Future<void> _sendMessage(
     Message message, {
     String? userId,
     String? groupId,
     bool addToUI = true,
     bool createFailedHint = true,
-  }) {
+  }) async {
     final maxMessagesPerInterval = clientConfigLogic.maxMessagesPerInterval;
     if (maxMessagesPerInterval != -1) {
       // 检查当前是否可以发送消息
@@ -854,7 +849,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     _reset(message);
     // 借用当前聊天窗口，给其他用户或群发送信息，如合并转发，分享名片。
     bool useOuterValue = null != userId || null != groupId;
-    OpenIM.iMManager.messageManager
+    await OpenIM.iMManager.messageManager
         .sendMessage(
           message: message,
           userID: useOuterValue ? userId : userID,
@@ -875,7 +870,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
         .catchError((error, _) async => await _senFailed(
             message, groupId, error, _,
             createFailedHint: createFailedHint))
-        .whenComplete(() => _completed());
+        .whenComplete(() async => await _completed());
   }
 
   /// Recommend a friend card to current chat (or to specified user/group)
@@ -991,9 +986,9 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
   }
 
   /// todo
-  void _completed() {
+  Future<void> _completed() async {
     messageList.refresh();
-    _loadHistoryForSyncEnd();
+   await _loadHistoryForSyncEnd();
     // setQuoteMsg(-1);
     // closeMultiSelMode();
     // inputCtrl.clear();
@@ -1083,60 +1078,18 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
       final customEx = result['customEx'];
       final checkedList = result['checkedList'];
 
-      // Show loading to prevent visual flickering
-      LoadingView.singleton.show();
-      try {
-        for (var info in checkedList) {
-          final targetUserID = IMUtils.convertCheckedToUserID(info);
-          final targetGroupID = IMUtils.convertCheckedToGroupID(info);
-
-          // Check if forwarding to current conversation
-          final isSameConversation =
-              (targetUserID == userID && targetUserID != null) ||
-                  (targetGroupID == groupID && targetGroupID != null);
-
-          // Collect messages to add to UI together
-          final List<Message> messagesToAdd = [];
-
-          // Send the forwarded message first (don't add to UI yet if same conversation)
-          Message? forwardedMsg;
-          if (null != message) {
-            forwardedMsg = await sendForwardMsg(
-              message,
-              userId: targetUserID,
-              groupId: targetGroupID,
-              addToUI:
-                  !isSameConversation, // Add to UI only if different conversation
-            );
-            if (isSameConversation) {
-              messagesToAdd.add(forwardedMsg);
-            }
-          } else {
-            await sendMergeMsg(userId: targetUserID, groupId: targetGroupID);
-          }
-
-          // Send the remark message after (if any)
-          if (customEx is String && customEx.isNotEmpty) {
-            final remarkMsg = await sendForwardRemarkMsg(
-              customEx,
-              userId: targetUserID,
-              groupId: targetGroupID,
-              addToUI:
-                  !isSameConversation, // Add to UI only if different conversation
-            );
-            if (isSameConversation) {
-              messagesToAdd.add(remarkMsg);
-            }
-          }
-
-          // Batch add to UI if same conversation (both messages appear together)
-          if (isSameConversation && messagesToAdd.isNotEmpty) {
-            messageList.addAll(messagesToAdd);
-            scrollBottom();
-          }
+      for (var info in checkedList) {
+        final userID = IMUtils.convertCheckedToUserID(info);
+        final groupID = IMUtils.convertCheckedToGroupID(info);
+        if (customEx is String && customEx.isNotEmpty) {
+          await sendForwardRemarkMsg(customEx,
+              userId: userID, groupId: groupID);
         }
-      } finally {
-        LoadingView.singleton.dismiss();
+        if (null != message) {
+          await sendForwardMsg(message, userId: userID, groupId: groupID);
+        } else {
+          await sendMergeMsg(userId: userID, groupId: groupID);
+        }
       }
 
       await Future.delayed(const Duration(milliseconds: 300));
