@@ -290,9 +290,18 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
 
     // 新增消息监听
     imLogic.onRecvNewMessage = (Message message) async {
+      print(
+          '🔵 onRecvNewMessage: clientMsgID=${message.clientMsgID}, sendID=${message.sendID}, myID=${OpenIM.iMManager.userID}');
       if (isCurrentChat(message)) {
         if (message.contentType == MessageType.typing) {
         } else {
+          // Skip messages sent by current user - these are already added via sendMessage flow
+          // This prevents duplicates when forwarding to self or sending while in conversation
+          if (message.sendID == OpenIM.iMManager.userID) {
+            print('🔵 SKIPPED (self-sent): ${message.clientMsgID}');
+            return;
+          }
+
           // Check for duplicate by clientMsgID (not object reference) to prevent
           // adding messages that we already added locally (e.g. during forward)
           final isDuplicate =
@@ -300,6 +309,7 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
                   scrollingCacheMessageList
                       .any((m) => m.clientMsgID == message.clientMsgID);
           if (!isDuplicate) {
+            print('🔵 ADDING via onRecvNewMessage: ${message.clientMsgID}');
             _isReceivedMessageWhenSyncing = true;
             _parseAnnouncement(message);
             if (isShowPopMenu.value ||
@@ -313,16 +323,8 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
                 scrollController.hasClients) {
               _markMessageAsRead(message, isNewMessage: true);
             }
-            // ios 退到后台再次唤醒消息乱序
-            // messageList.sort((a, b) {
-            //   if (a.sendTime! > b.sendTime!) {
-            //     return 1;
-            //   } else if (a.sendTime! > b.sendTime!) {
-            //     return -1;
-            //   } else {
-            //     return 0;
-            //   }
-            // });
+          } else {
+            print('🔵 DUPLICATE detected: ${message.clientMsgID}');
           }
         }
       }
@@ -730,11 +732,17 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     String? userId,
     String? groupId,
     bool addToUI = true,
+    bool waitForServer = false,
   }) async {
     final message = await OpenIM.iMManager.messageManager.createTextMessage(
       text: content,
     );
-    _sendMessage(message, userId: userId, groupId: groupId, addToUI: addToUI);
+    if (waitForServer) {
+      await _sendMessageAsync(message,
+          userId: userId, groupId: groupId, addToUI: addToUI);
+    } else {
+      _sendMessage(message, userId: userId, groupId: groupId, addToUI: addToUI);
+    }
     return message;
   }
 
@@ -744,11 +752,17 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
     String? userId,
     String? groupId,
     bool addToUI = true,
+    bool waitForServer = false,
   }) async {
     var message = await OpenIM.iMManager.messageManager.createForwardMessage(
       message: originalMessage,
     );
-    _sendMessage(message, userId: userId, groupId: groupId, addToUI: addToUI);
+    if (waitForServer) {
+      await _sendMessageAsync(message,
+          userId: userId, groupId: groupId, addToUI: addToUI);
+    } else {
+      _sendMessage(message, userId: userId, groupId: groupId, addToUI: addToUI);
+    }
     return message;
   }
 
@@ -876,6 +890,48 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
             message, groupId, error, _,
             createFailedHint: createFailedHint))
         .whenComplete(() => _completed());
+  }
+
+  /// Async version of _sendMessage that awaits server response
+  /// Used when message order matters (e.g., forward msg must complete before remark)
+  Future<void> _sendMessageAsync(
+    Message message, {
+    String? userId,
+    String? groupId,
+    bool addToUI = true,
+  }) async {
+    userId = IMUtils.emptyStrToNull(userId);
+    groupId = IMUtils.emptyStrToNull(groupId);
+
+    // Only add to UI if explicitly requested AND it's for current conversation
+    final isCurrentConv = null == userId && null == groupId ||
+        userId == userID && userId != null ||
+        groupId == groupID && groupId != null;
+    print(
+        '🔴 _sendMessageAsync: addToUI=$addToUI, isCurrentConv=$isCurrentConv, willAdd=${addToUI && isCurrentConv}');
+    if (addToUI && isCurrentConv) {
+      print(
+          '🔴 _sendMessageAsync ADDING to messageList: ${message.clientMsgID}');
+      messageList.add(message);
+      scrollBottom();
+    }
+
+    _reset(message);
+    bool useOuterValue = null != userId || null != groupId;
+
+    try {
+      final sentMsg = await OpenIM.iMManager.messageManager.sendMessage(
+        message: message,
+        userID: useOuterValue ? userId : userID,
+        groupID: useOuterValue ? groupId : groupID,
+        offlinePushInfo: Config.offlinePushInfo,
+      );
+      _sendSucceeded(message, sentMsg);
+    } catch (error) {
+      await _senFailed(message, groupId, error, StackTrace.current);
+    } finally {
+      _completed();
+    }
   }
 
   /// Recommend a friend card to current chat (or to specified user/group)
@@ -1085,31 +1141,37 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
 
       // Show loading to prevent visual flickering
       LoadingView.singleton.show();
+
+      // Collect ALL messages for current conversation to add at once
+      final List<Message> messagesForCurrentConv = [];
+
       try {
         for (var info in checkedList) {
           final targetUserID = IMUtils.convertCheckedToUserID(info);
           final targetGroupID = IMUtils.convertCheckedToGroupID(info);
 
           // Check if forwarding to current conversation
-          final isSameConversation =
-              (targetUserID == userID && targetUserID != null) ||
-                  (targetGroupID == groupID && targetGroupID != null);
-
-          // Collect messages to add to UI together
-          final List<Message> messagesToAdd = [];
+          // Must check for non-null AND non-empty (empty string "" was causing false positives)
+          final isSameConversation = (targetUserID != null &&
+                  targetUserID.isNotEmpty &&
+                  targetUserID == userID) ||
+              (targetGroupID != null &&
+                  targetGroupID.isNotEmpty &&
+                  targetGroupID == groupID);
 
           // Send the forwarded message first (don't add to UI yet if same conversation)
+          // Wait for server to confirm before sending remark to ensure correct order
           Message? forwardedMsg;
           if (null != message) {
             forwardedMsg = await sendForwardMsg(
               message,
               userId: targetUserID,
               groupId: targetGroupID,
-              addToUI:
-                  !isSameConversation, // Add to UI only if different conversation
+              addToUI: !isSameConversation,
+              waitForServer: true, // Wait for server confirmation before remark
             );
             if (isSameConversation) {
-              messagesToAdd.add(forwardedMsg);
+              messagesForCurrentConv.add(forwardedMsg);
             }
           } else {
             await sendMergeMsg(userId: targetUserID, groupId: targetGroupID);
@@ -1121,20 +1183,18 @@ class ChatLogic extends SuperController with FullLifeCycleMixin {
               customEx,
               userId: targetUserID,
               groupId: targetGroupID,
-              addToUI:
-                  !isSameConversation, // Add to UI only if different conversation
+              addToUI: !isSameConversation,
+              waitForServer: true, // Also wait for remark to complete
             );
             if (isSameConversation) {
-              messagesToAdd.add(remarkMsg);
+              messagesForCurrentConv.add(remarkMsg);
             }
           }
-
-          // Batch add to UI if same conversation (both messages appear together)
-          if (isSameConversation && messagesToAdd.isNotEmpty) {
-            messageList.addAll(messagesToAdd);
-            scrollBottom();
-          }
         }
+
+        // Don't batch add for same conversation - let SDK sync add them automatically
+        // This prevents race condition duplicates between local add and SDK sync
+        // The messages are already sent to server, SDK will sync and display them
       } finally {
         LoadingView.singleton.dismiss();
       }
