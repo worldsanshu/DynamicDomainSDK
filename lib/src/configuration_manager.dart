@@ -67,8 +67,10 @@ class ConfigurationManager {
               fetchedConfig = _decryptConfig(response.body);
             }
           } catch (e) {
-            // 如果解析 JSON 失败，可能返回的是纯文本错误
-            throw Exception('API returned invalid format: ${response.body}');
+            // 如果解析 JSON 失败，或者解密失败，保留原始错误信息
+            throw Exception(
+              'API request failed or returned invalid format: $e. Response body: ${response.body}',
+            );
           }
         } else {
           print(
@@ -158,13 +160,11 @@ class ConfigurationManager {
 
       final key = encrypt.Key.fromUtf8(SecretKeeper.encryptionKey);
       final iv = encrypt.IV.fromUtf8(SecretKeeper.encryptionIV);
-      // GCM 模式通常使用 12 字节 Nonce
-      final nonce = iv.bytes.length > 12 ? iv.bytes.sublist(0, 12) : iv.bytes;
 
       final encrypter = encrypt.Encrypter(
-        encrypt.AES(key, mode: encrypt.AESMode.gcm),
+        encrypt.AES(key, mode: encrypt.AESMode.cbc),
       );
-      result = encrypter.decrypt64(encryptedBase64, iv: encrypt.IV(nonce));
+      result = encrypter.decrypt64(encryptedBase64, iv: iv);
     } catch (e) {
       throw Exception(
         'Configuration decryption failed. Please check your encryption key and IV. Error: $e',
@@ -177,7 +177,7 @@ class ConfigurationManager {
       return result;
     } catch (e) {
       throw Exception(
-        'Decrypted configuration is not a valid JSON. The data might be corrupted or the key might be wrong.',
+        'Decrypted configuration is not a valid JSON. The data might be corrupted or the key might be wrong. Decrypted snippet: ${result.length > 50 ? result.substring(0, 50) : result}',
       );
     }
   }
