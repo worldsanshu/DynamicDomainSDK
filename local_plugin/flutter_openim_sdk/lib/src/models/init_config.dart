@@ -8,6 +8,8 @@ class InitConfig {
   bool isLogStandardOutput;
   String? logFilePath;
   bool enabledCompression;
+  bool isExternalProxy;
+  String? proxyAddr;
 
   InitConfig({
     required this.platformID,
@@ -19,19 +21,24 @@ class InitConfig {
     this.logFilePath,
     this.enabledCompression = false,
     this.systemType = 'flutter',
+    this.isExternalProxy = false,
+    this.proxyAddr,
   });
 
   factory InitConfig.fromJson(Map<String, dynamic> json) {
     return InitConfig(
-        platformID: json['platformID'],
-        apiAddr: json['apiAddr'],
-        wsAddr: json['wsAddr'],
-        dataDir: json['dataDir'],
-        logLevel: json['logLevel'],
-        isLogStandardOutput: json['isLogStandardOutput'],
-        logFilePath: json['logFilePath'],
-        enabledCompression: json['isCompression'],
-        systemType: json['systemType']);
+      platformID: json['platformID'],
+      apiAddr: json['apiAddr'],
+      wsAddr: json['wsAddr'],
+      dataDir: json['dataDir'],
+      logLevel: json['logLevel'],
+      isLogStandardOutput: json['isLogStandardOutput'],
+      logFilePath: json['logFilePath'],
+      enabledCompression: json['isCompression'],
+      systemType: json['systemType'],
+      isExternalProxy: json['isExternalProxy'] ?? false,
+      proxyAddr: json['proxyAddr'],
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -45,6 +52,8 @@ class InitConfig {
       'logFilePath': logFilePath,
       'isCompression': enabledCompression,
       'systemType': systemType,
+      'isExternalProxy': isExternalProxy,
+      'proxyAddr': proxyAddr,
     };
   }
 }

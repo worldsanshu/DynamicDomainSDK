@@ -93,7 +93,8 @@ dependencies:
   flutter_openim_sdk:
     path: ../local_plugin/flutter_openim_sdk
 
-
+  dynamic_domain:
+    path: ../local_plugin/DynamicDomainSDK
   # marquee 2.3.0版本对flutter的最低版本要求是3.5，
   marquee: ^2.2.03
   connectivity_plus: ^6.1.3

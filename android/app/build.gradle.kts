@@ -138,7 +138,21 @@ android {
     // }
 
     packaging {
-        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "go/Seq.class"
+            excludes += "go/Seq\$GoObject.class"
+            excludes += "go/Seq\$GoRef.class"
+            excludes += "go/Seq\$GoRefQueue.class"
+            excludes += "go/Seq\$GoRefQueue$1.class"
+            excludes += "go/Seq\$Proxy.class"
+            excludes += "go/Seq\$Ref.class"
+            excludes += "go/Seq\$RefMap.class"
+            excludes += "go/Seq\$RefTracker.class"
+            excludes += "go/Universe.class"
+            excludes += "go/Universe\$proxyerror.class"
+            excludes += "go/error.class"
+        }
         jniLibs {
             // Fix for ffmpeg-kit-react-native and TRTC conflicts
             pickFirsts +=

@@ -119,6 +119,8 @@ dependencies:
   percent_indicator: ^4.2.3
   flutter_openim_sdk:
     path: local_plugin/flutter_openim_sdk
+  dynamic_domain:
+    path: local_plugin/DynamicDomainSDK
   flutter_inappwebview: ^6.1.5
   image_gallery_saver_plus: ^4.0.1
   flutter_spinkit: 5.2.1

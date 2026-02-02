@@ -1,22 +1,40 @@
 import 'dart:async';
 
+import 'package:dynamic_domain/dynamic_domain.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_openim_sdk/flutter_openim_sdk.dart';
 import 'package:get/get.dart';
 import 'package:openim_common/openim_common.dart';
 
 import '../im_callback.dart';
 
-class IMController extends GetxController with IMCallback {
+class IMController extends GetxController
+    with IMCallback, WidgetsBindingObserver {
   late Rx<UserFullInfo> userInfo;
   late String atAllTag;
   Map<String, String> userRemarkMap = <String, String>{};
   Map<String, bool> friendIDMap = <String, bool>{};
 
   @override
+  void onInit() {
+    super.onInit();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
   void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
     // OpenIM.iMManager.unInitSDK();
     super.onClose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // 当应用回到前台时，主动检查并修复隧道连接
+      _handleConnectFailed();
+    }
   }
 
   Future<dynamic> unInitOpenIM() async {
@@ -31,6 +49,8 @@ class IMController extends GetxController with IMCallback {
       dataDir: Config.cachePath,
       logLevel: Config.logLevel,
       logFilePath: Config.cachePath,
+      isExternalProxy: Config.proxyUrl != null,
+      proxyAddr: Config.proxyUrl,
       listener: OnConnectListener(
         onConnecting: () {
           print('-------------------onConnecting-------------------');
@@ -39,6 +59,7 @@ class IMController extends GetxController with IMCallback {
         onConnectFailed: (code, error) {
           print('-------------------onConnectFailed-------------------');
           imSdkStatus(IMSdkStatus.connectionFailed);
+          _handleConnectFailed();
         },
         onConnectSuccess: () {
           print('-------------------onConnectSuccess-------------------');
@@ -218,6 +239,27 @@ class IMController extends GetxController with IMCallback {
       userRemarkMap[u.userID!] = u.remark!;
     } else {
       userRemarkMap.remove(u.userID);
+    }
+  }
+
+  void _handleConnectFailed() async {
+    // 如果连接失败，检查隧道状态
+    try {
+      final dynamicDomain = DynamicDomain();
+      bool isHealthy = await dynamicDomain.isConnectionHealthy();
+      if (!isHealthy) {
+        print('Dynamic Domain 隧道连接不健康，尝试重连隧道...');
+        final config =
+            await dynamicDomain.fetchRemoteConfig(Config.dynamicDomainAppId);
+        await dynamicDomain.startTunnel(config);
+        final proxy = dynamicDomain.getProxyConfig();
+        if (proxy != null) {
+          await proxy.applyToEnvironment();
+        }
+        // 隧道重连后，OpenIM 会自动尝试重连（或手动调用 login/reconnect）
+      }
+    } catch (e) {
+      print('检查隧道状态失败: $e');
     }
   }
 

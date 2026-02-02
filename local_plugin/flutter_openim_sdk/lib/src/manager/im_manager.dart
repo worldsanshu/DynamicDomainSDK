@@ -389,6 +389,8 @@ class IMManager {
     bool isLogStandardOutput = true,
     String? logFilePath,
     String? operationID,
+    bool isExternalProxy = false,
+    String? proxyAddr,
   }) {
     _connectListener = listener;
     return _channel.invokeMethod(
@@ -406,6 +408,8 @@ class IMManager {
           "logFilePath": logFilePath,
           'systemType': 'flutter',
           "operationID": Utils.checkOperationID(operationID),
+          "isExternalProxy": isExternalProxy,
+          "proxyAddr": proxyAddr,
         },
       ),
     );
