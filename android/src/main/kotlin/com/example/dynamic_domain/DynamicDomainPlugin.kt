@@ -75,9 +75,9 @@ class DynamicDomainPlugin :
 
                 // 注意：网络操作应该在后台线程上进行，但 Go 会启动自己的 goroutines。
                 // 但是，gomobile 调用可能会阻塞。
-                val status = Tunnel_core.startTunnel(10808, config)
+                val status = Tunnel_core.startTunnel(config)
                 if (status == "success" || status == "already running") {
-                     result.success("127.0.0.1:10808")
+                     result.success("success")
                 } else {
                      result.error("START_FAILED", status, null)
                 }
@@ -89,6 +89,15 @@ class DynamicDomainPlugin :
                 context.stopService(serviceIntent)
                 
                 result.success(null)
+            }
+            "getStats" -> {
+                val stats = Tunnel_core.getStats()
+                result.success(stats)
+            }
+            "validateConfig" -> {
+                val config = call.argument<String>("config") ?: "{}"
+                val status = Tunnel_core.validateConfig(config)
+                result.success(status)
             }
             "setSystemProxy" -> {
                 val host = call.argument<String>("host")

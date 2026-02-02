@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/services.dart';
 import 'package:dynamic_domain/dynamic_domain.dart';
@@ -37,20 +38,35 @@ class _HomePageState extends State<HomePage> {
   final List<String> _logs = [];
   final ScrollController _scrollController = ScrollController();
   StreamSubscription? _logSubscription;
+  StreamSubscription? _statsSubscription;
+  TunnelStats? _currentStats;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
     _startLogListening();
+    _startStatsListening();
   }
 
   @override
   void dispose() {
     _logSubscription?.cancel();
+    _statsSubscription?.cancel();
     _scrollController.dispose();
     _appIdController.dispose();
+    _dynamicDomain.dispose();
     super.dispose();
+  }
+
+  void _startStatsListening() {
+    _statsSubscription = _dynamicDomain.stats.listen((stats) {
+      if (mounted) {
+        setState(() {
+          _currentStats = stats;
+        });
+      }
+    });
   }
 
   void _startLogListening() {
@@ -69,6 +85,13 @@ class _HomePageState extends State<HomePage> {
         }
       });
     });
+  }
+
+  String _formatBytes(int bytes) {
+    if (bytes <= 0) return "0 B";
+    const suffixes = ["B", "KB", "MB", "GB", "TB"];
+    var i = (math.log(bytes) / math.log(1024)).floor();
+    return ((bytes / math.pow(1024, i)).toStringAsFixed(2)) + ' ' + suffixes[i];
   }
 
   Future<void> initPlatformState() async {
@@ -110,10 +133,37 @@ class _HomePageState extends State<HomePage> {
         _proxyUrl = proxyUrl;
       });
     } catch (e) {
+      final errorMsg = e.toString();
       setState(() {
-        _status = '错误: $e';
+        _status = '错误: $errorMsg';
       });
+
+      if (errorMsg.contains('Account Forbidden')) {
+        _showErrorDialog('应用已停用', '该 AppID 已被禁用、过期或流量超限。请联系管理员确认您的账户状态。');
+      }
     }
+  }
+
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.error_outline, color: Colors.red),
+            const SizedBox(width: 10),
+            Text(title),
+          ],
+        ),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('确定'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _stopProxy() async {
@@ -240,6 +290,28 @@ class _HomePageState extends State<HomePage> {
             ),
             if (_proxyUrl.isNotEmpty)
               Text('代理地址: $_proxyUrl', style: const TextStyle(fontSize: 16)),
+            if (_currentStats != null && _proxyUrl.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.arrow_upward,
+                      size: 16,
+                      color: Colors.blue,
+                    ),
+                    Text(' ${_formatBytes(_currentStats!.totalUplink)}'),
+                    const SizedBox(width: 20),
+                    const Icon(
+                      Icons.arrow_downward,
+                      size: 16,
+                      color: Colors.green,
+                    ),
+                    Text(' ${_formatBytes(_currentStats!.totalDownlink)}'),
+                  ],
+                ),
+              ),
             const SizedBox(height: 10),
             if (_proxyUrl.isNotEmpty)
               ElevatedButton.icon(

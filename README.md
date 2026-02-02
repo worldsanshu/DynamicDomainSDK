@@ -17,6 +17,13 @@ Dynamic Domain SDK 是一个专业的 Flutter 插件，用于在移动应用中�
 
 ## 集成指南
 
+> **重要**: 本项目使用 Git LFS 存储原生依赖库（.aar, .xcframework）。Clone 后务必执行以下命令以确保文件完整：
+> ```bash
+> git lfs install
+> git lfs pull
+> ```
+> *如果您不想使用 LFS，也可以将其配置为普通大文件提交，但请注意这会显著增加仓库体积。*
+
 ### 1. 安装
 
 在你的 `pubspec.yaml` 中添加：
@@ -183,5 +190,3 @@ void dispose() {
 ## License
 
 MIT
-
-// refresh tag

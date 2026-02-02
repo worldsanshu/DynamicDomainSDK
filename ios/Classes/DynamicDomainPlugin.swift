@@ -42,15 +42,23 @@ public class DynamicDomainPlugin: NSObject, FlutterPlugin, FlutterStreamHandler 
             // 启动 Go 隧道
             let args = call.arguments as? [String: Any]
             let config = args?["config"] as? String ?? "{}"
-            let status = Tunnel_coreStartTunnel(10808, config)
+            let status = Tunnel_coreStartTunnel(config)
             if status == "success" || status == "already running" {
-                result("127.0.0.1:10808")
+                result("success")
             } else {
                 result(FlutterError(code: "START_FAILED", message: status, details: nil))
             }
         case "stopTunnel":
             Tunnel_coreStopTunnel()
             result(nil)
+        case "getStats":
+            let stats = Tunnel_coreGetStats()
+            result(stats)
+        case "validateConfig":
+            let args = call.arguments as? [String: Any]
+            let config = args?["config"] as? String ?? "{}"
+            let status = Tunnel_coreValidateConfig(config)
+            result(status)
         default:
             result(FlutterMethodNotImplemented)
         }

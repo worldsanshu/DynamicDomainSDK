@@ -62,6 +62,18 @@ class MethodChannelDynamicDomain extends DynamicDomainPlatform {
   }
 
   @override
+  Future<String?> getStats() async {
+    return await methodChannel.invokeMethod<String>('getStats');
+  }
+
+  @override
+  Future<String?> validateConfig(String config) async {
+    return await methodChannel.invokeMethod<String>('validateConfig', {
+      'config': config,
+    });
+  }
+
+  @override
   Stream<String> get logs {
     return eventChannel.receiveBroadcastStream().map(
       (event) => event.toString(),

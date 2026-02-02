@@ -50,6 +50,14 @@ abstract class DynamicDomainPlatform extends PlatformInterface {
     throw UnimplementedError('clearSystemProxy() has not been implemented.');
   }
 
+  Future<String?> getStats() {
+    throw UnimplementedError('getStats() has not been implemented.');
+  }
+
+  Future<String?> validateConfig(String config) {
+    throw UnimplementedError('validateConfig() has not been implemented.');
+  }
+
   Stream<String> get logs {
     throw UnimplementedError('logs has not been implemented.');
   }
