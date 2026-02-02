@@ -1,18 +1,21 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_sdk/flutter_sdk_method_channel.dart';
+import 'package:dynamic_domain/dynamic_domain_method_channel.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  MethodChannelFlutterSdk platform = MethodChannelFlutterSdk();
-  const MethodChannel channel = MethodChannel('flutter_sdk');
+  MethodChannelDynamicDomain platform = MethodChannelDynamicDomain();
+  const MethodChannel channel = MethodChannel('dynamic_domain');
 
   setUp(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
       channel,
       (MethodCall methodCall) async {
-        return '42';
+        if (methodCall.method == 'getPlatformVersion') {
+          return '42';
+        }
+        return null;
       },
     );
   });

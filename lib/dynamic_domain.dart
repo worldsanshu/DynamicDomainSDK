@@ -17,12 +17,17 @@ class DynamicDomain {
   int? _currentHttpPort;
   int? _currentSocksPort;
   bool _isTransitioning = false;
+  Timer? _statsTimer;
+  final _statsController = StreamController<TunnelStats>.broadcast();
 
   /// 获取当前 HTTP 代理端口
   int? get httpPort => _currentHttpPort;
 
   /// 获取当前 SOCKS5 代理端口
   int? get socksPort => _currentSocksPort;
+
+  /// 获取流量统计流
+  Stream<TunnelStats> get stats => _statsController.stream;
 
   /// 获取结构化的代理配置信息，方便第三方 SDK (如 OpenIM) 接入
   ProxyConfig? getProxyConfig() {
@@ -124,7 +129,11 @@ class DynamicDomain {
   /// [config] 是 Xray JSON 配置字符串。
   ///
   /// 此方法包含重试机制，会自动寻找空闲端口。
-  Future<String> startTunnel(String config, {int maxRetries = 3}) async {
+  Future<String> startTunnel(
+    String config, {
+    int maxRetries = 3,
+    bool skipPortCheck = false,
+  }) async {
     if (_isTransitioning) throw Exception("SDK is busy with another operation");
     _isTransitioning = true;
     try {
@@ -135,7 +144,9 @@ class DynamicDomain {
         attempts++;
         try {
           // 在内部方法中执行实际逻辑，不在这里设置 _isTransitioning
-          return await _startTunnelInternal(config);
+          final url = await _startTunnelInternal(config, skipPortCheck);
+          _startStatsPolling();
+          return url;
         } catch (e) {
           lastError = e.toString();
           print("Start tunnel attempt $attempts failed: $e. Retrying...");
@@ -153,7 +164,27 @@ class DynamicDomain {
     }
   }
 
-  Future<String> _startTunnelInternal(String config) async {
+  void _startStatsPolling() {
+    _statsTimer?.cancel();
+    _statsTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
+      try {
+        final statsJson = await DynamicDomainPlatform.instance.getStats();
+        if (statsJson != null) {
+          final data = jsonDecode(statsJson);
+          _statsController.add(TunnelStats.fromJson(data));
+        }
+      } catch (e) {
+        print("Failed to fetch stats: $e");
+      }
+    });
+  }
+
+  void _stopStatsPolling() {
+    _statsTimer?.cancel();
+    _statsTimer = null;
+  }
+
+  Future<String> _startTunnelInternal(String config, bool skipPortCheck) async {
     // 1. 找到一个空闲端口
     final int port = await _findFreePort();
     final int httpPort = await _findFreePort(startPort: port + 1);
@@ -195,6 +226,19 @@ class DynamicDomain {
         throw Exception("Invalid config: 'inbounds' not found or not a list");
       }
 
+      // 注入统计配置 (如果不存在)
+      if (!jsonConfig.containsKey('stats')) {
+        jsonConfig['stats'] = {};
+      }
+      if (!jsonConfig.containsKey('policy')) {
+        jsonConfig['policy'] = {
+          "levels": {
+            "0": {"statsUserUplink": true, "statsUserDownlink": true},
+          },
+          "system": {"statsInboundUplink": true, "statsInboundDownlink": true},
+        };
+      }
+
       finalConfig = jsonEncode(jsonConfig);
     } catch (e) {
       throw Exception("Failed to inject ports into config: $e");
@@ -206,10 +250,9 @@ class DynamicDomain {
     );
 
     // 如果原生返回成功
-    if (result != null &&
-        (result.contains("success") || result.contains("127.0.0.1"))) {
+    if (result != null && result == "success") {
       // 4. 验证端口是否真的在监听
-      if (await _waitForPort(httpPort)) {
+      if (skipPortCheck || await _waitForPort(httpPort)) {
         return "127.0.0.1:$httpPort";
       } else {
         throw Exception("Tunnel started but port $httpPort is not accessible");
@@ -261,6 +304,7 @@ class DynamicDomain {
     if (_isTransitioning) return; // 已经在操作中
     _isTransitioning = true;
     try {
+      _stopStatsPolling();
       _currentHttpPort = null;
       _currentSocksPort = null;
       await DynamicDomainPlatform.instance.stopTunnel();
@@ -270,6 +314,12 @@ class DynamicDomain {
     } finally {
       _isTransitioning = false;
     }
+  }
+
+  /// 校验配置字符串是否有效
+  Future<bool> validateConfig(String config) async {
+    final result = await DynamicDomainPlatform.instance.validateConfig(config);
+    return result == "valid";
   }
 
   /// 设置系统级代理 (仅 Android 支持，可能需要特定权限或仅对部分应用生效)
@@ -340,6 +390,58 @@ class DynamicDomain {
   /// 从 SDK 获取日志流。
   Stream<String> get logs {
     return DynamicDomainPlatform.instance.logs;
+  }
+
+  /// 销毁 SDK 资源，停止隧道并关闭流。
+  void dispose() {
+    _stopStatsPolling();
+    _statsController.close();
+  }
+}
+
+/// 隧道流量统计数据类
+class TunnelStats {
+  final int totalUplink;
+  final int totalDownlink;
+  final Map<String, NodeTraffic> nodes;
+
+  TunnelStats({
+    required this.totalUplink,
+    required this.totalDownlink,
+    required this.nodes,
+  });
+
+  factory TunnelStats.fromJson(Map<String, dynamic> json) {
+    final total = json['total'] as Map<String, dynamic>? ?? {};
+    final nodesJson = json['nodes'] as Map<String, dynamic>? ?? {};
+
+    final nodes = nodesJson.map((key, value) {
+      return MapEntry(key, NodeTraffic.fromJson(value));
+    });
+
+    return TunnelStats(
+      totalUplink: total['uplink'] ?? 0,
+      totalDownlink: total['downlink'] ?? 0,
+      nodes: nodes,
+    );
+  }
+
+  @override
+  String toString() => 'TunnelStats(Up: $totalUplink, Down: $totalDownlink)';
+}
+
+/// 单个节点的流量统计数据
+class NodeTraffic {
+  final int uplink;
+  final int downlink;
+
+  NodeTraffic({required this.uplink, required this.downlink});
+
+  factory NodeTraffic.fromJson(Map<String, dynamic> json) {
+    return NodeTraffic(
+      uplink: json['uplink'] ?? 0,
+      downlink: json['downlink'] ?? 0,
+    );
   }
 }
 

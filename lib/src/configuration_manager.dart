@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -17,35 +18,30 @@ class ConfigurationManager {
   static const String _seedConfig = '';
 
   static const String _configCacheFileName = 'dynamic_domain_config_cache.json';
+  static const Duration _cacheTtl = Duration(hours: 1);
 
   /// 获取配置，尝试顺序：DoH -> 主 API -> 备份 -> 本地缓存 -> 种子。
   Future<String> fetchConfig([String? appId]) async {
     final targetAppId = appId ?? SecretKeeper.defaultAppId;
-    String? fetchedConfig;
 
-    // 1. 尝试 DoH (DNS over HTTPS) - 遍历所有域名和服务商
-    try {
-      for (final domain in SecretKeeper.configDomains) {
-        if (fetchedConfig != null) break;
-
-        for (final provider in SecretKeeper.dohProviders) {
-          try {
-            print('Fetching config via DoH ($domain) from $provider...');
-            final dohConfig = await _fetchFromDoH(domain, provider);
-            if (dohConfig != null && dohConfig.isNotEmpty) {
-              fetchedConfig = _decryptConfig(dohConfig);
-              if (fetchedConfig != null) break;
-            }
-          } catch (e) {
-            print('DoH fetch failed ($domain @ $provider): $e');
-          }
-        }
-      }
-    } catch (e) {
-      print('DoH logic failed: $e');
+    // 1. 优先尝试本地缓存（检查有效期）
+    final cachedData = await _loadConfigFromCache(checkTtl: true);
+    if (cachedData != null) {
+      print('Using valid local cache.');
+      return cachedData;
     }
 
-    // 2. 尝试主 API (如果 DoH 失败)
+    String? fetchedConfig;
+
+    // 2. 尝试并发 DoH (DNS over HTTPS) - 最快响应获胜
+    try {
+      print('Fetching config via concurrent DoH racing...');
+      fetchedConfig = await _fetchFromDoHWithRacing();
+    } catch (e) {
+      print('DoH racing failed: $e');
+    }
+
+    // 3. 尝试主 API (如果 DoH 失败)
     if (fetchedConfig == null) {
       try {
         print('Fetching config from Primary API...');
@@ -72,6 +68,17 @@ class ConfigurationManager {
               'API request failed or returned invalid format: $e. Response body: ${response.body}',
             );
           }
+        } else if (response.statusCode == 403) {
+          // 账户被禁用或无效 (由服务端 Handler 返回)
+          throw Exception(
+            'Account Forbidden (403): 该 AppID 已被禁用、过期或流量超限。请联系管理员。',
+          );
+        } else if (response.statusCode == 401) {
+          throw Exception(
+            'Unauthorized (401): SDK 配置的 API Key 错误，请检查 SecretKeeper 设置。',
+          );
+        } else if (response.statusCode == 503) {
+          throw Exception('Service Unavailable (503): 服务端目前没有可用节点，请稍后再试。');
         } else {
           print(
             'API Request failed: ${response.statusCode} - ${response.body}',
@@ -79,6 +86,13 @@ class ConfigurationManager {
         }
       } catch (e) {
         print('Primary API failed: $e');
+        // 如果是明确的业务逻辑错误（权限、禁用、无节点），则不再尝试其他来源，直接抛出
+        final errStr = e.toString();
+        if (errStr.contains('Account Forbidden') ||
+            errStr.contains('Unauthorized') ||
+            errStr.contains('Service Unavailable')) {
+          rethrow;
+        }
       }
     }
 
@@ -126,24 +140,97 @@ class ConfigurationManager {
     try {
       final directory = await getApplicationSupportDirectory();
       final file = File('${directory.path}/$_configCacheFileName');
-      await file.writeAsString(config);
+      final data = {
+        'config': config,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      };
+      await file.writeAsString(jsonEncode(data));
     } catch (e) {
       print("Failed to save config to cache: $e");
     }
   }
 
-  Future<String?> _loadConfigFromCache() async {
+  Future<String?> _loadConfigFromCache({bool checkTtl = false}) async {
     try {
       final directory = await getApplicationSupportDirectory();
       final file = File('${directory.path}/$_configCacheFileName');
       if (await file.exists()) {
-        final config = await file.readAsString();
-        // 简单验证一下是否是 JSON
-        jsonDecode(config);
-        return config;
+        final content = await file.readAsString();
+        final data = jsonDecode(content);
+
+        if (data is Map && data.containsKey('config')) {
+          final config = data['config'] as String;
+
+          if (checkTtl && data.containsKey('timestamp')) {
+            final timestamp = data['timestamp'] as int;
+            final cachedTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+            if (DateTime.now().difference(cachedTime) > _cacheTtl) {
+              print('Cache expired.');
+              return null;
+            }
+          }
+
+          // 简单验证一下是否是 JSON
+          jsonDecode(config);
+          return config;
+        }
       }
     } catch (e) {
       print("Failed to load config from cache: $e");
+    }
+    return null;
+  }
+
+  /// 并发请求所有 DoH 组合，返回最快的一个有效结果
+  Future<String?> _fetchFromDoHWithRacing() async {
+    final List<Future<String?>> tasks = [];
+
+    for (final domain in SecretKeeper.configDomains) {
+      for (final provider in SecretKeeper.dohProviders) {
+        tasks.add(_fetchAndDecrypt(domain, provider));
+      }
+    }
+
+    if (tasks.isEmpty) return null;
+
+    // 使用 Completer 来实现第一个成功的 Future 返回
+    final completer = Completer<String?>();
+    int failedCount = 0;
+
+    for (var task in tasks) {
+      task
+          .then((result) {
+            if (result != null && !completer.isCompleted) {
+              completer.complete(result);
+            } else {
+              failedCount++;
+              if (failedCount == tasks.length && !completer.isCompleted) {
+                completer.complete(null);
+              }
+            }
+          })
+          .catchError((e) {
+            failedCount++;
+            if (failedCount == tasks.length && !completer.isCompleted) {
+              completer.complete(null);
+            }
+          });
+    }
+
+    return completer.future.timeout(
+      const Duration(seconds: 8),
+      onTimeout: () => null,
+    );
+  }
+
+  Future<String?> _fetchAndDecrypt(String domain, String provider) async {
+    try {
+      final encrypted = await _fetchFromDoH(domain, provider);
+      if (encrypted != null && encrypted.isNotEmpty) {
+        return _decryptConfig(encrypted);
+      }
+    } catch (_) {
+      // 忽略单个失败
     }
     return null;
   }
