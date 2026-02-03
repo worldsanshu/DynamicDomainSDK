@@ -1,4 +1,4 @@
-group = "com.example.flutter_sdk"
+group = "com.example.dynamic_domain"
 version = "1.0-SNAPSHOT"
 
 buildscript {
@@ -14,20 +14,13 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 
 android {
-    namespace = "com.example.flutter_sdk"
+    namespace = "com.example.dynamic_domain"
 
-    compileSdk = 36
+    compileSdk = 34
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -35,11 +28,12 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17
+        jvmTarget = "17"
     }
 
     sourceSets {
         main.java.srcDirs += "src/main/kotlin"
+        main.assets.srcDirs += "src/main/assets"
         test.java.srcDirs += "src/test/kotlin"
     }
 
@@ -50,6 +44,10 @@ android {
     dependencies {
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.mockito:mockito-core:5.0.0")
+        
+        // 使用 compileOnly 避免 AAR 嵌套错误，同时让插件能编译通过
+        // 注意：这里必须使用 name 模式配合 flatDir，不能直接用 files()，否则会触发 hasLocalAarDeps 错误
+        compileOnly(name: 'tunnel_core', ext: 'aar')
     }
 
     testOptions {
@@ -62,5 +60,11 @@ android {
                showStandardStreams = true
             }
         }
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
     }
 }

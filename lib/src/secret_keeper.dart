@@ -6,7 +6,6 @@ class SecretKeeper {
   // --- 混淆后的敏感信息 ---
   // 使用 XOR 混淆，避免字符串在二进制文件中明文出现。
 
-  // Key: qZIO1idZarkYxBqoyvLsHQJmSiT9wGBP
   static const int _keySeed = 165;
   static const List<int> _obfuscatedKey = [
     212,
@@ -49,21 +48,35 @@ class SecretKeeper {
 
   /// DoH 配置域名 (TXT 记录) - 支持多个域名冗余
   static List<String> get configDomains => [
-        'domain.zm-tool.me',
-        'config.dynamic-domain.org', // 示例备选域名
-      ];
+    'domain.zm-tool.me',
+    'www.zm-fz.me', // 示例备选域名
+  ];
 
   /// DoH 服务商列表
   static List<String> get dohProviders => [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.google/dns-query',
-        'https://dns.alidns.com/resolve',
-      ];
+    'https://cloudflare-dns.com/dns-query',
+    'https://dns.google/dns-query',
+    'https://dns.alidns.com/resolve',
+  ];
 
-  /// 主 API 端点
-  static String get apiEndpoint => 'https://domain.zm-tool.me/api/v1/endpoints';
+  /// 主 API 端点列表 (冗余支持)
+  static List<String> get apiEndpoints => [
+    'https://domain.zm-tool.me/api/v1/endpoints',
+    'https://api.dynamic-domain.org/api/v1/endpoints', // 备用端点 1
+    'https://api.backup-config-service.com/api/v1/endpoints', // 备用端点 2
+  ];
 
-  // IV: hryuhrkYaY52AL5r
+  /// 保持兼容性的单个端点获取 (返回第一个)
+  static String get apiEndpoint => apiEndpoints.first;
+
+  /// 备份配置 URL 列表 (冗余支持)
+  static List<String> get backupUrls => [
+    'https://raw.githubusercontent.com/ai-toollist/DynamicDomainSDK/main/config_backup.json',
+    'https://gitlab.com/dynamicdomainsdk/dynamicdomainsdk/-/raw/main/config_backup.json',
+    'https://api.backup-config-service.com/config_backup.json',
+    'https://api.dynamic-domain.org/config_backup.json',
+  ];
+
   static const int _ivSeed = 66;
   static const List<int> _obfuscatedIV = [
     42,
@@ -84,7 +97,6 @@ class SecretKeeper {
     35,
   ];
 
-  // API Key: yOA8NzdGrfWKT4rmowl8i40rW6PhBrHj
   static const int _apiKeySeed = 48;
   static const List<int> _obfuscatedApiKey = [
     73,
@@ -121,7 +133,6 @@ class SecretKeeper {
     37,
   ];
 
-  // 原始 App ID: "com.example.dynamic_domain"
   static const int _appIdSeed = 0x7B;
   static const List<int> _obfuscatedAppId = [
     24,

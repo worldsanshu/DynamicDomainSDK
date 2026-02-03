@@ -2,6 +2,13 @@ import Flutter
 import UIKit
 import Tunnel_core
 
+// 修复编译错误：Gomobile 在 Swift 中生成的协议名称可能不带 Protocol 后缀
+// 如果编译失败，尝试使用 Tunnel_coreLogHandler
+#if canImport(Tunnel_core)
+// 这里我们尝试通过 typealias 兼容不同版本的生成代码
+// typealias LogHandlerProtocol = Tunnel_coreLogHandlerProtocol 
+#endif
+
 public class DynamicDomainPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
     private var eventSink: FlutterEventSink?
     private var logDelegate: LogDelegate?
@@ -41,7 +48,17 @@ public class DynamicDomainPlugin: NSObject, FlutterPlugin, FlutterStreamHandler 
         case "startTunnel":
             // 启动 Go 隧道
             let args = call.arguments as? [String: Any]
-            let config = args?["config"] as? String ?? "{}"
+            guard let config = args?["config"] as? String, !config.isEmpty else {
+                result(FlutterError(code: "INVALID_CONFIG", message: "Config string is empty", details: nil))
+                return
+            }
+            
+            // 简单校验是否为 JSON
+            if !config.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("{") {
+                result(FlutterError(code: "INVALID_CONFIG", message: "Config is not a valid JSON", details: nil))
+                return
+            }
+
             let status = Tunnel_coreStartTunnel(config)
             if status == "success" || status == "already running" {
                 result("success")
@@ -85,11 +102,18 @@ public class DynamicDomainPlugin: NSObject, FlutterPlugin, FlutterStreamHandler 
 }
 
 // 单独的类来处理日志，以避免多重继承问题
-// LogDelegate 遵循 Tunnel_coreLogHandlerProtocol 协议
-class LogDelegate: NSObject, Tunnel_coreLogHandlerProtocol {
+// 由于 Swift 中协议与类名冲突，我们尝试通过 extension 或直接声明来解决
+// 如果编译失败，说明编译器无法区分 Tunnel_coreLogHandler 类和协议
+class LogDelegate: NSObject {
     weak var plugin: DynamicDomainPlugin?
     
-    func onLog(_ msg: String?) {
+    func sendLog(_ msg: String?) {
         plugin?.sendLog(msg)
+    }
+}
+
+extension LogDelegate: Tunnel_coreLogHandlerProtocol {
+    public func onLog(_ msg: String?) {
+        self.sendLog(msg)
     }
 }

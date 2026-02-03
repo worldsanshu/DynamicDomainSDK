@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   String _status = '空闲';
   String _proxyUrl = '';
   String _testResult = '';
-  final _appIdController = TextEditingController(text: "demo_app_id");
+  final _appIdController = TextEditingController(text: "123456");
   final _dynamicDomain = DynamicDomain();
   final List<String> _logs = [];
   final ScrollController _scrollController = ScrollController();
@@ -110,32 +110,50 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _startProxy() async {
+    print("[UI] 点击启动代理...");
     setState(() {
       _status = '正在初始化...';
+      _logs.add("[UI] 开始初始化流程...");
     });
 
     try {
+      print("[UI] 调用 dynamicDomain.init...");
       await _dynamicDomain.init(_appIdController.text);
+
       setState(() {
-        _status = '正在启动隧道...';
+        _status = '正在获取配置...';
+        _logs.add("[UI] 初始化完成，开始获取远程配置...");
       });
 
       // 获取远程配置
+      print("[UI] 调用 fetchRemoteConfig...");
       String config = await _dynamicDomain.fetchRemoteConfig(
         _appIdController.text,
       );
-      print("Fetched Config: $config");
+      print(
+        "[UI] 配置获取成功: ${config.substring(0, math.min(50, config.length))}...",
+      );
+
+      setState(() {
+        _status = '正在启动隧道...';
+        _logs.add("[UI] 成功获取配置，正在启动隧道...");
+      });
 
       final proxyUrl = await _dynamicDomain.startTunnel(config);
+      print("[UI] 隧道启动成功: $proxyUrl");
 
       setState(() {
         _status = '运行中';
         _proxyUrl = proxyUrl;
+        _logs.add("[UI] 代理已就绪: $proxyUrl");
       });
-    } catch (e) {
+    } catch (e, stack) {
+      print("[UI] 启动发生异常: $e");
+      print("[UI] 堆栈信息: $stack");
       final errorMsg = e.toString();
       setState(() {
         _status = '错误: $errorMsg';
+        _logs.add("[ERR] $errorMsg");
       });
 
       if (errorMsg.contains('Account Forbidden')) {
@@ -185,7 +203,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _testConnectivity() async {
+  Future<void> _testConnectivity(String url, String label) async {
     if (_proxyUrl.isEmpty) {
       setState(() {
         _testResult = '请先启动代理';
@@ -194,34 +212,41 @@ class _HomePageState extends State<HomePage> {
     }
 
     setState(() {
-      _testResult = '测试连接中...';
+      _testResult = '测试 [$label] 连接中...';
     });
 
     try {
       final proxyParts = _proxyUrl.split(':');
       final host = proxyParts[0];
-      // final port = int.parse(proxyParts[1]); // Unused
 
       final client = HttpClient();
-      // 配置 HTTP 代理 (注意：Xray 默认开启 SOCKS5 和 HTTP)
       // 使用动态分配的端口
       final proxyPort = int.parse(_proxyUrl.split(':')[1]);
       client.findProxy = (uri) {
         return "PROXY $host:$proxyPort";
       };
-      // 忽略证书错误（可选，视目标而定）
       client.badCertificateCallback = (cert, host, port) => true;
 
-      final request = await client.getUrl(Uri.parse('https://httpbin.org/ip'));
-      final response = await request.close();
-      final responseBody = await response.transform(utf8.decoder).join();
+      final request = await client
+          .getUrl(Uri.parse(url))
+          .timeout(const Duration(seconds: 10));
+      final response = await request.close().timeout(
+        const Duration(seconds: 10),
+      );
+      final responseBody = await response
+          .transform(utf8.decoder)
+          .join()
+          .timeout(const Duration(seconds: 10));
 
       setState(() {
-        _testResult = '连接成功! 响应: $responseBody';
+        _testResult = '[$label] 连接成功! 响应: $responseBody';
+        _logs.add("[UI] [$label] 测试成功");
       });
-    } catch (e) {
+    } catch (e, stack) {
       setState(() {
-        _testResult = '连接失败: $e';
+        _testResult = '[$label] 连接失败: $e';
+        _logs.add("[ERR] [$label] 测试失败: ${e.runtimeType}: $e");
+        print("[UI] 测试失败详情: $e\n$stack");
       });
     }
   }
@@ -267,120 +292,173 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('动态域名 SDK 演示')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text('运行环境: $_platformVersion'),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _appIdController,
-              decoration: const InputDecoration(
-                labelText: 'App ID (应用ID)',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              '状态: $_status',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: _status.startsWith('错误') ? Colors.red : Colors.blue,
-              ),
-            ),
-            if (_proxyUrl.isNotEmpty)
-              Text('代理地址: $_proxyUrl', style: const TextStyle(fontSize: 16)),
-            if (_currentStats != null && _proxyUrl.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.arrow_upward,
-                      size: 16,
-                      color: Colors.blue,
-                    ),
-                    Text(' ${_formatBytes(_currentStats!.totalUplink)}'),
-                    const SizedBox(width: 20),
-                    const Icon(
-                      Icons.arrow_downward,
-                      size: 16,
-                      color: Colors.green,
-                    ),
-                    Text(' ${_formatBytes(_currentStats!.totalDownlink)}'),
-                  ],
-                ),
-              ),
-            const SizedBox(height: 10),
-            if (_proxyUrl.isNotEmpty)
-              ElevatedButton.icon(
-                onPressed: _testConnectivity,
-                icon: const Icon(Icons.network_check),
-                label: const Text('测试连接 (httpbin.org)'),
-              ),
-            const SizedBox(height: 10),
-            if (_proxyUrl.isNotEmpty)
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WebViewPage(
-                        proxyUrl: _proxyUrl,
-                        initialUrl: 'https://ip.gs', // Use a site that shows IP
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // 顶部固定内容区域 (可滚动)
+              Expanded(
+                flex: 2,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text('运行环境: $_platformVersion'),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _appIdController,
+                        decoration: const InputDecoration(
+                          labelText: 'App ID (应用ID)',
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.web),
-                label: const Text('打开 WebView 测试 (ip.gs)'),
-              ),
-            if (_testResult.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  _testResult,
-                  style: TextStyle(
-                    color: _testResult.contains('成功')
-                        ? Colors.green
-                        : Colors.red,
+                      const SizedBox(height: 10),
+                      Text(
+                        '状态: $_status',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: _status.startsWith('错误')
+                              ? Colors.red
+                              : Colors.blue,
+                        ),
+                      ),
+                      if (_proxyUrl.isNotEmpty)
+                        Text(
+                          '代理地址: $_proxyUrl',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      if (_currentStats != null && _proxyUrl.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.arrow_upward,
+                                size: 14,
+                                color: Colors.blue,
+                              ),
+                              Text(
+                                ' ${_formatBytes(_currentStats!.totalUplink)}',
+                              ),
+                              const SizedBox(width: 15),
+                              const Icon(
+                                Icons.arrow_downward,
+                                size: 14,
+                                color: Colors.green,
+                              ),
+                              Text(
+                                ' ${_formatBytes(_currentStats!.totalDownlink)}',
+                              ),
+                            ],
+                          ),
+                        ),
+                      const SizedBox(height: 10),
+                      if (_proxyUrl.isNotEmpty) ...[
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          alignment: WrapAlignment.center,
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () => _testConnectivity(
+                                'http://httpbin.org/get',
+                                'httpbin (HTTP)',
+                              ),
+                              icon: const Icon(Icons.http, size: 18),
+                              label: const Text('测试 HTTP'),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () => _testConnectivity(
+                                'https://httpbin.org/ip',
+                                'httpbin (HTTPS)',
+                              ),
+                              icon: const Icon(Icons.network_check, size: 18),
+                              label: const Text('测试 HTTPS'),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () => _testConnectivity(
+                                'https://api.ipify.org/',
+                                'ipify',
+                              ),
+                              icon: const Icon(Icons.language, size: 18),
+                              label: const Text('测试 ipify'),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WebViewPage(
+                                      proxyUrl: _proxyUrl,
+                                      initialUrl: 'https://ip.gs',
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.web, size: 18),
+                              label: const Text('WebView'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                      _buildActionButtons(),
+                    ],
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
-            const SizedBox(height: 20),
-            Center(child: _buildActionButtons()),
-            const SizedBox(height: 20),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text('日志:', style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(4),
-                  color: Colors.black12,
-                ),
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.all(8),
-                  itemCount: _logs.length,
-                  itemBuilder: (context, index) {
-                    return Text(
-                      _logs[index],
-                      style: const TextStyle(
-                        fontFamily: 'Courier',
-                        fontSize: 12,
-                      ),
-                    );
-                  },
+              const SizedBox(height: 10),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '日志:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              // 日志显示区域 (固定占位)
+              Expanded(
+                flex: 3,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.black12,
+                  ),
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(8),
+                    itemCount: _logs.length,
+                    itemBuilder: (context, index) {
+                      return Text(
+                        _logs[index],
+                        style: const TextStyle(
+                          fontFamily: 'Courier',
+                          fontSize: 11,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              if (_testResult.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    _testResult,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: _testResult.contains('成功')
+                          ? Colors.green
+                          : Colors.red,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -6,8 +6,8 @@ plugins {
 }
 
 android {
-    namespace = "com.example.flutter_sdk_example"
-    compileSdk = flutter.compileSdkVersion
+    namespace = "com.dynamic.domain.example"
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -16,24 +16,20 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        @Suppress("DEPRECATION")
+        jvmTarget = "17"
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.flutter_sdk_example"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 21
-        targetSdk = flutter.targetSdkVersion
+        applicationId = "com.dynamic.domain.example"
+        minSdk = 24
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -41,4 +37,10 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // 显式引入插件所需的本地 AAR
+    // 在 Kotlin DSL 中，引用 flatDir 中的本地 AAR 需要使用 map 语法或特定的字符串格式
+    implementation(mapOf("name" to "tunnel_core", "ext" to "aar"))
 }

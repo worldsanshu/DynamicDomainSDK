@@ -9,10 +9,6 @@ import 'secret_keeper.dart';
 
 /// 管理从多个来源获取最新的代理配置。
 class ConfigurationManager {
-  // 备份配置 URL (可选)
-  static const String _backupUrl =
-      'https://raw.githubusercontent.com/your-org/dynamic_domain/main/config_backup.json';
-
   // 种子配置（硬编码回退）- 生产环境建议移除或使用真实可用的备用节点
   // 如果此配置无效，客户端将无法连接。
   static const String _seedConfig = '';
@@ -23,11 +19,18 @@ class ConfigurationManager {
   /// 获取配置，尝试顺序：DoH -> 主 API -> 备份 -> 本地缓存 -> 种子。
   Future<String> fetchConfig([String? appId]) async {
     final targetAppId = appId ?? SecretKeeper.defaultAppId;
+    final headers = {
+      'User-Agent': _getMaskedUserAgent(),
+      'Accept': 'application/json',
+    };
 
-    // 1. 优先尝试本地缓存（检查有效期）
-    final cachedData = await _loadConfigFromCache(checkTtl: true);
+    // 1. 优先尝试本地缓存（检查有效期，且必须匹配当前 AppID）
+    final cachedData = await _loadConfigFromCache(
+      appId: targetAppId,
+      checkTtl: true,
+    );
     if (cachedData != null) {
-      print('Using valid local cache.');
+      print('Using valid local cache for AppID: $targetAppId');
       return cachedData;
     }
 
@@ -37,93 +40,103 @@ class ConfigurationManager {
     try {
       print('Fetching config via concurrent DoH racing...');
       fetchedConfig = await _fetchFromDoHWithRacing();
+      if (fetchedConfig != null) {
+        print('Config fetched from DoH (Note: DoH skips AppID validation).');
+      }
     } catch (e) {
       print('DoH racing failed: $e');
     }
 
-    // 3. 尝试主 API (如果 DoH 失败)
+    // 3. 尝试主 API (支持多个冗余端点轮询)
     if (fetchedConfig == null) {
-      try {
-        print('Fetching config from Primary API...');
-        final response = await http
-            .get(
-              Uri.parse(
-                '${SecretKeeper.apiEndpoint}?app_id=$targetAppId&api_key=${SecretKeeper.apiKey}',
-              ),
-            )
-            .timeout(const Duration(seconds: 10)); // 增加超时时间
-        if (response.statusCode == 200) {
-          try {
-            final json = jsonDecode(response.body);
-            if (json is Map && json['code'] == 0 && json['data'] != null) {
-              // 标准 API 响应
-              fetchedConfig = _decryptConfig(json['data']['config']);
-            } else {
-              // 兼容旧版或直接返回配置的情况
-              fetchedConfig = _decryptConfig(response.body);
-            }
-          } catch (e) {
-            // 如果解析 JSON 失败，或者解密失败，保留原始错误信息
-            throw Exception(
-              'API request failed or returned invalid format: $e. Response body: ${response.body}',
-            );
-          }
-        } else if (response.statusCode == 403) {
-          // 账户被禁用、过期或超限 (由服务端 Handler 返回详细 JSON)
-          String errorDetail = '该 AppID 已被禁用、过期或流量超限。';
-          try {
-            final json = jsonDecode(response.body);
-            if (json is Map && json.containsKey('code')) {
-              final code = json['code'];
-              if (code == 40301) errorDetail = '该应用已被禁用，请联系管理员。';
-              if (code == 40302) errorDetail = '该应用已过期，请及时续费。';
-              if (code == 40303) errorDetail = '该应用流量已超限，请升级套餐。';
-            }
-          } catch (_) {}
+      print('Fetching config from Primary APIs (Redundancy Mode)...');
+      for (final endpoint in SecretKeeper.apiEndpoints) {
+        try {
+          print('Trying API endpoint: $endpoint');
+          final response = await http
+              .get(
+                Uri.parse(
+                  '$endpoint?app_id=$targetAppId&api_key=${SecretKeeper.apiKey}',
+                ),
+                headers: headers,
+              )
+              .timeout(const Duration(seconds: 8));
 
-          throw Exception('Account Forbidden (403): $errorDetail');
-        } else if (response.statusCode == 401) {
-          throw Exception(
-            'Unauthorized (401): SDK 配置的 API Key 错误，请检查 SecretKeeper 设置。',
-          );
-        } else if (response.statusCode == 503) {
-          throw Exception('Service Unavailable (503): 服务端目前没有可用节点，请稍后再试。');
-        } else {
-          print(
-            'API Request failed: ${response.statusCode} - ${response.body}',
-          );
-        }
-      } catch (e) {
-        print('Primary API failed: $e');
-        // 如果是明确的业务逻辑错误（权限、禁用、无节点），则不再尝试其他来源，直接抛出
-        final errStr = e.toString();
-        if (errStr.contains('Account Forbidden') ||
-            errStr.contains('Unauthorized') ||
-            errStr.contains('Service Unavailable')) {
-          rethrow;
+          if (response.statusCode == 200) {
+            try {
+              final json = jsonDecode(response.body);
+              if (json is Map && json['code'] == 0 && json['data'] != null) {
+                fetchedConfig = _decryptConfig(json['data']['config']);
+              } else {
+                fetchedConfig = _decryptConfig(response.body);
+              }
+              if (fetchedConfig != null) {
+                print('Successfully fetched config from: $endpoint');
+                break; // 成功获取，跳出循环
+              }
+            } catch (e) {
+              print('Failed to parse/decrypt response from $endpoint: $e');
+            }
+          } else if (response.statusCode == 403) {
+            // 账户级别错误，通常是全局性的，不再尝试其他端点
+            String errorDetail = '该 AppID 已被禁用、过期或流量超限。';
+            try {
+              final json = jsonDecode(response.body);
+              if (json is Map && json.containsKey('code')) {
+                final code = json['code'];
+                if (code == 40301) errorDetail = '该应用已被禁用，请联系管理员。';
+                if (code == 40302) errorDetail = '该应用已过期，请及时续费。';
+                if (code == 40303) errorDetail = '该应用流量已超限，请升级套餐。';
+              }
+            } catch (e) {
+              print("[ConfigurationManager] Error parsing error response: $e");
+            }
+            throw Exception('Account Forbidden (403): $errorDetail');
+          } else if (response.statusCode == 401) {
+            // API Key 错误也是全局性的
+            throw Exception(
+              'Unauthorized (401): SDK 配置的 API Key 错误，请检查 SecretKeeper 设置。',
+            );
+          } else {
+            print('Endpoint $endpoint returned status: ${response.statusCode}');
+          }
+        } catch (e) {
+          print('Request to $endpoint failed: $e');
+          if (e.toString().contains('Account Forbidden') ||
+              e.toString().contains('Unauthorized')) {
+            rethrow; // 业务级错误直接抛出
+          }
+          // 其他网络错误，继续尝试下一个端点
         }
       }
     }
 
-    // 3. 尝试备份 (如果前两者都失败)
+    // 3. 尝试备份 (支持多个冗余 URL 轮询)
     if (fetchedConfig == null) {
-      try {
-        print('Fetching config from Backup (GitHub)...');
-        final response = await http
-            .get(Uri.parse(_backupUrl))
-            .timeout(const Duration(seconds: 5));
-        if (response.statusCode == 200) {
-          // 假设备份文件也是加密的
-          fetchedConfig = _decryptConfig(response.body);
+      print('Fetching config from Backup URLs (Redundancy Mode)...');
+      for (final url in SecretKeeper.backupUrls) {
+        try {
+          print('Trying Backup URL: $url');
+          final response = await http
+              .get(Uri.parse(url))
+              .timeout(const Duration(seconds: 5));
+          if (response.statusCode == 200) {
+            // 假设备份文件也是加密的
+            fetchedConfig = _decryptConfig(response.body);
+            if (fetchedConfig != null) {
+              print('Successfully fetched config from Backup: $url');
+              break;
+            }
+          }
+        } catch (e) {
+          print('Backup request to $url failed: $e');
         }
-      } catch (e) {
-        print('Backup failed: $e');
       }
     }
 
     // 如果成功获取到配置，保存到缓存并返回
     if (fetchedConfig != null) {
-      await _saveConfigToCache(fetchedConfig);
+      await _saveConfigToCache(fetchedConfig, targetAppId);
       return fetchedConfig;
     }
 
@@ -145,11 +158,27 @@ class ConfigurationManager {
     );
   }
 
-  Future<void> _saveConfigToCache(String config) async {
+  Future<String?> _getDirectoryPath() async {
     try {
       final directory = await getApplicationSupportDirectory();
-      final file = File('${directory.path}/$_configCacheFileName');
+      return directory.path;
+    } catch (e) {
+      print("[ConfigurationManager] 警告: getApplicationSupportDirectory 失败: $e");
+      if (Platform.isAndroid) {
+        // 备选方案
+        return "/data/user/0/com.dynamic.domain.example/app_flutter";
+      }
+      return null;
+    }
+  }
+
+  Future<void> _saveConfigToCache(String config, String appId) async {
+    try {
+      final path = await _getDirectoryPath();
+      if (path == null) return;
+      final file = File('$path/$_configCacheFileName');
       final data = {
+        'app_id': appId,
         'config': config,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       };
@@ -159,15 +188,25 @@ class ConfigurationManager {
     }
   }
 
-  Future<String?> _loadConfigFromCache({bool checkTtl = false}) async {
+  Future<String?> _loadConfigFromCache({
+    String? appId,
+    bool checkTtl = false,
+  }) async {
     try {
-      final directory = await getApplicationSupportDirectory();
-      final file = File('${directory.path}/$_configCacheFileName');
+      final path = await _getDirectoryPath();
+      if (path == null) return null;
+      final file = File('$path/$_configCacheFileName');
       if (await file.exists()) {
         final content = await file.readAsString();
         final data = jsonDecode(content);
 
         if (data is Map && data.containsKey('config')) {
+          // 如果传入了 appId，则必须匹配
+          if (appId != null && data['app_id'] != appId) {
+            print('Cache AppID mismatch: ${data['app_id']} != $appId');
+            return null;
+          }
+
           final config = data['config'] as String;
 
           if (checkTtl && data.containsKey('timestamp')) {
@@ -238,10 +277,26 @@ class ConfigurationManager {
       if (encrypted != null && encrypted.isNotEmpty) {
         return _decryptConfig(encrypted);
       }
-    } catch (_) {
-      // 忽略单个失败
+    } catch (e) {
+      // 忽略单个失败，但可以记录日志用于调试
+      print(
+        "[ConfigurationManager] DoH fetch failed for $domain via $provider: $e",
+      );
     }
     return null;
+  }
+
+  /// 生成伪装的 User-Agent，区分平台且不包含项目特色
+  String _getMaskedUserAgent() {
+    if (Platform.isAndroid) {
+      // 模拟通用的 Android Chrome UA
+      return 'Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36';
+    } else if (Platform.isIOS) {
+      // 模拟通用的 iOS Safari UA
+      return 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1';
+    }
+    // 回退到通用 UA
+    return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36';
   }
 
   /// 解密配置字符串
@@ -285,7 +340,13 @@ class ConfigurationManager {
     final uri = Uri.parse('$provider?name=$domain&type=TXT');
 
     final response = await http
-        .get(uri, headers: {'Accept': 'application/dns-json'})
+        .get(
+          uri,
+          headers: {
+            'Accept': 'application/dns-json',
+            'User-Agent': _getMaskedUserAgent(),
+          },
+        )
         .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {

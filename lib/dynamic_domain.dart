@@ -68,33 +68,81 @@ class DynamicDomain {
 
   /// 内部方法：确保基础网络可用
   Future<void> _ensureNetworkAvailable() async {
-    try {
-      // 尝试连接 Google 公共 DNS (8.8.8.8) 的 53 端口
-      // 这是一个非常快速且不依赖 HTTP 栈的底层检查
-      final socket = await Socket.connect(
-        '8.8.8.8',
-        53,
-        timeout: const Duration(seconds: 2),
-      );
-      await socket.close();
-    } catch (_) {
+    final targets = [
+      {'host': '114.114.114.114', 'port': 53}, // 中国电信公共 DNS (国内最稳)
+      {'host': '223.5.5.5', 'port': 53}, // 阿里公共 DNS
+      {'host': '8.8.8.8', 'port': 53}, // Google DNS (国际通用)
+    ];
+
+    bool connected = false;
+    for (var target in targets) {
+      try {
+        final socket = await Socket.connect(
+          target['host'],
+          target['port'] as int,
+          timeout: const Duration(seconds: 3),
+        );
+        await socket.close();
+        connected = true;
+        break; // 只要有一个连通，就认为网络可用
+      } catch (e) {
+        print("[SDK] DNS connectivity probe failed for ${target['host']}: $e");
+        continue;
+      }
+    }
+
+    if (!connected) {
+      // 如果所有底层探测都失败了，最后尝试一次 HTTP 请求 (有些环境只允许 80/443)
+      try {
+        final result = await InternetAddress.lookup(
+          'apple.com',
+        ).timeout(const Duration(seconds: 3));
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          connected = true;
+        }
+      } catch (e) {
+        print("[SDK] HTTP connectivity probe failed: $e");
+      }
+    }
+
+    if (!connected) {
       throw Exception(
         "Network Unreachable: 基础网络连接失败。请检查：\n"
-        "1. 设备是否开启了移动数据或 Wi-Fi；\n"
-        "2. 如果是模拟器，请确保宿主机网络正常且模拟器未断网；\n"
-        "3. 检查 AndroidManifest.xml 是否包含了 INTERNET 权限。",
+        "1. 设备是否开启了移动数据或 Wi-Fi，且允许该 App 使用网络；\n"
+        "2. 在 iOS 上，请确保已点击“允许使用无线局域网与蜂窝网络”弹出框；\n"
+        "3. 检查当前环境是否对 DNS 端口 (53) 有特殊限制。",
       );
     }
   }
 
   Future<void> _prepareAssets() async {
-    // 获取我们可以放置文件的目录（例如，Application Support 或 FilesDir）
-    final directory = await getApplicationSupportDirectory();
-    final assetPath = directory.path;
+    print("[SDK] 准备复制资源文件...");
+    String assetPath;
+    try {
+      // 获取我们可以放置文件的目录
+      final directory = await getApplicationSupportDirectory();
+      assetPath = directory.path;
+      print("[SDK] 获取到应用支持目录: $assetPath");
+    } catch (e) {
+      print("[SDK] 警告: getApplicationSupportDirectory 失败: $e");
+      print("[SDK] 尝试使用备选路径...");
+      // 备选方案：如果是 Android，尝试手动拼凑一个路径
+      if (Platform.isAndroid) {
+        assetPath = "/data/user/0/com.dynamic.domain.example/app_flutter";
+        print("[SDK] 使用 Android 备选路径: $assetPath");
+      } else {
+        rethrow;
+      }
+    }
 
     // 告诉 Xray 核心去哪里寻找资源
+    print("[SDK] 设置环境变量 xray.location.asset -> $assetPath");
     await DynamicDomainPlatform.instance.setEnv(
-      "xray.location.asset",
+      'xray.location.asset',
+      assetPath,
+    );
+    await DynamicDomainPlatform.instance.setEnv(
+      'XRAY_LOCATION_ASSET',
       assetPath,
     );
 
@@ -185,19 +233,43 @@ class DynamicDomain {
   }
 
   Future<String> _startTunnelInternal(String config, bool skipPortCheck) async {
-    // 1. 找到一个空闲端口
+    // 1. 自动寻找空闲端口 (如果设备上有多个集成 SDK 的 App，这将确保它们互不冲突)
     final int port = await _findFreePort();
     final int httpPort = await _findFreePort(startPort: port + 1);
 
     _currentSocksPort = port;
     _currentHttpPort = httpPort;
+    print("[SDK] 自动分配本地端口: SOCKS=$port, HTTP=$httpPort");
 
     // 2. 将端口注入到配置中 (使用 JSON 解析)
     String finalConfig;
     try {
       final jsonConfig = jsonDecode(config) as Map<String, dynamic>;
 
-      // 注入入站端口
+      // 安全注入日志配置
+      final log = jsonConfig['log'] as Map<String, dynamic>? ?? {};
+      log['loglevel'] = 'debug';
+      // 移除可能导致 iOS 崩溃的 stdout 配置，依靠 Go 层的 capture
+      log.remove('access');
+      log.remove('error');
+      jsonConfig['log'] = log;
+
+      // 1. 强制注入 DNS 配置 (移动端必须使用稳定的公共 DNS)
+      jsonConfig['dns'] = {
+        "servers": ["8.8.8.8", "1.1.1.1", "localhost"],
+        "queryStrategy": "UseIPv4",
+      };
+
+      // 2. 注入/覆盖统计和策略配置
+      jsonConfig['stats'] = {};
+      jsonConfig['policy'] = {
+        "levels": {
+          "0": {"statsUserUplink": true, "statsUserDownlink": true},
+        },
+        "system": {"statsInboundUplink": true, "statsInboundDownlink": true},
+      };
+
+      // 3. 注入入站端口并强制开启流量嗅探 (Sniffing)
       if (jsonConfig.containsKey('inbounds') &&
           jsonConfig['inbounds'] is List) {
         final inbounds = jsonConfig['inbounds'] as List;
@@ -206,6 +278,13 @@ class DynamicDomain {
 
         for (var inbound in inbounds) {
           if (inbound is Map) {
+            // 强制开启嗅探
+            inbound['sniffing'] = {
+              "enabled": true,
+              "destOverride": ["http", "tls", "quic"],
+              "metadataOnly": false,
+            };
+
             final protocol = inbound['protocol'];
             if (protocol == 'socks') {
               inbound['port'] = port;
@@ -226,20 +305,9 @@ class DynamicDomain {
         throw Exception("Invalid config: 'inbounds' not found or not a list");
       }
 
-      // 注入统计配置 (如果不存在)
-      if (!jsonConfig.containsKey('stats')) {
-        jsonConfig['stats'] = {};
-      }
-      if (!jsonConfig.containsKey('policy')) {
-        jsonConfig['policy'] = {
-          "levels": {
-            "0": {"statsUserUplink": true, "statsUserDownlink": true},
-          },
-          "system": {"statsInboundUplink": true, "statsInboundDownlink": true},
-        };
-      }
-
       finalConfig = jsonEncode(jsonConfig);
+      // 打印最终生成的配置，用于调试 (生产环境可关闭)
+      print("[SDK] Final Config JSON: $finalConfig");
     } catch (e) {
       throw Exception("Failed to inject ports into config: $e");
     }

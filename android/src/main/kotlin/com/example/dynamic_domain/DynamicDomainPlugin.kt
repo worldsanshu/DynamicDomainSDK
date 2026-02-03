@@ -11,10 +11,11 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import android.util.Log
 import tunnel_core.Tunnel_core
 import tunnel_core.LogHandler
-import android.os.Handler
-import android.os.Looper
+import java.io.File
+import java.io.FileOutputStream
 
 /** DynamicDomainPlugin */
 class DynamicDomainPlugin :
@@ -56,7 +57,7 @@ class DynamicDomainPlugin :
             }
             "init" -> {
                 val appId = call.argument<String>("appId")
-                // 在实际应用中，我们可能会在这里对 appId 做一些处理
+                copyAssets(context)
                 result.success(null)
             }
             "setEnv" -> {
@@ -133,5 +134,29 @@ class DynamicDomainPlugin :
 
     override fun onCancel(arguments: Any?) {
         eventSink = null
+    }
+
+    private fun copyAssets(context: Context) {
+        val assetManager = context.assets
+        val files = arrayOf("geoip.dat", "geosite.dat")
+        val targetDir = context.filesDir.absolutePath
+        
+        for (filename in files) {
+            val outFile = File(targetDir, filename)
+            if (outFile.exists()) {
+                Log.d("DynamicDomain", "Asset $filename already exists, size: ${outFile.length()}")
+                continue
+            }
+            try {
+                assetManager.open(filename).use { inputStream ->
+                    FileOutputStream(outFile).use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+                Log.d("DynamicDomain", "Successfully copied $filename to $targetDir")
+            } catch (e: Exception) {
+                Log.e("DynamicDomain", "Failed to copy asset file: $filename", e)
+            }
+        }
     }
 }
